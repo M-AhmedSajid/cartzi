@@ -12,6 +12,9 @@ A modern, full-stack e-commerce platform built with Next.js 15, Sanity CMS, and 
 - **Search Functionality**: Real-time product search
 - **Shopping Cart**: Interactive cart with state management
 - **Product Catalog**: Dynamic product listings with categories
+- **Tab-based Filtering**: Interactive product filtering by category (Tshirt, Jacket, Pant, Hoodie, Short)
+- **Loading States**: Skeleton loading components for better UX
+- **Product Cards**: Reusable product display components
 
 ### Backend & CMS
 - **Sanity CMS**: Headless content management system
@@ -62,6 +65,10 @@ cartzi/
 │   │   ├── HomeBanner.jsx     # Homepage banner
 │   │   ├── CartIcon.jsx       # Shopping cart icon
 │   │   ├── SearchBar.jsx      # Search functionality
+│   │   ├── ProductGrid.jsx    # Tab-based product filtering
+│   │   ├── ProductCard.jsx    # Individual product display
+│   │   ├── SkelectonCard.jsx  # Loading skeleton component
+│   │   ├── NoProducts.jsx     # Empty state component
 │   │   └── ...                # Other components
 │   ├── sanity/
 │   │   ├── env.js             # Sanity configuration
@@ -146,15 +153,17 @@ The project includes a comprehensive product schema with:
 - Image management with Sanity
 - Category organization
 - Inventory tracking
-- Variant support
+- Variant support (Tshirt, Jacket, Pant, Hoodie, Short)
 - SEO-friendly slugs
+- Tab-based filtering system
 
 ### Sample Data
 The project includes `products.json` with 12 sample products covering:
-- Clothing categories (T-shirts, Jackets, Pants, Hoodies)
+- Clothing categories (T-shirts, Jackets, Pants, Hoodies, Shorts)
 - Kids clothing
 - Various price points and statuses
 - Complete image references
+- Tab-filtered product display
 
 ## 🎨 UI Components
 
@@ -165,6 +174,10 @@ The project includes `products.json` with 12 sample products covering:
 - **CartIcon**: Shopping cart indicator
 - **SearchBar**: Product search functionality
 - **MobileMenu**: Responsive mobile navigation
+- **ProductGrid**: Tab-based product filtering with dynamic loading
+- **ProductCard**: Individual product display with image, price, and details
+- **SkeletonCard**: Loading skeleton for better user experience
+- **NoProducts**: Empty state component for when no products are found
 
 ### Design System
 - **Color Scheme**: Muted foreground with accent colors

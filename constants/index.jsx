@@ -15,3 +15,11 @@ export const socialLinks = [
   { title: "Linkedin", href: "/", icon: <Linkedin className="w-5 h-5" /> },
   { title: "Github", href: "/", icon: <Github className="w-5 h-5" /> },
 ];
+
+export const productType = [
+  { title: "Tshirt" },
+  { title: "Jacket" },
+  { title: "Pants" },
+  { title: "Hoodie" },
+  { title: "Short" },
+];
