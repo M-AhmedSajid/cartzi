@@ -5,7 +5,7 @@ A modern, full-stack e-commerce platform built with Next.js 15, Sanity CMS, and 
 ## 🚀 Features
 
 ### Frontend
-- **Modern UI/UX**: Built with Tailwind CSS and Radix UI components
+- **Modern UI/UX**: Built with Tailwind CSS and shadcn/ui components
 - **Responsive Design**: Mobile-first approach with adaptive layouts
 - **Dark/Light Theme**: Theme switching with next-themes
 - **Authentication**: Clerk integration for user management
@@ -13,8 +13,9 @@ A modern, full-stack e-commerce platform built with Next.js 15, Sanity CMS, and 
 - **Shopping Cart**: Interactive cart with state management
 - **Product Catalog**: Dynamic product listings with categories
 - **Tab-based Filtering**: Interactive product filtering by category (Tshirt, Jacket, Pant, Hoodie, Short)
-- **Loading States**: Skeleton loading components for better UX
-- **Product Cards**: Reusable product display components
+- **Loading States**: Improved skeleton loading components for better UX
+- **Product Cards**: Reusable product display components with hover effects
+- **Empty States**: Beautiful NoProducts component for better user experience
 
 ### Backend & CMS
 - **Sanity CMS**: Headless content management system
@@ -22,6 +23,8 @@ A modern, full-stack e-commerce platform built with Next.js 15, Sanity CMS, and 
 - **Image Management**: Optimized image handling with Sanity
 - **Content Studio**: Built-in content editing interface
 - **API Integration**: RESTful API endpoints for data fetching
+- **Smart Pricing**: Automatic discount price calculation in Sanity Studio
+- **Custom Input Components**: Enhanced form fields for better content management
 
 ### Development Features
 - **TypeScript Support**: Full type safety (configurable)
@@ -38,6 +41,7 @@ A modern, full-stack e-commerce platform built with Next.js 15, Sanity CMS, and 
 - **Sanity 4.2.0** - Headless CMS
 
 ### UI Components
+- **shadcn/ui** - Modern, accessible component library
 - **Radix UI** - Accessible component primitives
 - **Lucide React** - Icon library
 - **Motion** - Animation library
@@ -59,7 +63,11 @@ cartzi/
 │   │   ├── studio/            # Sanity Studio routes
 │   │   └── globals.css        # Global styles
 │   ├── components/
-│   │   ├── ui/                # Reusable UI components
+│   │   ├── ui/                # shadcn/ui components
+│   │   │   ├── button.jsx     # Button component
+│   │   │   ├── card.jsx       # Card component
+│   │   │   ├── skeleton.jsx   # Skeleton component
+│   │   │   └── ...            # Other UI components
 │   │   ├── Header.jsx         # Main header component
 │   │   ├── Footer.jsx         # Footer component
 │   │   ├── HomeBanner.jsx     # Homepage banner
@@ -67,12 +75,14 @@ cartzi/
 │   │   ├── SearchBar.jsx      # Search functionality
 │   │   ├── ProductGrid.jsx    # Tab-based product filtering
 │   │   ├── ProductCard.jsx    # Individual product display
-│   │   ├── SkelectonCard.jsx  # Loading skeleton component
-│   │   ├── NoProducts.jsx     # Empty state component
+│   │   ├── SkelectonCard.jsx  # Enhanced loading skeleton
+│   │   ├── NoProducts.jsx     # Improved empty state component
 │   │   └── ...                # Other components
 │   ├── sanity/
 │   │   ├── env.js             # Sanity configuration
 │   │   ├── schemaTypes/       # Content schemas
+│   │   │   ├── productType.js # Product schema with discount calculation
+│   │   │   └── categoryType.js # Category schema
 │   │   └── structure.js       # Studio structure
 │   └── lib/                   # Utility functions
 ├── constants/
@@ -156,6 +166,7 @@ The project includes a comprehensive product schema with:
 - Variant support (Tshirt, Jacket, Pant, Hoodie, Short)
 - SEO-friendly slugs
 - Tab-based filtering system
+- **Smart Discount Calculation**: Automatic discounted price calculation in Sanity Studio
 
 ### Sample Data
 The project includes `products.json` with 12 sample products covering:
@@ -176,14 +187,15 @@ The project includes `products.json` with 12 sample products covering:
 - **MobileMenu**: Responsive mobile navigation
 - **ProductGrid**: Tab-based product filtering with dynamic loading
 - **ProductCard**: Individual product display with image, price, and details
-- **SkeletonCard**: Loading skeleton for better user experience
-- **NoProducts**: Empty state component for when no products are found
+- **SkeletonCard**: Enhanced loading skeleton matching product card structure
+- **NoProducts**: Improved empty state component with shadcn/ui integration
 
 ### Design System
 - **Color Scheme**: Muted foreground with accent colors
 - **Typography**: Clean, readable fonts
 - **Spacing**: Consistent spacing system
 - **Animations**: Smooth hover effects and transitions
+- **shadcn/ui Integration**: Modern, accessible component library
 
 ## 🔧 Configuration
 
@@ -192,6 +204,7 @@ The project includes `products.json` with 12 sample products covering:
 - **Dataset**: `production`
 - **API Version**: Latest
 - **Studio Path**: `/studio`
+- **Custom Input Components**: Enhanced form fields for better UX
 
 ### Next.js Configuration
 - **App Router**: Enabled

@@ -1,5 +1,7 @@
-import { TagIcon, TrolleyIcon } from '@sanity/icons'
+import { TrolleyIcon } from '@sanity/icons'
 import { defineField, defineType } from 'sanity'
+import React from 'react'
+import DiscountedPriceInput from '../lib/DiscountInput'
 
 export const productType = defineType({
   name: 'product',
@@ -48,9 +50,16 @@ export const productType = defineType({
     }),
     defineField({
       name: 'discount',
-      title: 'Discount Price',
+      title: 'Discount Percentage',
       type: 'number',
       validation: (Rule) => Rule.required()
+    }),
+    defineField({
+      name: 'discountedPrice',
+      title: 'Discounted Price',
+      type: 'number',
+      description: 'Calculated price after applying discount (Automated)',
+      components: { input: DiscountedPriceInput }
     }),
     defineField({
       name: "categories",

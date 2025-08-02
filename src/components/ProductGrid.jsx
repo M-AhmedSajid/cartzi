@@ -10,7 +10,7 @@ import NoProducts from "./NoProducts";
 const ProductGrid = () => {
   const [activeTab, setActiveTab] = useState(productType[0]?.title || "");
   const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const query = `*[_type == 'product' && variant == $variant] | order(name asc)`;
   const params = { variant: activeTab.toLowerCase() };
 
@@ -38,7 +38,7 @@ const ProductGrid = () => {
       <Tabs
         value={activeTab}
         onValueChange={handleTabChange}
-        className="w-[400px]"
+        className="items-center"
       >
         <TabsList>
           {productType.map((item) => (
@@ -50,7 +50,11 @@ const ProductGrid = () => {
         {productType.map((item) => (
           <TabsContent value={item?.title} key={item?.title}>
             {loading ? (
-              <SkelectonCard />
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mt-10 w-full">
+                {Array.from({ length: 8 }).map((i) => (
+                  <SkelectonCard key={i} />
+                ))}
+              </div>
             ) : products?.length ? (
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mt-10 w-full">
                 {products.map((product) => (
@@ -58,7 +62,7 @@ const ProductGrid = () => {
                 ))}
               </div>
             ) : (
-              <NoProducts />
+              <NoProducts activeTab={activeTab} />
             )}
           </TabsContent>
         ))}
