@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 const HeaderMenu = () => {
   const pathname = usePathname();
   return (
-    <nav className="hidden md:inline-flex w-1/3 items-center gap-5 text-sm capitalize font-semibold">
+    <nav className="hidden lg:inline-flex w-1/3 items-center gap-5 text-sm capitalize font-semibold">
       {headerData.map((item) => (
         <Link
           href={item?.href}

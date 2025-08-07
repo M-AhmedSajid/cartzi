@@ -17,11 +17,11 @@ const Header = async () => {
     <header className="border-b border-border py-5">
       <Container className="flex items-center justify-between gap-7 text-foreground">
         <HeaderMenu />
-        <div className="w-auto md:w-1/3 flex justify-center items-center gap-2.5">
+        <div className="w-auto lg:w-1/3 flex justify-center items-center gap-2.5">
           <MobileMenu />
           <Logo>Cartzi</Logo>
         </div>
-        <div className="w-auto md:w-1/3 flex justify-end items-center gap-5">
+        <div className="w-auto lg:w-1/3 flex justify-end items-center gap-5">
           <SearchBar />
           <CartIcon />
           <ClerkLoaded>

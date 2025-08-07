@@ -5,7 +5,7 @@ A modern, full-stack e-commerce platform built with Next.js 15, Sanity CMS, and 
 ## 🚀 Features
 
 ### Frontend
-- **Modern UI/UX**: Built with Tailwind CSS and shadcn/ui components
+- **Modern UI/UX**: Built with Tailwind CSS v4 and shadcn/ui components
 - **Responsive Design**: Mobile-first approach with adaptive layouts
 - **Dark/Light Theme**: Theme switching with next-themes
 - **Authentication**: Clerk integration for user management
@@ -16,6 +16,8 @@ A modern, full-stack e-commerce platform built with Next.js 15, Sanity CMS, and 
 - **Loading States**: Improved skeleton loading components for better UX
 - **Product Cards**: Reusable product display components with hover effects
 - **Empty States**: Beautiful NoProducts component for better user experience
+- **Aurora Background Effects**: Custom CSS animations and gradient effects
+- **Hero Background Component**: Animated background with framer-motion integration
 
 ### Backend & CMS
 - **Sanity CMS**: Headless content management system
@@ -37,8 +39,9 @@ A modern, full-stack e-commerce platform built with Next.js 15, Sanity CMS, and 
 ### Core Technologies
 - **Next.js 15.4.4** - React framework with App Router
 - **React 19.1.0** - UI library
-- **Tailwind CSS 4** - Utility-first CSS framework
+- **Tailwind CSS v4** - Utility-first CSS framework with CSS variables
 - **Sanity 4.2.0** - Headless CMS
+- **Framer Motion** - Animation library for interactive effects
 
 ### UI Components
 - **shadcn/ui** - Modern, accessible component library
@@ -67,6 +70,7 @@ cartzi/
 │   │   │   ├── button.jsx     # Button component
 │   │   │   ├── card.jsx       # Card component
 │   │   │   ├── skeleton.jsx   # Skeleton component
+│   │   │   ├── hero-bg.jsx    # Animated hero background
 │   │   │   └── ...            # Other UI components
 │   │   ├── Header.jsx         # Main header component
 │   │   ├── Footer.jsx         # Footer component
@@ -182,6 +186,7 @@ The project includes `products.json` with 12 sample products covering:
 - **Header**: Navigation with search and cart
 - **Footer**: Site information and links
 - **HomeBanner**: Hero section for homepage
+- **HeroBg**: Animated background component with framer-motion
 - **CartIcon**: Shopping cart indicator
 - **SearchBar**: Product search functionality
 - **MobileMenu**: Responsive mobile navigation
@@ -195,6 +200,7 @@ The project includes `products.json` with 12 sample products covering:
 - **Typography**: Clean, readable fonts
 - **Spacing**: Consistent spacing system
 - **Animations**: Smooth hover effects and transitions
+- **Aurora Effects**: Custom CSS animations and gradient backgrounds
 - **shadcn/ui Integration**: Modern, accessible component library
 
 ## 🔧 Configuration

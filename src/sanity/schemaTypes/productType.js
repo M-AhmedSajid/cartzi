@@ -58,6 +58,7 @@ export const productType = defineType({
       name: 'discountedPrice',
       title: 'Discounted Price',
       type: 'number',
+      readOnly: true,
       description: 'Calculated price after applying discount (Automated)',
       components: { input: DiscountedPriceInput }
     }),

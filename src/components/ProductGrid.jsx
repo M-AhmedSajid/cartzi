@@ -51,7 +51,7 @@ const ProductGrid = () => {
           <TabsContent value={item?.title} key={item?.title}>
             {loading ? (
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mt-10 w-full">
-                {Array.from({ length: 8 }).map((i) => (
+                {Array.from({ length: 8 }).map((x, i) => (
                   <SkelectonCard key={i} />
                 ))}
               </div>

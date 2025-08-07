@@ -10,13 +10,13 @@ const MobileMenu = () => {
     <>
       <Button
         variant="ghost"
-        className="md:hidden"
+        className="lg:hidden"
         size="icon"
         onClick={() => setIsSidebarOpen(true)}
       >
         <AlignLeft className="text-muted-foreground hover:text-foreground hoverEffect" />
       </Button>
-      <div className="md:hidden">
+      <div className="lg:hidden">
         <Sidebar
           isOpen={isSidebarOpen}
           onClose={() => setIsSidebarOpen(false)}

@@ -1,20 +1,20 @@
 import { useEffect } from "react";
-import { useFormValue, set } from "sanity";
+import { useFormValue } from "sanity";
 
-export default function DiscountedPriceInput({ value, onChange }) {
+export default function DiscountedPriceInput({ value }) {
   const price = useFormValue(["price"]);
   const discount = useFormValue(["discount"]);
 
-  useEffect(() => {
+  const calculatedPrice = (() => {
     if (typeof price === "number" && typeof discount === "number") {
-      const calculated = price - (price * discount) / 100;
-      onChange(set(Number(calculated.toFixed(2))));
+      return price - (price * discount) / 100;
     }
-  }, [price, discount, onChange]);
+    return 0;
+  })();
 
   return (
     <p className="culjtj" data-scheme="dark" data-tone="default" style={{border: "1px solid #555c75"}}>
-      ${value || 0}
+      ${calculatedPrice.toFixed(2)}
     </p>
   );
 }

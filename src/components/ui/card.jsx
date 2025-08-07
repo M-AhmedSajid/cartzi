@@ -19,7 +19,7 @@ function CardHeader({ className, ...props }) {
   return (
     <div
       data-slot="card-header"
-      className={cn("@container/card-header px-6 flex flex-col justify-between flex-2", className)}
+      className={cn("@container/card-header px-6 flex flex-col justify-between", className)}
       {...props}
     />
   );
@@ -29,7 +29,7 @@ function CardTitle({ className, ...props }) {
   return (
     <h2
       data-slot="card-title"
-      className={cn("leading-none text-lg font-semibold line-clamp-1", className)}
+      className={cn("leading-none text-lg font-semibold", className)}
       {...props}
     />
   );
