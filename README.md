@@ -1,47 +1,56 @@
-# Cartzi - Modern E-commerce Platform
+# Cartzi - Premium Fashion Ecommerce Platform
 
-A modern, full-stack e-commerce platform built with Next.js 15, Sanity CMS, and Tailwind CSS. Cartzi provides a seamless shopping experience with a beautiful UI and robust backend management.
+A modern, full-stack fashion ecommerce platform built with Next.js 15, Sanity CMS, and Tailwind CSS. Cartzi offers a sophisticated shopping experience with elegant design and robust backend management for clothing and accessories.
+
+## 🎨 Design Philosophy
+
+Cartzi features a sophisticated color palette designed specifically for fashion retail:
+- **Primary**: Deep navy blue for trust and elegance
+- **Secondary**: Warm beige tones for premium feel
+- **Accent**: Coral/rose gold for fashion-forward appeal
+- **Supporting**: Clean grays and warm neutrals
 
 ## 🚀 Features
 
-### Frontend
-- **Modern UI/UX**: Built with Tailwind CSS v4 and shadcn/ui components
+### Frontend Excellence
+- **Modern Fashion UI**: Elegant design with shadcn/ui components
 - **Responsive Design**: Mobile-first approach with adaptive layouts
-- **Dark/Light Theme**: Theme switching with next-themes
-- **Authentication**: Clerk integration for user management
-- **Search Functionality**: Real-time product search
-- **Shopping Cart**: Interactive cart with state management
-- **Product Catalog**: Dynamic product listings with categories
-- **Tab-based Filtering**: Interactive product filtering by category (Tshirt, Jacket, Pant, Hoodie, Short)
-- **Loading States**: Improved skeleton loading components for better UX
-- **Product Cards**: Reusable product display components with hover effects
-- **Empty States**: Beautiful NoProducts component for better user experience
-- **Aurora Background Effects**: Custom CSS animations and gradient effects
-- **Hero Background Component**: Animated background with framer-motion integration
+- **Sophisticated Color Scheme**: Navy, beige, and coral palette
+- **Authentication**: Secure user management with Clerk
+- **Advanced Search**: Real-time product discovery
+- **Smart Shopping Cart**: Interactive cart with state management
+- **Product Catalog**: Dynamic listings with category filtering
+- **Tab-based Filtering**: Interactive filtering (Tshirt, Jacket, Pant, Hoodie, Short)
+- **Enhanced Loading States**: Beautiful skeleton components
+- **Product Cards**: Elegant product display with hover effects
+- **Empty States**: Sophisticated NoProducts component
+- **Animated Backgrounds**: Custom CSS animations and gradient effects
+- **Hero Background**: Animated hero with framer-motion
 
 ### Backend & CMS
-- **Sanity CMS**: Headless content management system
-- **Product Management**: Full CRUD operations for products
-- **Image Management**: Optimized image handling with Sanity
-- **Content Studio**: Built-in content editing interface
-- **API Integration**: RESTful API endpoints for data fetching
-- **Smart Pricing**: Automatic discount price calculation in Sanity Studio
-- **Custom Input Components**: Enhanced form fields for better content management
+- **Sanity CMS**: Headless content management for fashion content
+- **Product Management**: Full CRUD operations with smart pricing
+- **Image Optimization**: High-quality image handling with Sanity
+- **Content Studio**: Intuitive content editing interface
+- **API Integration**: RESTful endpoints for data fetching
+- **Smart Pricing**: Automatic discount calculations in Sanity Studio
+- **Custom Input Components**: Enhanced form fields for fashion content
 
 ### Development Features
-- **TypeScript Support**: Full type safety (configurable)
+- **TypeScript Ready**: Full type safety support
 - **ESLint**: Code quality and consistency
-- **Turbopack**: Fast development builds
+- **Turbopack**: Lightning-fast development builds
 - **Hot Reload**: Instant development feedback
+- **Hydration Error Handling**: Browser extension compatibility
 
 ## 🛠️ Tech Stack
 
 ### Core Technologies
 - **Next.js 15.4.4** - React framework with App Router
 - **React 19.1.0** - UI library
-- **Tailwind CSS v4** - Utility-first CSS framework with CSS variables
+- **Tailwind CSS v4** - Utility-first CSS with CSS variables
 - **Sanity 4.2.0** - Headless CMS
-- **Framer Motion** - Animation library for interactive effects
+- **Framer Motion** - Animation library
 
 ### UI Components
 - **shadcn/ui** - Modern, accessible component library
@@ -61,10 +70,10 @@ cartzi/
 ├── src/
 │   ├── app/
 │   │   ├── (client)/          # Client-side routes
-│   │   │   ├── layout.js      # Root layout
+│   │   │   ├── layout.js      # Root layout with hydration handling
 │   │   │   └── page.js        # Home page
 │   │   ├── studio/            # Sanity Studio routes
-│   │   └── globals.css        # Global styles
+│   │   └── globals.css        # Global styles with fashion color scheme
 │   ├── components/
 │   │   ├── ui/                # shadcn/ui components
 │   │   │   ├── button.jsx     # Button component
@@ -72,7 +81,7 @@ cartzi/
 │   │   │   ├── skeleton.jsx   # Skeleton component
 │   │   │   ├── hero-bg.jsx    # Animated hero background
 │   │   │   └── ...            # Other UI components
-│   │   ├── Header.jsx         # Main header component
+│   │   ├── Header.jsx         # Main header with navigation
 │   │   ├── Footer.jsx         # Footer component
 │   │   ├── HomeBanner.jsx     # Homepage banner
 │   │   ├── CartIcon.jsx       # Shopping cart icon
@@ -132,7 +141,7 @@ cartzi/
    # Initialize Sanity (if not already done)
    npx sanity init
    
-   # Start Sanity Studio
+   # Start development server
    npm run dev
    # Visit http://localhost:3000/studio
    ```
@@ -162,18 +171,18 @@ npm run lint
 ## 📊 Data Management
 
 ### Product Schema
-The project includes a comprehensive product schema with:
+The project includes a comprehensive fashion product schema with:
 - Product details (name, description, price)
 - Image management with Sanity
-- Category organization
+- Category organization (Tshirt, Jacket, Pant, Hoodie, Short)
 - Inventory tracking
-- Variant support (Tshirt, Jacket, Pant, Hoodie, Short)
+- Variant support
 - SEO-friendly slugs
 - Tab-based filtering system
 - **Smart Discount Calculation**: Automatic discounted price calculation in Sanity Studio
 
 ### Sample Data
-The project includes `products.json` with 12 sample products covering:
+The project includes sample products covering:
 - Clothing categories (T-shirts, Jackets, Pants, Hoodies, Shorts)
 - Kids clothing
 - Various price points and statuses
@@ -196,7 +205,7 @@ The project includes `products.json` with 12 sample products covering:
 - **NoProducts**: Improved empty state component with shadcn/ui integration
 
 ### Design System
-- **Color Scheme**: Muted foreground with accent colors
+- **Color Scheme**: Navy primary, beige secondary, coral accent
 - **Typography**: Clean, readable fonts
 - **Spacing**: Consistent spacing system
 - **Animations**: Smooth hover effects and transitions
@@ -206,8 +215,8 @@ The project includes `products.json` with 12 sample products covering:
 ## 🔧 Configuration
 
 ### Sanity Configuration
-- **Project ID**: `osdxogmk`
-- **Dataset**: `production`
+- **Project ID**: `your_project_id`
+- **Dataset**: `your_dataset`
 - **API Version**: Latest
 - **Studio Path**: `/studio`
 - **Custom Input Components**: Enhanced form fields for better UX
@@ -216,7 +225,7 @@ The project includes `products.json` with 12 sample products covering:
 - **App Router**: Enabled
 - **Turbopack**: Development optimization
 - **Image Optimization**: Next.js Image component
-- **TypeScript**: Optional (can be enabled)
+- **Hydration Handling**: Browser extension compatibility
 
 ## 🚀 Deployment
 

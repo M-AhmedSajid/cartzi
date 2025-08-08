@@ -7,14 +7,11 @@ import {
   CardAction,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "./ui/card";
-import { Button } from "./ui/button";
-import { Heart } from "lucide-react";
-import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
-import FormattedPrice from "./FormattedPrice";
+import ProductActions from "./ProductActions";
+import PriceFormatter from "./PriceFormatter";
 
 const ProductCard = ({ product }) => {
   const isOutOfStock = product?.stock === 0;
@@ -31,7 +28,7 @@ const ProductCard = ({ product }) => {
           </span>
         )}
         {product?.images && (
-          <Link href={`/product/${product?._id}`}>
+          <Link href={`/product/${product?.slug?.current}`}>
             <Image
               src={urlFor(product?.images[0]).url()}
               alt={product?.name}
@@ -49,21 +46,18 @@ const ProductCard = ({ product }) => {
           <CardDescription>{product?.intro}</CardDescription>
         </div>
         <div>
-          <FormattedPrice price={product?.price} discount={product?.discount} />
+          <p>
+      <span className="font-semibold text-foreground text-xl">
+        {product?.price && <PriceFormatter amount={product?.price} />}
+      </span>{" "}
+      {product?.price && product?.discount && (
+        <span className="line-through font-medium text-sm text-muted-foreground">
+          <PriceFormatter amount={product?.price + (product?.price * product?.discount) / 100} />
+        </span>
+      )}
+    </p>
           <CardAction className="flex gap-1.5 justify-between items-center mt-2">
-            <Button className="flex-1" disabled={isOutOfStock}>
-              Add to Cart
-            </Button>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button size="icon" variant="outline">
-                  <Heart />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Add to Wishlist</p>
-              </TooltipContent>
-            </Tooltip>
+            <ProductActions product={product} isOutOfStock={isOutOfStock} />
           </CardAction>
         </div>
       </CardHeader>

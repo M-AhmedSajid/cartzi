@@ -7,23 +7,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "./ui/carousel";
-import {
-  Card,
-  CardAction,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "./ui/card";
-import { Skeleton } from "./ui/skeleton";
-import Image from "next/image";
-import Link from "next/link";
 import { client } from "@/sanity/lib/client";
-import { urlFor } from "@/sanity/lib/image";
-import { Button } from "./ui/button";
-import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
-import { Heart } from "lucide-react";
-import FormattedPrice from "./FormattedPrice";
 import ProductCard from "./ProductCard";
 import Autoplay from "embla-carousel-autoplay";
 import SkelectonCard from "./SkelectonCard";
@@ -82,13 +66,9 @@ const FeaturedProducts = () => {
     >
       <CarouselContent>
         {loading
-          ? Array.from({ length: 8 }).map((x, i) => (
+          ? Array.from({ length: 3 }).map((x, i) => (
               <CarouselItem key={i} className="md:basis-1/3">
-                <div
-                  className={`hoverEffect ${
-                    currentSlide !== i && "scale-75"
-                  }`}
-                >
+                <div className={`hoverEffect ${i % 2 === 0 && "scale-75"}`}>
                   <SkelectonCard />
                 </div>
               </CarouselItem>
