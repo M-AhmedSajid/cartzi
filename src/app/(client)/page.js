@@ -6,7 +6,7 @@ export default function Home() {
   return (
     <main>
         <HomeBanner />
-      <Container className="space-y-10">
+      <Container className="space-y-10 py-10">
         <ProductGrid />
       </Container>
     </main>

@@ -71,7 +71,14 @@ cartzi/
 │   ├── app/
 │   │   ├── (client)/          # Client-side routes
 │   │   │   ├── layout.js      # Root layout with hydration handling
-│   │   │   └── page.js        # Home page
+│   │   │   ├── page.js        # Home page
+│   │   │   └── (user)/        # User-facing pages
+│   │   │       ├── about/     # About Us page
+│   │   │       ├── contact/   # Contact Us page
+│   │   │       ├── faqs/      # FAQs page
+│   │   │       ├── privacy-policy/ # Privacy Policy page
+│   │   │       ├── shipping-returns/ # Shipping & Returns page
+│   │   │       └── terms-and-conditions/ # Terms & Conditions page
 │   │   ├── studio/            # Sanity Studio routes
 │   │   └── globals.css        # Global styles with fashion color scheme
 │   ├── components/
@@ -80,9 +87,12 @@ cartzi/
 │   │   │   ├── card.jsx       # Card component
 │   │   │   ├── skeleton.jsx   # Skeleton component
 │   │   │   ├── hero-bg.jsx    # Animated hero background
+│   │   │   ├── accordion.jsx  # Accordion component for FAQs
+│   │   │   ├── input.jsx      # Input component
+│   │   │   ├── textarea.jsx   # Textarea component
 │   │   │   └── ...            # Other UI components
 │   │   ├── Header.jsx         # Main header with navigation
-│   │   ├── Footer.jsx         # Footer component
+│   │   ├── Footer.jsx         # Footer component with quick links
 │   │   ├── HomeBanner.jsx     # Homepage banner
 │   │   ├── CartIcon.jsx       # Shopping cart icon
 │   │   ├── SearchBar.jsx      # Search functionality
@@ -99,7 +109,7 @@ cartzi/
 │   │   └── structure.js       # Studio structure
 │   └── lib/                   # Utility functions
 ├── constants/
-│   └── index.jsx              # App constants
+│   └── index.jsx              # App constants (quickLinks, categories, FAQs)
 ├── public/                    # Static assets
 ├── sanity.config.js           # Sanity configuration
 ├── next.config.mjs            # Next.js configuration
@@ -193,7 +203,7 @@ The project includes sample products covering:
 
 ### Core Components
 - **Header**: Navigation with search and cart
-- **Footer**: Site information and links
+- **Footer**: Site information and quick links (About, Contact, Terms, Privacy, Shipping, FAQs)
 - **HomeBanner**: Hero section for homepage
 - **HeroBg**: Animated background component with framer-motion
 - **CartIcon**: Shopping cart indicator
@@ -203,6 +213,14 @@ The project includes sample products covering:
 - **ProductCard**: Individual product display with image, price, and details
 - **SkeletonCard**: Enhanced loading skeleton matching product card structure
 - **NoProducts**: Improved empty state component with shadcn/ui integration
+
+### Newly Added Pages
+- **AboutPage**: Company information and mission
+- **ContactPage**: Contact form with business details
+- **FAQsPage**: Interactive FAQ section with accordion
+- **PrivacyPolicyPage**: Privacy policy and data handling
+- **ShippingReturnsPage**: Shipping information and return policies
+- **TermsConditionsPage**: Terms of service and conditions
 
 ### Design System
 - **Color Scheme**: Navy primary, beige secondary, coral accent

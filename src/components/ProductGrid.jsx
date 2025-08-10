@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
-import { productType } from "../../constants";
+import { productType } from "../constants";
 import { client } from "@/sanity/lib/client";
 import SkelectonCard from "./SkelectonCard";
 import ProductCard from "./ProductCard";

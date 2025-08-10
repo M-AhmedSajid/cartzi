@@ -5,7 +5,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "./ui/tooltip";
-import { socialLinks } from "../../constants";
+import { socialLinks } from "../constants";
 import Link from "next/link";
 import { Button } from "./ui/button";
 
