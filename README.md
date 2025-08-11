@@ -1,6 +1,44 @@
 # Cartzi - Premium Fashion Ecommerce Platform
 
-A modern, full-stack fashion ecommerce platform built with Next.js 15, Sanity CMS, and Tailwind CSS. Cartzi offers a sophisticated shopping experience with elegant design and robust backend management for clothing and accessories.
+A modern, full-stack fashion ecommerce platform built with Next.js 15, Sanity CMS, and Tailwind CSS. Cartzi offers a sophisticated shopping experience with elegant design, advanced image galleries, and robust backend management for clothing and accessories.
+
+## 📋 Table of Contents
+
+- [🎨 Design Philosophy](#-design-philosophy)
+- [🚀 Features](#-features)
+  - [Frontend Excellence](#frontend-excellence)
+  - [Advanced Image Gallery](#advanced-image-gallery)
+  - [Backend & CMS](#backend--cms)
+  - [Development Features](#development-features)
+- [🛠️ Tech Stack](#️-tech-stack)
+  - [Core Technologies](#core-technologies)
+  - [UI Components](#ui-components)
+  - [Authentication & State](#authentication--state)
+- [📁 Project Structure](#-project-structure)
+- [🚀 Getting Started](#-getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Development](#development)
+- [📊 Data Management](#-data-management)
+  - [Product Schema](#product-schema)
+  - [Sample Data](#sample-data)
+- [🎨 UI Components](#-ui-components)
+  - [Core Components](#core-components)
+  - [Advanced Image Gallery](#advanced-image-gallery-1)
+  - [Product Actions](#product-actions)
+  - [Newly Added Pages](#newly-added-pages)
+  - [Design System](#design-system)
+- [🔧 Configuration](#-configuration)
+  - [Sanity Configuration](#sanity-configuration)
+  - [Next.js Configuration](#nextjs-configuration)
+- [🚀 Deployment](#-deployment)
+- [🤝 Contributing](#-contributing)
+- [📝 License](#-license)
+- [📌 Notes](#-notes)
+- [👨‍💻 Developed by](#️-developed-by)
+- [⭐️ Show Support](#️-show-support)
+
+---
 
 ## 🎨 Design Philosophy
 
@@ -26,6 +64,15 @@ Cartzi features a sophisticated color palette designed specifically for fashion 
 - **Empty States**: Sophisticated NoProducts component
 - **Animated Backgrounds**: Custom CSS animations and gradient effects
 - **Hero Background**: Animated hero with framer-motion
+
+### Advanced Image Gallery
+- **Interactive Carousel**: Smooth image navigation with Embla Carousel
+- **Lightbox Mode**: Full-screen image viewing with smooth animations
+- **Thumbnail Navigation**: Clickable thumbnails with active state indicator
+- **Smooth Transitions**: Framer Motion animations for opening/closing
+- **Responsive Design**: Optimized for all device sizes
+- **Image Optimization**: Next.js Image component with proper sizing
+- **Wishlist Integration**: Heart button for adding products to favorites
 
 ### Backend & CMS
 - **Sanity CMS**: Headless content management for fashion content
@@ -58,6 +105,7 @@ Cartzi features a sophisticated color palette designed specifically for fashion 
 - **Lucide React** - Icon library
 - **Motion** - Animation library
 - **Sonner** - Toast notifications
+- **Embla Carousel** - Smooth carousel functionality
 
 ### Authentication & State
 - **Clerk** - Authentication and user management
@@ -90,6 +138,7 @@ cartzi/
 │   │   │   ├── accordion.jsx  # Accordion component for FAQs
 │   │   │   ├── input.jsx      # Input component
 │   │   │   ├── textarea.jsx   # Textarea component
+│   │   │   ├── carousel.jsx   # Embla carousel component
 │   │   │   └── ...            # Other UI components
 │   │   ├── Header.jsx         # Main header with navigation
 │   │   ├── Footer.jsx         # Footer component with quick links
@@ -100,6 +149,8 @@ cartzi/
 │   │   ├── ProductCard.jsx    # Individual product display
 │   │   ├── SkelectonCard.jsx  # Enhanced loading skeleton
 │   │   ├── NoProducts.jsx     # Improved empty state component
+│   │   ├── ImageGallery.jsx   # Advanced image gallery with lightbox
+│   │   ├── ProductActions.jsx # Product actions (cart, wishlist)
 │   │   └── ...                # Other components
 │   ├── sanity/
 │   │   ├── env.js             # Sanity configuration
@@ -213,6 +264,22 @@ The project includes sample products covering:
 - **ProductCard**: Individual product display with image, price, and details
 - **SkeletonCard**: Enhanced loading skeleton matching product card structure
 - **NoProducts**: Improved empty state component with shadcn/ui integration
+
+### Advanced Image Gallery
+- **ImageGallery**: Interactive product image viewer with:
+  - Smooth carousel navigation
+  - Full-screen lightbox mode
+  - Thumbnail navigation with active states
+  - Smooth animations using Framer Motion
+  - Wishlist integration (heart button)
+  - Responsive design for all devices
+
+### Product Actions
+- **ProductActions**: Product interaction components:
+  - Add to Cart button
+  - Wishlist button (heart icon)
+  - Quantity management
+  - Price calculations
 
 ### Newly Added Pages
 - **AboutPage**: Company information and mission
