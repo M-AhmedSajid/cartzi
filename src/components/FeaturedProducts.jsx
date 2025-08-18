@@ -17,7 +17,7 @@ const FeaturedProducts = () => {
   const [loading, setLoading] = useState(true);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [api, setApi] = useState(null);
-  const query = `*[_type == "product" && "1e7a9319-b883-466e-8f47-a07504b8a537" in categories[]._ref] | order(_createdAt desc)[0...5]`;
+  const query = `*[_type == "product" && "86031097-8d30-47fb-b901-c55d95b8e79d" in categories[]._ref] | order(_createdAt desc)[0...5]`;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -60,7 +60,7 @@ const FeaturedProducts = () => {
       }}
       plugins={[
         Autoplay({
-          delay: 2000,
+          delay: 3500,
         }),
       ]}
     >

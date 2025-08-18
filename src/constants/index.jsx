@@ -17,7 +17,7 @@ export const socialLinks = [
 ];
 
 export const productType = [
-  { title: "Tshirt" },
+  { title: "T-Shirts" },
   { title: "Jacket" },
   { title: "Pants" },
   { title: "Hoodie" },

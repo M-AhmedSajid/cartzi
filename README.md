@@ -1,37 +1,22 @@
-# Cartzi - Premium Fashion Ecommerce Platform
+# Cartzi – Modern Fashion Ecommerce Platform
 
-A modern, full-stack fashion ecommerce platform built with Next.js 15, Sanity CMS, and Tailwind CSS. Cartzi offers a sophisticated shopping experience with elegant design, advanced image galleries, and robust backend management for clothing and accessories.
+Cartzi is a premium, full-stack fashion ecommerce platform built with **Next.js 15**, **Sanity CMS**, and **shadcn/ui**.  
+It delivers a modern shopping experience with elegant UI, advanced product galleries, seamless cart and wishlist actions, and a fashion-focused design system.  
+
+⚠️ **Note**: This project is open-source for learning and inspiration. It is **not for commercial use** or resale.
+
+---
 
 ## 📋 Table of Contents
-
-- [🎨 Design Philosophy](#-design-philosophy)
+- [✨ Overview](#-overview)
 - [🚀 Features](#-features)
-  - [Frontend Excellence](#frontend-excellence)
-  - [Advanced Image Gallery](#advanced-image-gallery)
-  - [Backend & CMS](#backend--cms)
-  - [Development Features](#development-features)
+- [🖼️ Homepage Flow](#️-homepage-flow)
 - [🛠️ Tech Stack](#️-tech-stack)
-  - [Core Technologies](#core-technologies)
-  - [UI Components](#ui-components)
-  - [Authentication & State](#authentication--state)
 - [📁 Project Structure](#-project-structure)
 - [🚀 Getting Started](#-getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Installation](#installation)
-  - [Development](#development)
 - [📊 Data Management](#-data-management)
-  - [Product Schema](#product-schema)
-  - [Sample Data](#sample-data)
 - [🎨 UI Components](#-ui-components)
-  - [Core Components](#core-components)
-  - [Advanced Image Gallery](#advanced-image-gallery-1)
-  - [Product Actions](#product-actions)
-  - [Newly Added Pages](#newly-added-pages)
-  - [Design System](#design-system)
 - [🔧 Configuration](#-configuration)
-  - [Sanity Configuration](#sanity-configuration)
-  - [Next.js Configuration](#nextjs-configuration)
-- [🚀 Deployment](#-deployment)
 - [🤝 Contributing](#-contributing)
 - [📝 License](#-license)
 - [📌 Notes](#-notes)
@@ -40,76 +25,82 @@ A modern, full-stack fashion ecommerce platform built with Next.js 15, Sanity CM
 
 ---
 
-## 🎨 Design Philosophy
+## ✨ Overview
 
-Cartzi features a sophisticated color palette designed specifically for fashion retail:
-- **Primary**: Deep navy blue for trust and elegance
-- **Secondary**: Warm beige tones for premium feel
-- **Accent**: Coral/rose gold for fashion-forward appeal
-- **Supporting**: Clean grays and warm neutrals
+Cartzi blends **style, speed, and scalability**.  
+It’s designed to look and feel like a high-end fashion store, while giving developers a clean architecture, headless CMS integration, and customizable components.
+
+Key Highlights:
+- Modern **bento grid homepage**
+- Advanced **image gallery with lightbox + thumbnails**
+- **Tab-based product filtering**
+- **Sanity-powered product schema** with automatic discounting
+- Secure **Clerk authentication**
+- Premium design system (navy, beige, gold accents)
+
+---
 
 ## 🚀 Features
 
-### Frontend Excellence
-- **Modern Fashion UI**: Elegant design with shadcn/ui components
-- **Responsive Design**: Mobile-first approach with adaptive layouts
-- **Sophisticated Color Scheme**: Navy, beige, and coral palette
-- **Authentication**: Secure user management with Clerk
-- **Advanced Search**: Real-time product discovery
-- **Smart Shopping Cart**: Interactive cart with state management
-- **Product Catalog**: Dynamic listings with category filtering
-- **Tab-based Filtering**: Interactive filtering (Tshirt, Jacket, Pant, Hoodie, Short)
-- **Enhanced Loading States**: Beautiful skeleton components
-- **Product Cards**: Elegant product display with hover effects
-- **Empty States**: Sophisticated NoProducts component
-- **Animated Backgrounds**: Custom CSS animations and gradient effects
-- **Hero Background**: Animated hero with framer-motion
+### 🛍️ Shopping Experience
+- Featured product carousel in hero
+- Bento grid category showcase (Men, Women, Kids, Accessories)
+- Tab-based product filtering (T-shirts, Jackets, Pants, Hoodies, Shorts)
+- Smart cart & wishlist management
+- Size & color variations
+- Shipping & returns info, size guides, and product sharing options
 
-### Advanced Image Gallery
-- **Interactive Carousel**: Smooth image navigation with Embla Carousel
-- **Lightbox Mode**: Full-screen image viewing with smooth animations
-- **Thumbnail Navigation**: Clickable thumbnails with active state indicator
-- **Smooth Transitions**: Framer Motion animations for opening/closing
-- **Responsive Design**: Optimized for all device sizes
-- **Image Optimization**: Next.js Image component with proper sizing
-- **Wishlist Integration**: Heart button for adding products to favorites
+### 🖼️ Product Galleries
+- Embla carousel with swipe support
+- Lightbox mode with smooth framer-motion animations
+- Thumbnail navigation with active indicators
+- Optimized images via Next.js & Sanity
+- Wishlist integration (heart button)
 
-### Backend & CMS
-- **Sanity CMS**: Headless content management for fashion content
-- **Product Management**: Full CRUD operations with smart pricing
-- **Image Optimization**: High-quality image handling with Sanity
-- **Content Studio**: Intuitive content editing interface
-- **API Integration**: RESTful endpoints for data fetching
-- **Smart Pricing**: Automatic discount calculations in Sanity Studio
-- **Custom Input Components**: Enhanced form fields for fashion content
+### 📦 Content & Backend
+- **Sanity CMS** for products, categories, and content pages
+- Automatic discount calculation inside Sanity Studio
+- Rich schema with inventory, SEO slugs, variants
+- Ready-to-use About, Contact, FAQ, Shipping/Returns, and Policy pages
 
-### Development Features
-- **TypeScript Ready**: Full type safety support
-- **ESLint**: Code quality and consistency
-- **Turbopack**: Lightning-fast development builds
-- **Hot Reload**: Instant development feedback
-- **Hydration Error Handling**: Browser extension compatibility
+### 👨‍💻 Developer Experience
+- TypeScript, ESLint, Turbopack
+- Hydration-safe components
+- Modular architecture with shadcn/ui
+- Custom Aurora hero background
+- Reusable design tokens and theming
+
+---
+
+## 🖼️ Homepage Flow
+
+The homepage is structured like a professional fashion brand:
+
+1. **Hero Section** – Featured products carousel + CTA  
+2. **Featured Collections** – Bento grid with Men, Women, Kids, Accessories  
+3. **Trending Now** – Bestsellers carousel or grid with ratings  
+4. **Seasonal Campaign Banner** – Highlight new arrivals or sales  
+5. **Brand Story** – Short “About Us” blurb  
+6. **Trust Section** – Reviews, shipping/returns badges, payment icons  
+7. **Newsletter Signup** – Quick email subscription field  
+8. **Instagram/Lookbook Feed** (optional)  
+9. **Footer** – Logo, short About, quick links, policies, newsletter, socials  
+
+---
 
 ## 🛠️ Tech Stack
 
-### Core Technologies
-- **Next.js 15.4.4** - React framework with App Router
-- **React 19.1.0** - UI library
-- **Tailwind CSS v4** - Utility-first CSS with CSS variables
-- **Sanity 4.2.0** - Headless CMS
-- **Framer Motion** - Animation library
+- **Framework**: Next.js 15 (App Router)  
+- **CMS**: Sanity v4  
+- **UI**: Tailwind CSS v4, shadcn/ui, Radix UI, Lucide Icons  
+- **State**: Zustand  
+- **Auth**: Clerk  
+- **Payments**: Stripe  
+- **Animations**: Framer Motion  
+- **Carousel**: Embla  
+- **Notifications**: Sonner  
 
-### UI Components
-- **shadcn/ui** - Modern, accessible component library
-- **Radix UI** - Accessible component primitives
-- **Lucide React** - Icon library
-- **Motion** - Animation library
-- **Sonner** - Toast notifications
-- **Embla Carousel** - Smooth carousel functionality
-
-### Authentication & State
-- **Clerk** - Authentication and user management
-- **Class Variance Authority** - Component variant management
+---
 
 ## 📁 Project Structure
 
@@ -172,7 +163,7 @@ cartzi/
 ### Prerequisites
 - Node.js 18+ 
 - npm or yarn
-- Sanity account
+- Sanity & Clerk accounts
 
 ### Installation
 
@@ -233,22 +224,14 @@ npm run lint
 
 ### Product Schema
 The project includes a comprehensive fashion product schema with:
-- Product details (name, description, price)
-- Image management with Sanity
-- Category organization (Tshirt, Jacket, Pant, Hoodie, Short)
+- Name, description, price
+- Sanity image fields
+- Categories (Men, Women, Kids, Accessories)
+- Sizes (XS, S, M, L, XL, XXL)
+- Colors (selectable swatches)
 - Inventory tracking
-- Variant support
 - SEO-friendly slugs
-- Tab-based filtering system
-- **Smart Discount Calculation**: Automatic discounted price calculation in Sanity Studio
-
-### Sample Data
-The project includes sample products covering:
-- Clothing categories (T-shirts, Jackets, Pants, Hoodies, Shorts)
-- Kids clothing
-- Various price points and statuses
-- Complete image references
-- Tab-filtered product display
+- Automatic discount calculation
 
 ## 🎨 UI Components
 
@@ -312,18 +295,6 @@ The project includes sample products covering:
 - **Image Optimization**: Next.js Image component
 - **Hydration Handling**: Browser extension compatibility
 
-## 🚀 Deployment
-
-### Vercel (Recommended)
-1. Connect your GitHub repository
-2. Set environment variables
-3. Deploy automatically on push
-
-### Other Platforms
-- **Netlify**: Compatible with Next.js
-- **Railway**: Full-stack deployment
-- **AWS**: Custom deployment
-
 ## 🤝 Contributing
 
 1. Fork the repository
@@ -335,6 +306,7 @@ The project includes sample products covering:
 ## 📝 License
 
 This project is licensed under the MIT License.
+⚠️ Not for commercial use or resale.
 
 ## 📌 Notes
 

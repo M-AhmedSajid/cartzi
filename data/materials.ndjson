@@ -1,0 +1,17 @@
+{"_id":"material-cotton","_type":"material","name":"Cotton","description":"A soft, breathable natural fiber ideal for casual and everyday wear."}
+{"_id":"material-polyester","_type":"material","name":"Polyester","description":"Durable, quick-drying synthetic fabric that resists wrinkles and shrinking."}
+{"_id":"material-wool","_type":"material","name":"Wool","description":"Warm, insulating natural fiber perfect for cold weather garments."}
+{"_id":"material-denim","_type":"material","name":"Denim","description":"Strong cotton twill fabric, often used for jeans, jackets, and casual wear."}
+{"_id":"material-silk","_type":"material","name":"Silk","description":"Smooth, luxurious natural fiber with a soft sheen and lightweight feel."}
+{"_id":"material-linen","_type":"material","name":"Linen","description":"Lightweight, breathable natural fiber ideal for hot and humid climates."}
+{"_id":"material-leather","_type":"material","name":"Leather","description":"Durable, flexible material made from animal hide, often used for shoes, jackets, and bags."}
+{"_id":"material-suede","_type":"material","name":"Suede","description":"Soft leather with a napped finish, popular for shoes, jackets, and accessories."}
+{"_id":"material-nylon","_type":"material","name":"Nylon","description":"Strong, lightweight synthetic fiber resistant to water and abrasion."}
+{"_id":"material-spandex","_type":"material","name":"Spandex","description":"Highly elastic synthetic fiber, ideal for activewear and fitted garments."}
+{"_id":"material-acrylic","_type":"material","name":"Acrylic","description":"Soft, lightweight synthetic fiber often used as a wool alternative."}
+{"_id":"material-rayon","_type":"material","name":"Rayon","description":"Semi-synthetic fiber with a smooth texture, often used for lightweight clothing."}
+{"_id":"material-viscose","_type":"material","name":"Viscose","description":"Silky semi-synthetic fiber made from wood pulp, often used for dresses and blouses."}
+{"_id":"material-faux-leather","_type":"material","name":"Faux Leather","description":"Synthetic material designed to look and feel like leather without using animal hide."}
+{"_id":"material-faux-fur","_type":"material","name":"Faux Fur","description":"Soft synthetic material made to resemble animal fur, used in coats and trims."}
+{"_id":"material-cashmere","_type":"material","name":"Cashmere","description":"Luxurious, ultra-soft wool from cashmere goats, known for warmth and lightness."}
+{"_id":"material-velvet","_type":"material","name":"Velvet","description":"Soft, dense fabric with a short pile, offering a rich texture and sheen."}
