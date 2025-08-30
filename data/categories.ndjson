@@ -24,3 +24,4 @@
 {"_id":"cat-sale","_type":"category","name":"Sale","slug":{"_type":"slug","current":"sale"},"description":"Discounted products and special offers.","parent":null}
 {"_id":"cat-winter-collection","_type":"category","name":"Winter Collection","slug":{"_type":"slug","current":"winter-collection"},"description":"Cozy and stylish picks for the winter season.","parent":null}
 {"_id":"cat-summer-collection","_type":"category","name":"Summer Collection","slug":{"_type":"slug","current":"summer-collection"},"description":"Lightweight, breathable, and colorful summer styles.","parent":null}
+{"_id":"86031097-8d30-47fb-b901-c55d95b8e79d","_type":"category","name":"Featured","slug":{"_type":"slug","current":"featured"},"description":"Our top picks, just for you.","parent":null}

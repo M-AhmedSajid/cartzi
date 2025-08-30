@@ -8,9 +8,9 @@ import {
   CarouselPrevious,
 } from "./ui/carousel";
 import { client } from "@/sanity/lib/client";
-import ProductCard from "./ProductCard";
+import ProductCard from "./product/ProductCard";
 import Autoplay from "embla-carousel-autoplay";
-import SkelectonCard from "./SkelectonCard";
+import SkelectonCard from "./product/SkelectonCard";
 
 const FeaturedProducts = () => {
   const [products, setProducts] = useState([]);

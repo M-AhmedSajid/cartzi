@@ -1,13 +1,10 @@
-{"_type":"color","name":"Black","hex":"#000000"}
-{"_type":"color","name":"White","hex":"#FFFFFF"}
-{"_type":"color","name":"Red","hex":"#FF0000"}
-{"_type":"color","name":"Blue","hex":"#0000FF"}
-{"_type":"color","name":"Green","hex":"#00A651"}
-{"_type":"color","name":"Yellow","hex":"#FFD300"}
-{"_type":"color","name":"Orange","hex":"#FF7A00"}
-{"_type":"color","name":"Purple","hex":"#6F42C1"}
-{"_type":"color","name":"Gray","hex":"#808080"}
-{"_type":"color","name":"Brown","hex":"#8B4513"}
-{"_type":"color","name":"Pink","hex":"#FF69B4"}
-{"_type":"color","name":"Navy","hex":"#001F3F"}
-{"_type":"color","name":"Beige","hex":"#F5F5DC"}
+{"_id": "16ee5421-5020-4c4d-af70-866bf1fb7feb","_type": "color","hex": "#00A651","name": "Green"},
+{"_id": "2e6383a7-bf7e-4f23-aa52-174876aa371c","_type": "color","hex": "#808080","name": "Gray"},
+{"_id": "3cd027b0-0fff-4aea-9e57-ec16924b443e","_type": "color","hex": "#808000","name": "Olive"},
+{"_id": "43a918fc-beba-4bb3-ab4a-1179b6d48f8f","_type": "color","hex": "#0000FF","name": "Blue"},
+{"_id": "8f40ea88-f753-4dd4-8408-4db5613cedc6","_type": "color","hex": "#000000","name": "Black"},
+{"_id": "9d1553d5-b7bf-4f28-a693-4788496c4636","_type": "color","hex": "#FF0000","name": "Red"},
+{"_id": "c39b40b8-e812-444d-94dd-af8b8fcf3d87","_type": "color","hex": "#50C878","name": "Emerald"},
+{"_id": "c57b6873-7c56-4285-9b15-69d444ee8e2e","_type": "color","hex": "#36454F","name": "Charcoal"},
+{"_id": "d54d2b66-7c35-4a44-8f96-81fd7c43549a","_type": "color","hex": "#FFFFFF","name": "White"},
+{"_id": "f04c9749-b8d6-4aaa-a491-ab0118beee12","_type": "color","hex": "#001F3F","name": "Navy"}

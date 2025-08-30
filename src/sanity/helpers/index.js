@@ -7,6 +7,7 @@ export const getProductBySlug = async (slug) => {
             ...,
             material->{ name, slug },
             categories[]->{
+                ...,
                 name,
                 slug,
                 "parent": parent->{
@@ -18,14 +19,16 @@ export const getProductBySlug = async (slug) => {
                     }
                 }
             },
-          variants[] {
-            size,
-            color->{ name, hex },
-            sku,
-            stock,
-            priceOverride,
-            images[]{ asset->{ url }, alt }
-          }
+            variants[] {
+                color->{ name, hex },
+                images[]{ asset->{ url }, alt },
+                sizes[] {
+                    size,
+                    sku,
+                    stock,
+                    priceOverride
+                }
+            }
         }
       `)
     try {

@@ -1,5 +1,5 @@
 import Container from "@/components/Container";
-import { ImageGallery } from "@/components/ImageGallery";
+import ProductView from "@/components/product/ProductView";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -9,17 +9,57 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { getProductBySlug } from "@/sanity/helpers";
+import { urlFor } from "@/sanity/lib/image";
 import { notFound } from "next/navigation";
 import React from "react";
-import ProductDetails from "@/components/ProductDetails";
 
 export async function generateMetadata({ params }) {
-  const { slug } = await params;
-  const product = await getProductBySlug(slug);
-  return {
-    title: product.name,
-    description: product.description,
-  };
+  try {
+    const { slug } = await params;
+    const product = await getProductBySlug(slug);
+
+    if (!product) {
+      return {
+        title: "Product Not Found",
+        description: "The requested product could not be found.",
+      };
+    }
+
+    // figure out the first available image (product first, then variant)
+    let ogImage = null;
+    let ogAlt = null;
+
+    if (product.images?.length > 0) {
+      ogImage = urlFor(product.images[0]);
+      ogAlt = product.images[0].alt || product.name;
+    } else if (product.variants?.[0]?.images?.length > 0) {
+      ogImage = urlFor(product.variants[0].images[0]);
+      ogAlt = product.variants[0].images[0].alt || product.name;
+    }
+
+    return {
+      title: product.name || "Product",
+      description: product.description || product.intro || "Product details",
+      openGraph: {
+        title: product.name,
+        description: product.description || product.intro,
+        images: ogImage
+          ? [
+              {
+                url: ogImage,
+                alt: ogAlt,
+              },
+            ]
+          : [],
+      },
+    };
+  } catch (error) {
+    console.error("Error generating metadata:", error);
+    return {
+      title: "Product",
+      description: "Product details",
+    };
+  }
 }
 
 const SingleProductPage = async ({ params }) => {
@@ -60,13 +100,7 @@ const SingleProductPage = async ({ params }) => {
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-      {product?.images && (
-        <ImageGallery
-          images={product.images}
-          alt={product?.name}
-        ></ImageGallery>
-      )}
-      <ProductDetails product={product} />
+      <ProductView product={product} />
     </Container>
   );
 };

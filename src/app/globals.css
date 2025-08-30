@@ -182,4 +182,12 @@
   .hoverEffect {
     @apply transition-all ease-in-out duration-300 cursor-pointer;
   }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 }
