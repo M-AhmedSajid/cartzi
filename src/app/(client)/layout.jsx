@@ -3,6 +3,7 @@ import "../globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { ClerkProvider } from "@clerk/nextjs";
+import USPStrip from "@/components/layout/USPStrip";
 
 const outfit = Outfit({
   variable: "--font-outfit",
@@ -25,6 +26,7 @@ export default function RootLayout({ children }) {
         <body suppressHydrationWarning
           className={`${outfit.variable} ${inter.className} antialiased`}
         >
+          <USPStrip />
           <Header />
           {children}
           <Footer />

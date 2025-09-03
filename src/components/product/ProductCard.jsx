@@ -11,7 +11,7 @@ import {
   CardTitle,
 } from "../ui/card";
 import ProductActions from "./ProductActions";
-import PriceFormatter from "../PriceFormatter";
+import PriceDisplay from "../PriceDisplay";
 
 const ProductCard = ({ product }) => {
   const isOutOfStock = () => {
@@ -54,20 +54,8 @@ const ProductCard = ({ product }) => {
           <CardDescription>{product?.intro}</CardDescription>
         </div>
         <div>
-          <p>
-            <span className="font-semibold text-foreground text-xl">
-              {product?.price && <PriceFormatter amount={product?.price} />}
-            </span>{" "}
-            {product?.price && product?.discount && (
-              <span className="line-through font-medium text-sm text-muted-foreground">
-                <PriceFormatter
-                  amount={
-                    product?.price + (product?.price * product?.discount) / 100
-                  }
-                />
-              </span>
-            )}
-          </p>
+          
+      <PriceDisplay product={product} variant={product?.variants} size="text-xl" />
           <CardAction className="flex gap-1.5 justify-between items-center mt-2">
             <ProductActions product={product} isOutOfStock={outOfStock} />
           </CardAction>

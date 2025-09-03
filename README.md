@@ -34,6 +34,7 @@ Key Highlights:
 - Modern **bento grid homepage**
 - Advanced **image gallery with lightbox + thumbnails**
 - **Tab-based product filtering**
+- **Real-time search dialog** with comprehensive product filtering
 - **Sanity-powered product schema** with automatic discounting
 - Secure **Clerk authentication**
 - Premium design system (navy, beige, gold accents)
@@ -47,6 +48,7 @@ Key Highlights:
 - Featured product carousel in hero
 - Bento grid category showcase (Men, Women, Kids, Accessories)
 - Tab-based product filtering (T-shirts, Jackets, Pants, Hoodies, Shorts)
+- **Advanced search dialog** with real-time product filtering
 - Smart cart & wishlist management
 - Size & color variations
 - Shipping & returns info, size guides, and product sharing options
@@ -131,7 +133,8 @@ cartzi/
 │   │   ├── layout/            # Layout components (reorganized)
 │   │   │   ├── Header.jsx     # Main header with navigation
 │   │   │   ├── Footer.jsx     # Footer component with quick links
-│   │   │   ├── HomeBanner.jsx # Homepage banner
+│   │   │   ├── HeroSection.jsx # Hero section component
+│   │   │   ├── USPStrip.jsx   # Unique selling proposition strip
 │   │   │   ├── HeaderMenu.jsx # Header menu component
 │   │   │   ├── MobileMenu.jsx # Mobile navigation
 │   │   │   └── Sidebar.jsx    # Sidebar component
@@ -174,9 +177,10 @@ cartzi/
 │   │   ├── FeaturedProducts.jsx # Featured products section
 │   │   ├── CartIcon.jsx       # Shopping cart icon
 │   │   ├── SearchBar.jsx      # Search functionality
+│   │   ├── SearchDialog.jsx   # Advanced search dialog with real-time filtering
 │   │   ├── Logo.jsx           # Logo component
 │   │   ├── Container.jsx      # Container wrapper
-│   │   ├── PriceFormatter.jsx # Price formatting utility
+│   │   ├── PriceDisplay.jsx   # Enhanced price display component
 │   │   ├── Title.jsx          # Title component
 │   │   ├── ShareButton.jsx    # Social sharing
 │   │   └── SocialMedia.jsx    # Social media links
@@ -296,7 +300,8 @@ The project includes a comprehensive fashion product schema with:
 ### Layout Components
 - **Header**: Navigation with search and cart
 - **Footer**: Site information and quick links (About, Contact, Terms, Privacy, Shipping, FAQs)
-- **HomeBanner**: Hero section for homepage
+- **HeroSection**: Enhanced hero section for homepage
+- **USPStrip**: Unique selling proposition strip component
 - **HeaderMenu**: Header menu component
 - **MobileMenu**: Responsive mobile navigation
 - **Sidebar**: Sidebar navigation component
@@ -319,9 +324,10 @@ The project includes a comprehensive fashion product schema with:
 - **HeroBg**: Animated background component with framer-motion
 - **CartIcon**: Shopping cart indicator
 - **SearchBar**: Product search functionality
+- **SearchDialog**: Advanced search dialog with real-time product filtering and comprehensive search capabilities
 - **Logo**: Brand logo component
 - **Container**: Layout container wrapper
-- **PriceFormatter**: Price formatting utility
+- **PriceDisplay**: Enhanced price display component with discount handling
 - **Title**: Title component
 - **ShareButton**: Social sharing functionality
 - **SocialMedia**: Social media links
@@ -399,6 +405,8 @@ This project is licensed under the MIT License.
 - Do **not** directly copy personal content or assets without permission.
 - **Recent Updates**: Project has been restructured for better organization and maintainability.
 - **Enhanced Data Management**: New image prompts system and organized asset structure.
+- **New Search Feature**: Advanced search dialog with real-time product filtering across multiple fields (name, description, categories, variants, materials, tags).
+- **Component Updates**: Replaced PriceFormatter with enhanced PriceDisplay component for better price handling and discount display.
 
 ---
 

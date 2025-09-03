@@ -1,6 +1,5 @@
 "use client";
 import VariantsSelection from "@/components/product/VariantsSelection";
-import PriceFormatter from "@/components/PriceFormatter";
 import ProductActions from "@/components/product/ProductActions";
 import ShareButton from "@/components/ShareButton";
 import { Button } from "@/components/ui/button";
@@ -22,18 +21,9 @@ import {
 } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import PriceDisplay from "../PriceDisplay";
 
 const ProductDetails = ({ product, variant, setVariant }) => {
-  const getDisplayPrice = (product, variant) => {
-    const basePrice = variant?.priceOverride ?? product?.price;
-    const discount = product?.discount ?? 0;
-
-    const discountedPrice = basePrice - (basePrice * discount) / 100;
-
-    return { basePrice, discountedPrice };
-  };
-
-  const { basePrice, discountedPrice } = getDisplayPrice(product, variant);
 
   const isInStock = () => {
     if (variant) {
@@ -51,16 +41,7 @@ const ProductDetails = ({ product, variant, setVariant }) => {
       <p className="text-muted-foreground text-xs">
         {product?.sku || (variant && variant.sku)}
       </p>
-      <p>
-        <span className="font-bold text-foreground text-2xl">
-          <PriceFormatter amount={discountedPrice} />
-        </span>{" "}
-        {product?.price && product?.discount !== 0 && (
-          <span className="line-through font-semibold text-base text-muted-foreground">
-            {product?.price && <PriceFormatter amount={basePrice} />}
-          </span>
-        )}
-      </p>
+      <PriceDisplay product={product} variant={variant} size="text-2xl" />
       {isInStock() ? (
         <p className="w-fit bg-green-100 text-green-600 text-center text-sm py-2.5 px-5 font-semibold rounded-lg">
           In Stock

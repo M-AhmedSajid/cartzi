@@ -3,13 +3,14 @@ import HeaderMenu from "./HeaderMenu";
 import Logo from "../Logo";
 import Container from "../Container";
 import MobileMenu from "./MobileMenu";
-import SearchBar from "../SearchBar";
 import CartIcon from "../CartIcon";
 import { Button } from "../ui/button";
 import { currentUser } from "@clerk/nextjs/server";
 import { ClerkLoaded, SignedIn, SignInButton, UserButton } from "@clerk/nextjs";
-import { ListOrdered } from "lucide-react";
+import { ListOrdered, Search } from "lucide-react";
 import Link from "next/link";
+import { Dialog, DialogTrigger } from "../ui/dialog";
+import SearchDialog from "../SearchDialog";
 
 const Header = async () => {
   const user = await currentUser();
@@ -22,7 +23,12 @@ const Header = async () => {
           <Logo>Cartzi</Logo>
         </div>
         <div className="w-auto lg:w-1/3 flex justify-end items-center gap-5">
-          <SearchBar />
+          <Dialog>
+            <DialogTrigger>
+              <Search className="w-5 h-5 text-muted-foreground hover:text-foreground hoverEffect" />
+            </DialogTrigger>
+            <SearchDialog />
+          </Dialog>
           <CartIcon />
           <ClerkLoaded>
             <SignedIn>

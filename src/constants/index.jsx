@@ -120,3 +120,9 @@ export const faqs = [
       "Our customer service team is available Monday through Friday, 9:00 AM to 6:00 PM EST. You can reach us by email at support@cartzi.com, by phone at +1 (555) 123-4567, or through the contact form on our website.",
   },
 ];
+
+export const usps = [
+  { text: "Free Returns" },
+  { text: "3-5 Day Delivery" },
+  { text: "Secure Checkout" },
+];

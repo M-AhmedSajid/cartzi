@@ -5,7 +5,7 @@ export const getProductBySlug = async (slug) => {
     const PRODUCT_BY_SLUG_QUERY = defineQuery(`
         *[_type == "product" && slug.current == $slug][0]{
             ...,
-            material->{ name, slug },
+            material->{ name },
             categories[]->{
                 ...,
                 name,
