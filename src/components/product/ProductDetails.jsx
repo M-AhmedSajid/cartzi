@@ -58,7 +58,7 @@ const ProductDetails = ({ product, variant, setVariant }) => {
         <VariantsSelection variants={product?.variants} onChange={setVariant} />
       )}
       <div className="flex gap-2.5 justify-between items-center mt-2">
-        <ProductActions product={product} isOutOfStock={!isInStock()} />
+        <ProductActions product={product} variant={variant} isOutOfStock={!isInStock()} />
       </div>
       <div className="flex flex-wrap items-center gap-2.5 justify-between border-b py-5 -mt-2">
         <Button variant="link" asChild>

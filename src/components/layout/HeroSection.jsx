@@ -46,7 +46,7 @@ const HeroSection = () => {
               className="rounded-full px-4"
               asChild
             >
-              <Link href={`/category${ctg.title}`}>{ctg.title}</Link>
+              <Link href={`/category${ctg.href}`}>{ctg.title}</Link>
             </Button>
           ))}
         </div>

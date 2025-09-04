@@ -15,7 +15,7 @@ import SearchDialog from "../SearchDialog";
 const Header = async () => {
   const user = await currentUser();
   return (
-    <header className="border-b border-border py-5">
+    <header className="border-b border-border py-5 sticky top-0 bg-background z-10">
       <Container className="flex items-center justify-between gap-7 text-foreground">
         <HeaderMenu />
         <div className="w-auto lg:w-1/3 flex justify-center items-center gap-2.5">

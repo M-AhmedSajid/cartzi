@@ -49,8 +49,9 @@ Key Highlights:
 - Bento grid category showcase (Men, Women, Kids, Accessories)
 - Tab-based product filtering (T-shirts, Jackets, Pants, Hoodies, Shorts)
 - **Advanced search dialog** with real-time product filtering
-- Smart cart & wishlist management
-- Size & color variations
+- **Zustand-powered cart system** with persistent storage
+- Smart cart & wishlist management with stock validation
+- Size & color variations with variant-specific pricing
 - Shipping & returns info, size guides, and product sharing options
 
 ### 🖼️ Product Galleries
@@ -99,7 +100,7 @@ The homepage is structured like a professional fashion brand:
 - **Framework**: Next.js 15 (App Router)  
 - **CMS**: Sanity v4  
 - **UI**: Tailwind CSS v4, shadcn/ui, Radix UI, Lucide Icons  
-- **State**: Zustand  
+- **State**: Zustand (with persistent cart storage)  
 - **Auth**: Clerk  
 - **Payments**: Stripe  
 - **Animations**: Framer Motion  
@@ -204,6 +205,7 @@ cartzi/
 ├── images/                    # Image assets
 ├── constants/
 │   └── index.jsx              # App constants (quickLinks, categories, FAQs)
+├── store.js                   # Zustand cart state management
 ├── public/                    # Static assets
 ├── sanity.config.js           # Sanity configuration
 ├── next.config.mjs            # Next.js configuration
@@ -294,6 +296,56 @@ The project includes a comprehensive fashion product schema with:
 - **Image Prompts**: Enhanced content management with image prompts
 - **Organized Assets**: Images stored in dedicated directory
 - **Backup System**: Comprehensive data backup and recovery
+
+## 🛒 Cart System
+
+### Zustand State Management
+The cart system is built with **Zustand** for efficient state management and includes:
+
+#### Core Features
+- **Persistent Storage**: Cart data persists across browser sessions
+- **Product Variants**: Full support for size, color, and variant-specific pricing
+- **Stock Validation**: Real-time stock checking and quantity limits
+- **Discount Handling**: Automatic discount calculation and price comparison
+- **Migration Support**: Seamless data migration for future updates
+
+#### Cart Operations
+- `addItem()`: Add products with variant selection
+- `increment()` / `decrement()`: Adjust quantities with stock validation
+- `updateQuantity()`: Direct quantity updates
+- `removeItem()`: Remove specific items from cart
+- `resetCart()`: Clear entire cart
+- `getCartCount()`: Get total item count
+- `getSubtotalCents()`: Calculate cart subtotal
+- `isInCart()`: Check if product is in cart
+
+#### Integration Points
+- **ProductActions**: Add to cart functionality
+- **QuantityButtons**: Quantity management controls
+- **SearchDialog**: Quick add to cart from search results
+- **CartIcon**: Real-time cart count display
+
+#### Data Structure
+```javascript
+{
+  key: "product-sku",           // Unique cart item identifier
+  productId: "product-id",      // Sanity product ID
+  name: "Product Name",         // Display name
+  slug: "product-slug",         // Product URL slug
+  image: "image-url",           // Product image
+  variant: {                    // Variant details
+    colorRef: "color-id",
+    colorName: "Color Name",
+    size: "M",
+    sku: "variant-sku",
+    priceOverride: 29.99,
+    stock: 10
+  },
+  unitPriceCents: 2999,         // Price in cents
+  compareAtCents: 3999,         // Original price (if discounted)
+  quantity: 2                   // Item quantity
+}
+```
 
 ## 🎨 UI Components
 
@@ -407,6 +459,7 @@ This project is licensed under the MIT License.
 - **Enhanced Data Management**: New image prompts system and organized asset structure.
 - **New Search Feature**: Advanced search dialog with real-time product filtering across multiple fields (name, description, categories, variants, materials, tags).
 - **Component Updates**: Replaced PriceFormatter with enhanced PriceDisplay component for better price handling and discount display.
+- **Cart System**: Implemented comprehensive Zustand-based cart state management with persistent storage, variant support, and stock validation.
 
 ---
 

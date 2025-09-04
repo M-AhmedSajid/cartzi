@@ -3,7 +3,7 @@ import React from "react";
 import Logo from "../Logo";
 import { Button } from "../ui/button";
 import { X } from "lucide-react";
-import { categoriesData } from "../../constants";
+import { headerData } from "../../constants";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import SocialMedia from "../SocialMedia";
@@ -14,7 +14,7 @@ const Sidebar = ({ isOpen, onClose }) => {
     <div>
       <div
         className={`fixed inset-0 bg-foreground hoverEffect w-full ${
-          isOpen ? "opacity-50 z-40" : "opacity-0 -z-10"
+          isOpen ? "opacity-50 z-40" : "opacity-0 pointer-events-none"
         }`}
         onClick={onClose}
       ></div>
@@ -32,7 +32,7 @@ const Sidebar = ({ isOpen, onClose }) => {
           </Button>
         </div>
         <nav className="flex flex-col gap-3.5 font-semibold tracking-wide w-fit">
-          {categoriesData.map((item) => (
+          {headerData.map((item) => (
             <Link
               onClick={onClose}
               href={item?.href}

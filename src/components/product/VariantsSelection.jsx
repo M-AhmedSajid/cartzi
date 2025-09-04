@@ -42,7 +42,10 @@ const VariantsSelection = ({ variants, onChange }) => {
   const selectedVariant = useMemo(() => {
     if (!selectedColor || !selectedSize) return null;
     return {
-      ...selectedSize.variant,
+      sku: selectedSize.id,
+      size: selectedSize.name,
+      stock: selectedSize.variant.stock,
+      priceOverride: selectedSize.variant.priceOverride,
       color: selectedColor.color,
       images: selectedColor.images,
     };
