@@ -11,39 +11,34 @@ import {
   CardTitle,
 } from "../ui/card";
 import ProductActions from "./ProductActions";
-import PriceDisplay from "../PriceDisplay";
+import PriceDisplay from "./PriceDisplay";
+import WishlistButton from "../WishlistButton";
+import { Button } from "../ui/button";
 
 const ProductCard = ({ product }) => {
-  const isOutOfStock = () => {
-    if (product?.variants?.length) {
-      return !product.variants.some((v) => v.stock > 0);
-    }
-    return product?.stock === 0;
-  };
-
-  const outOfStock = isOutOfStock();
-  
   return (
     <Card className="overflow-hidden group w-full">
       <CardContent className="relative aspect-[3/4] flex-5 overflow-hidden rounded-t-lg">
-        {outOfStock ? (
-          <span className="bg-foreground/50 absolute inset-0 text-2xl text-background flex items-center justify-center font-semibold">
+        {product?.stock === 0 || product?.stock == null ? (
+          <span className="bg-foreground/50 absolute inset-0 text-2xl text-background flex items-center justify-center font-semibold pointer-events-none z-10">
             Out of Stock
           </span>
         ) : (
-          <span className="bg-primary absolute top-5 right-0 rounded-l-lg shadow text-xs leading-2.5 text-primary-foreground py-2 px-3 z-10">
-            {product?.discount}% OFF
-          </span>
+          product?.discount !== 0 && (
+            <span className="bg-primary absolute top-5 right-0 rounded-l-lg shadow text-xs leading-2.5 text-primary-foreground py-2 px-3 z-10">
+              {product?.discount}% OFF
+            </span>
+          )
         )}
-        {product?.images && (
-          <Link href={`/product/${product?.slug?.current}`}>
+        {product?.image && (
+          <Link href={`/product/${product?.slug}`}>
             <Image
-              src={urlFor(product?.images[0]).url()}
-              alt={product?.name}
+              src={urlFor(product?.image).url()}
+              alt={product?.image?.alt}
               width={300}
               height={400.96}
               priority
-              className={`w-full h-full object-cover overflow-hidden hoverEffect ${!outOfStock && "group-hover:scale-105"}`}
+              className="w-full h-full object-cover overflow-hidden hoverEffect group-hover:scale-105"
             />
           </Link>
         )}
@@ -51,14 +46,31 @@ const ProductCard = ({ product }) => {
       <CardHeader className="flex-2">
         <div>
           <CardTitle className="line-clamp-1">{product?.name}</CardTitle>
-          <CardDescription>{product?.intro}</CardDescription>
+          <CardDescription className="line-clamp-2">
+            {product?.intro}
+          </CardDescription>
         </div>
         <div>
-          
-      <PriceDisplay product={product} variant={product?.variants} size="text-xl" />
-          <CardAction className="flex gap-1.5 justify-between items-center mt-2">
-            <ProductActions product={product} isOutOfStock={outOfStock} />
-          </CardAction>
+          <PriceDisplay
+            product={product}
+            variant={product?.variants}
+            size="text-xl"
+          />
+          {product?.variants === 0 || product?.variants == null ? (
+            <CardAction className="flex gap-1.5 justify-between items-center mt-2">
+              <ProductActions
+                product={product}
+                isOutOfStock={product?.stock === 0 || product?.stock == null}
+              />
+            </CardAction>
+          ) : (
+            <CardAction className="flex gap-1.5 justify-between items-center mt-2">
+              <Button className="flex-1" asChild>
+                <Link href={`/product/${product?.slug}`}>View Details</Link>
+              </Button>
+              <WishlistButton />
+            </CardAction>
+          )}
         </div>
       </CardHeader>
     </Card>

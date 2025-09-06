@@ -1,7 +1,7 @@
 "use client";
 import VariantsSelection from "@/components/product/VariantsSelection";
 import ProductActions from "@/components/product/ProductActions";
-import ShareButton from "@/components/ShareButton";
+import ShareButton from "@/components/product/ShareButton";
 import { Button } from "@/components/ui/button";
 import {
   Feather,
@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import PriceDisplay from "../PriceDisplay";
+import PriceDisplay from "./PriceDisplay";
 
 const ProductDetails = ({ product, variant, setVariant }) => {
 

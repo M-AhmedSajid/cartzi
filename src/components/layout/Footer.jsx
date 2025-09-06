@@ -2,10 +2,10 @@ import React from "react";
 import Link from "next/link";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import Logo from "../Logo";
+import Logo from "./Logo";
 import SocialMedia from "../SocialMedia";
 import { categoriesData, quickLinks } from "../../constants";
-import Container from "../Container";
+import Container from "./Container";
 
 const Footer = () => {
   return (

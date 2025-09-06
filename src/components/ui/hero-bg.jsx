@@ -9,7 +9,7 @@ export const HeroBG = ({
   ...props
 }) => {
   return (
-    <main>
+    <section>
       <div
         className={cn(
           "transition-all relative flex h-auto flex-col items-center justify-center",
@@ -72,6 +72,6 @@ export const HeroBG = ({
         </div>
         {children}
       </div>
-    </main>
+    </section>
   );
 };

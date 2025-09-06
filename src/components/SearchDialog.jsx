@@ -14,7 +14,7 @@ import { client } from "@/sanity/lib/client";
 import Link from "next/link";
 import { urlFor } from "@/sanity/lib/image";
 import Image from "next/image";
-import PriceDisplay from "./PriceDisplay";
+import PriceDisplay from "./product/PriceDisplay";
 import ProductActions from "./product/ProductActions";
 import { Skeleton } from "./ui/skeleton";
 import useCartStore from "../../store";
@@ -41,11 +41,11 @@ const SearchDialog = () => {
         count(categories[@->name match $q]) > 0 ||
         count(categories[@->parent->name match $q]) > 0 ||
         count(variants[color->name match $q]) > 0 ||
-        count(variants[].sizes[sku match $q]) > 0 ||         // SKU search
+        count(variants[].sizes[sku match $q]) > 0 ||
         sku match $q ||
-        count(variants[].sizes[size match $q]) > 0 ||        // Size search (optional)
-        tags[] match $q ||                                   // tags array
-        material->name match $q                              // deref material reference
+        count(variants[].sizes[size match $q]) > 0 ||
+        tags[] match $q ||
+        material->name match $q
       )]{
         _id,
         name,
@@ -55,18 +55,13 @@ const SearchDialog = () => {
         discount,
         "image": coalesce(
           variants[count(sizes[stock > 0]) > 0][0].images[0],
+          variants[0].images[0],
           images[0]
         ),
-        "alt": coalesce(
-          variants[count(sizes[stock > 0]) > 0][0].images[0].alt,
-          images[0].alt
-        ),
-
         "stock": coalesce(
           variants[count(sizes[stock > 0]) > 0][0].sizes[stock > 0][0].stock,
           stock
         ),
-
         categories[]->{
           name,
           "slug": slug.current,
@@ -147,9 +142,9 @@ const SearchDialog = () => {
                   <Skeleton className="h-4 w-16" />
                   <Skeleton className="h-3 w-12" />
                 </div>
-                <div className="flex items-center gap-2.5 justify-between mt-2">
-                  <Skeleton className="h-9 flex-1" />
-                  <Skeleton className="h-9 w-9" />
+                <div className="flex items-center gap-2.5 justify-between">
+                  <Skeleton className="h-4 w-28" />
+                  <Skeleton className="h-6 w-24" />
                 </div>
               </div>
             </div>
@@ -166,20 +161,25 @@ const SearchDialog = () => {
               >
                 <DialogClose asChild>
                   <Link href={`/product/${product?.slug}`}>
-                    <div className="relative bg-card rounded-md overflow-hidden aspect-[3/4] group border w-20 md:w-24 flex-shrink-0">
+                    <div className="relative bg-card rounded-md overflow-hidden aspect-[3/4] group border w-20 md:w-24 shrink-0">
+                      {(product?.stock === 0 || product?.stock == null) && (
+                        <span className="bg-foreground/50 absolute inset-0 text-base text-background flex items-center justify-center text-center font-semibold pointer-events-none z-10">
+                          Out of Stock
+                        </span>
+                      )}
                       <Image
                         src={urlFor(product?.image).url()}
-                        alt={product?.alt}
+                        alt={product?.image?.alt}
                         width={100}
                         height={130}
                         priority
-                        className={`w-full h-full object-cover overflow-hidden hoverEffect ${product?.stock !== 0 && "group-hover:scale-105"}`}
+                        className="w-full h-full object-cover overflow-hidden hoverEffect group-hover:scale-105"
                       />
                     </div>
                   </Link>
                 </DialogClose>
                 <div className="flex-grow pl-2">
-                  <h3 className="text-sm md:text-lg font-semibold line-clamp-1">
+                  <h3 className="text-base md:text-lg font-semibold line-clamp-1">
                     <DialogClose asChild>
                       <Link href={`/product/${product?.slug}`}>
                         {product.name}
@@ -194,12 +194,16 @@ const SearchDialog = () => {
                     variant={product?.variants?.[0]?.sizes?.[0]}
                     size="text-lg"
                   />
-                  <div className="flex items-center gap-2.5 justify-between mt-2">
+                  <div className="flex items-center gap-2.5 justify-between">
                     <StarRating rating={product?.rating ?? 4.2} />
                     {itemsInCart.length > 0 ? (
-                      <span className="text-xs px-2 py-1 rounded-full bg-green-100 text-green-700 font-medium">
+                      <span className="text-xs px-2 py-1 rounded-full bg-green-100 text-green-700 font-medium line-clamp-1">
                         {itemsInCart.length} variant
                         {itemsInCart.length > 1 && "s"} in cart
+                      </span>
+                    ) : product?.stock === 0 || product?.stock == null ? (
+                      <span className="text-xs px-2 py-1 rounded-full bg-red-100 text-red-700 font-medium">
+                        Out of Stock
                       </span>
                     ) : (
                       <span className="text-xs px-2 py-1 rounded-full bg-red-100 text-red-700 font-medium">

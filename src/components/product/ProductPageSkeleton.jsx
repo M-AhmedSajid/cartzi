@@ -1,5 +1,5 @@
 import React from "react";
-import Container from "../Container";
+import Container from "../layout/Container";
 import { Skeleton } from "../ui/skeleton";
 
 function ProductPageSkeleton() {

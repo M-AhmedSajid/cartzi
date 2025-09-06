@@ -45,7 +45,7 @@ Key Highlights:
 ## 🚀 Features
 
 ### 🛍️ Shopping Experience
-- Featured product carousel in hero
+- **Featured Products Section** – "Hot Right Now" with responsive carousel and grid layout
 - Bento grid category showcase (Men, Women, Kids, Accessories)
 - Tab-based product filtering (T-shirts, Jackets, Pants, Hoodies, Shorts)
 - **Advanced search dialog** with real-time product filtering
@@ -83,15 +83,10 @@ Key Highlights:
 
 The homepage is structured like a professional fashion brand:
 
-1. **Hero Section** – Featured products carousel + CTA  
-2. **Featured Collections** – Bento grid with Men, Women, Kids, Accessories  
-3. **Trending Now** – Bestsellers carousel or grid with ratings  
-4. **Seasonal Campaign Banner** – Highlight new arrivals or sales  
-5. **Brand Story** – Short "About Us" blurb  
-6. **Trust Section** – Reviews, shipping/returns badges, payment icons  
-7. **Newsletter Signup** – Quick email subscription field  
-8. **Instagram/Lookbook Feed** (optional)  
-9. **Footer** – Logo, short About, quick links, policies, newsletter, socials  
+1. **Hero Section** – Dynamic hero with call-to-action  
+2. **Featured Products** – "Hot Right Now" section with responsive carousel (mobile) and grid layout (desktop)    
+8. **Newsletter Signup** – Quick email subscription field  
+10. **Footer** – Logo, short About, quick links, policies, newsletter, socials  
 
 ---
 
@@ -372,14 +367,15 @@ The cart system is built with **Zustand** for efficient state management and inc
 - **NoProducts**: Improved empty state component with shadcn/ui integration
 
 ### Core Components
-- **FeaturedProducts**: Featured products section for homepage
+- **FeaturedProducts**: "Hot Right Now" featured products section with responsive carousel (mobile) and grid layout (desktop), includes autoplay, skeleton loading, and Sanity integration
+- **WishlistButton**: Wishlist functionality with tooltip integration
 - **HeroBg**: Animated background component with framer-motion
-- **CartIcon**: Shopping cart indicator
+- **CartIcon**: Shopping cart indicator with real-time count
 - **SearchBar**: Product search functionality
 - **SearchDialog**: Advanced search dialog with real-time product filtering and comprehensive search capabilities
 - **Logo**: Brand logo component
 - **Container**: Layout container wrapper
-- **PriceDisplay**: Enhanced price display component with discount handling
+- **PriceDisplay**: Enhanced price display component with discount handling and responsive sizing
 - **Title**: Title component
 - **ShareButton**: Social sharing functionality
 - **SocialMedia**: Social media links
@@ -456,10 +452,12 @@ This project is licensed under the MIT License.
 - This project is open-source but meant for educational or inspirational use.
 - Do **not** directly copy personal content or assets without permission.
 - **Recent Updates**: Project has been restructured for better organization and maintainability.
+- **Featured Products**: Added "Hot Right Now" section to homepage with responsive carousel (mobile) and grid layout (desktop), including autoplay functionality and skeleton loading states.
 - **Enhanced Data Management**: New image prompts system and organized asset structure.
 - **New Search Feature**: Advanced search dialog with real-time product filtering across multiple fields (name, description, categories, variants, materials, tags).
 - **Component Updates**: Replaced PriceFormatter with enhanced PriceDisplay component for better price handling and discount display.
 - **Cart System**: Implemented comprehensive Zustand-based cart state management with persistent storage, variant support, and stock validation.
+- **Wishlist Integration**: Added WishlistButton component with tooltip functionality across product cards and actions.
 
 ---
 

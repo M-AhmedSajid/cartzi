@@ -1,4 +1,4 @@
-import Container from "@/components/Container";
+import Container from "@/components/layout/Container";
 import ProductView from "@/components/product/ProductView";
 import {
   Breadcrumb,

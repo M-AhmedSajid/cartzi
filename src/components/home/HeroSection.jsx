@@ -1,6 +1,6 @@
 import React from "react";
 import Title from "../Title";
-import Container from "../Container";
+import Container from "./Container";
 import { HeroBG } from "../ui/hero-bg";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,7 +14,7 @@ const HeroSection = () => {
   return (
     <HeroBG>
       <Container className="space-y-10 pt-10 relative w-full text-center">
-        <Title className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-10">
+        <Title className="text-4xl md:text-5xl lg:text-6xl mb-4 md:mb-10">
           Affordable style, perfect fit
         </Title>
 

@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 
 const Title = ({ children, className }) => {
   return (
-    <h2 className={cn("text-2xl font-semibold", className)}>{children}</h2>
+    <h2 className={cn("text-2xl font-bold", className)}>{children}</h2>
   );
 };
 

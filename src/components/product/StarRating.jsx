@@ -9,12 +9,12 @@ const StarRating = ({ rating = 0, outOf = 5 }) => {
           key={i}
           className={`w-4 h-4 ${
             i < Math.round(rating)
-              ? "fill-yellow-400 text-yellow-400"
+              ? "fill-yellow-500 text-yellow-500"
               : "text-gray-300"
           }`}
         />
       ))}
-      <span className="text-xs text-muted-foreground ml-1">
+      <span className="text-xs text-muted-foreground ml-1 hidden sm:inline">
         {rating.toFixed(1)}
       </span>
     </div>

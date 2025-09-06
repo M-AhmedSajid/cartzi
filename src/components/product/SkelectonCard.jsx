@@ -11,14 +11,14 @@ const SkelectonCard = () => {
       
       <CardHeader>
         <div>
-          <Skeleton className="h-6 w-3/4 my-2" />
+          <Skeleton className="h-6 w-3/4 mb-2" />
           
-          <Skeleton className="h-4 w-full" />
+          <Skeleton className="h-4 w-full mb-0.5" />
           <Skeleton className="h-4 w-2/3" />
         </div>
         
         <div>
-          <div className="flex items-baseline">
+          <div className="flex items-baseline mt-0.5">
             <Skeleton className="h-6 w-20" />
             <Skeleton className="h-4 w-16" />
           </div>

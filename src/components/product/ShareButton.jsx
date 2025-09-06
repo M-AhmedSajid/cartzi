@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import { Share } from "lucide-react";
 
 export default function ShareButton({ productName, productUrl }) {
