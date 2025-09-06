@@ -1,6 +1,5 @@
 import React from "react";
 import Title from "../Title";
-import Container from "./Container";
 import { HeroBG } from "../ui/hero-bg";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,6 +8,7 @@ import { Search } from "lucide-react";
 import Link from "next/link";
 import { Dialog, DialogTrigger } from "../ui/dialog";
 import SearchDialog from "../SearchDialog";
+import Container from "../layout/Container";
 
 const HeroSection = () => {
   return (

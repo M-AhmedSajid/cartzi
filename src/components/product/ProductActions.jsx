@@ -4,7 +4,7 @@ import { Button } from "../ui/button";
 import QuantityButtons from "./QuantityButtons";
 import useCartStore from "../../../store";
 import { toast } from "sonner";
-import WishlistButton from "../WishlistButton";
+import WishlistButton from "./WishlistButton";
 
 const ProductActions = ({ product, variant, isOutOfStock }) => {
   const { addItem, getItemQuantity, getSubtotalCents } = useCartStore();

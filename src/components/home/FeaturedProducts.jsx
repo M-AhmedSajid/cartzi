@@ -1,11 +1,11 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Carousel, CarouselContent, CarouselItem } from "./ui/carousel";
+import { Carousel, CarouselContent, CarouselItem } from "../ui/carousel";
 import { client } from "@/sanity/lib/client";
-import ProductCard from "./product/ProductCard";
+import ProductCard from "../product/ProductCard";
 import Autoplay from "embla-carousel-autoplay";
-import SkelectonCard from "./product/SkelectonCard";
-import Title from "./Title";
+import Title from "../Title";
+import SkelectonCard from "../product/SkelectonCard";
 
 const FeaturedProducts = () => {
   const [products, setProducts] = useState([]);

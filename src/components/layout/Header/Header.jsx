@@ -1,16 +1,16 @@
 import React from "react";
 import HeaderMenu from "./HeaderMenu";
-import Logo from "./Logo";
-import Container from "./Container";
+import Logo from "../Logo";
+import Container from "../Container";
 import MobileMenu from "./MobileMenu";
-import CartIcon from "../CartIcon";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 import { currentUser } from "@clerk/nextjs/server";
 import { ClerkLoaded, SignedIn, SignInButton, UserButton } from "@clerk/nextjs";
 import { ListOrdered, Search } from "lucide-react";
 import Link from "next/link";
-import { Dialog, DialogTrigger } from "../ui/dialog";
-import SearchDialog from "../SearchDialog";
+import { Dialog, DialogTrigger } from "../../ui/dialog";
+import SearchDialog from "../../SearchDialog";
+import CartIcon from "@/components/product/CartIcon";
 
 const Header = async () => {
   const user = await currentUser();

@@ -1,6 +1,6 @@
 import { Outfit, Inter } from "next/font/google";
 import "../globals.css";
-import Header from "@/components/layout/Header";
+import Header from "@/components/layout/Header/Header";
 import Footer from "@/components/layout/Footer";
 import { ClerkProvider } from "@clerk/nextjs";
 import USPStrip from "@/components/layout/USPStrip";

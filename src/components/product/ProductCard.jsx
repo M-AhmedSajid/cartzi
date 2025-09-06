@@ -12,8 +12,8 @@ import {
 } from "../ui/card";
 import ProductActions from "./ProductActions";
 import PriceDisplay from "./PriceDisplay";
-import WishlistButton from "../WishlistButton";
 import { Button } from "../ui/button";
+import WishlistButton from "./WishlistButton";
 
 const ProductCard = ({ product }) => {
   return (

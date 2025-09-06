@@ -127,13 +127,18 @@ cartzi/
 │   │   └── globals.css        # Global styles with fashion color scheme
 │   ├── components/
 │   │   ├── layout/            # Layout components (reorganized)
-│   │   │   ├── Header.jsx     # Main header with navigation
+│   │   │   ├── Header/        # Header components directory
+│   │   │   │   ├── Header.jsx     # Main header with navigation
+│   │   │   │   ├── HeaderMenu.jsx # Header menu component
+│   │   │   │   ├── MobileMenu.jsx # Mobile navigation
+│   │   │   │   └── Sidebar.jsx    # Sidebar component
 │   │   │   ├── Footer.jsx     # Footer component with quick links
+│   │   │   ├── Container.jsx  # Container wrapper component
+│   │   │   ├── Logo.jsx       # Logo component
+│   │   │   └── USPStrip.jsx   # Unique selling proposition strip
+│   │   ├── home/              # Homepage-specific components
 │   │   │   ├── HeroSection.jsx # Hero section component
-│   │   │   ├── USPStrip.jsx   # Unique selling proposition strip
-│   │   │   ├── HeaderMenu.jsx # Header menu component
-│   │   │   ├── MobileMenu.jsx # Mobile navigation
-│   │   │   └── Sidebar.jsx    # Sidebar component
+│   │   │   └── FeaturedProducts.jsx # Featured products section
 │   │   ├── product/           # Product-related components (reorganized)
 │   │   │   ├── ProductCard.jsx # Individual product display
 │   │   │   ├── ProductGrid.jsx # Tab-based product filtering
@@ -170,15 +175,13 @@ cartzi/
 │   │   │   ├── tabs.jsx       # Tab component
 │   │   │   ├── tooltip.jsx    # Tooltip component
 │   │   │   └── ...            # Other UI components
-│   │   ├── FeaturedProducts.jsx # Featured products section
-│   │   ├── CartIcon.jsx       # Shopping cart icon
+│   │   ├── product/           # Product-related components
+│   │   │   ├── CartIcon.jsx       # Shopping cart icon
+│   │   │   ├── PriceDisplay.jsx   # Enhanced price display component
+│   │   │   └── ShareButton.jsx    # Social sharing
 │   │   ├── SearchBar.jsx      # Search functionality
 │   │   ├── SearchDialog.jsx   # Advanced search dialog with real-time filtering
-│   │   ├── Logo.jsx           # Logo component
-│   │   ├── Container.jsx      # Container wrapper
-│   │   ├── PriceDisplay.jsx   # Enhanced price display component
 │   │   ├── Title.jsx          # Title component
-│   │   ├── ShareButton.jsx    # Social sharing
 │   │   └── SocialMedia.jsx    # Social media links
 │   ├── sanity/
 │   │   ├── env.js             # Sanity configuration
@@ -345,13 +348,18 @@ The cart system is built with **Zustand** for efficient state management and inc
 ## 🎨 UI Components
 
 ### Layout Components
-- **Header**: Navigation with search and cart
+- **Header**: Main header with navigation, search, and cart
+  - **HeaderMenu**: Header menu component
+  - **MobileMenu**: Responsive mobile navigation
+  - **Sidebar**: Sidebar navigation component
 - **Footer**: Site information and quick links (About, Contact, Terms, Privacy, Shipping, FAQs)
-- **HeroSection**: Enhanced hero section for homepage
+- **Container**: Layout container wrapper
+- **Logo**: Brand logo component
 - **USPStrip**: Unique selling proposition strip component
-- **HeaderMenu**: Header menu component
-- **MobileMenu**: Responsive mobile navigation
-- **Sidebar**: Sidebar navigation component
+
+### Homepage Components
+- **HeroSection**: Enhanced hero section for homepage
+- **FeaturedProducts**: "Hot Right Now" featured products section with responsive carousel and grid layout
 
 ### Product Components
 - **ProductGrid**: Tab-based product filtering with dynamic loading
@@ -367,14 +375,11 @@ The cart system is built with **Zustand** for efficient state management and inc
 - **NoProducts**: Improved empty state component with shadcn/ui integration
 
 ### Core Components
-- **FeaturedProducts**: "Hot Right Now" featured products section with responsive carousel (mobile) and grid layout (desktop), includes autoplay, skeleton loading, and Sanity integration
 - **WishlistButton**: Wishlist functionality with tooltip integration
 - **HeroBg**: Animated background component with framer-motion
 - **CartIcon**: Shopping cart indicator with real-time count
 - **SearchBar**: Product search functionality
 - **SearchDialog**: Advanced search dialog with real-time product filtering and comprehensive search capabilities
-- **Logo**: Brand logo component
-- **Container**: Layout container wrapper
 - **PriceDisplay**: Enhanced price display component with discount handling and responsive sizing
 - **Title**: Title component
 - **ShareButton**: Social sharing functionality
@@ -452,6 +457,7 @@ This project is licensed under the MIT License.
 - This project is open-source but meant for educational or inspirational use.
 - Do **not** directly copy personal content or assets without permission.
 - **Recent Updates**: Project has been restructured for better organization and maintainability.
+- **Component Organization**: Reorganized components into logical directories (Header/, home/, product/) for improved maintainability and cleaner codebase structure.
 - **Featured Products**: Added "Hot Right Now" section to homepage with responsive carousel (mobile) and grid layout (desktop), including autoplay functionality and skeleton loading states.
 - **Enhanced Data Management**: New image prompts system and organized asset structure.
 - **New Search Feature**: Advanced search dialog with real-time product filtering across multiple fields (name, description, categories, variants, materials, tags).

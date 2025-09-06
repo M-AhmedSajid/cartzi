@@ -1,8 +1,8 @@
 "use client";
 import React from "react";
 import Link from "next/link";
-import { headerData } from "../../constants";
 import { usePathname } from "next/navigation";
+import { headerData } from "@/constants";
 
 const HeaderMenu = () => {
   const pathname = usePathname();

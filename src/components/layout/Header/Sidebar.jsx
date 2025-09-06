@@ -1,12 +1,12 @@
 "use client";
 import React from "react";
-import Logo from "./Logo";
-import { Button } from "../ui/button";
+import Logo from "../Logo";
 import { X } from "lucide-react";
-import { headerData } from "../../constants";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import SocialMedia from "../SocialMedia";
+import { Button } from "@/components/ui/button";
+import SocialMedia from "@/components/SocialMedia";
+import { headerData } from "@/constants";
 
 const Sidebar = ({ isOpen, onClose }) => {
   const pathname = usePathname();

@@ -1,7 +1,7 @@
 import React from "react";
-import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import { Heart } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 const WishlistButton = () => {
   return (

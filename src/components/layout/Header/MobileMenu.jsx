@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 import { useState } from "react";
 import Sidebar from "./Sidebar";
 import { AlignLeft } from "lucide-react";

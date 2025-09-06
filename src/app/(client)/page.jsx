@@ -1,6 +1,6 @@
-import FeaturedProducts from "@/components/FeaturedProducts";
+import FeaturedProducts from "@/components/home/FeaturedProducts";
+import HeroSection from "@/components/home/HeroSection";
 import Container from "@/components/layout/Container";
-import HeroSection from "@/components/layout/HeroSection";
 import ProductGrid from "@/components/product/ProductGrid";
 
 export default function Home() {
