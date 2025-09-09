@@ -1,12 +1,11 @@
-// /schemas/colorType.js
-import { ColorWheelIcon } from '@sanity/icons'
+import { Palette } from 'lucide-react'
 import { defineType, defineField } from 'sanity'
 
 export const colorType = defineType({
     name: 'color',
     title: 'Color',
     type: 'document',
-    icon: ColorWheelIcon,
+    icon: Palette,
     fields: [
         defineField({
             name: 'name',

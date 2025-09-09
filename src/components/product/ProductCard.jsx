@@ -33,10 +33,10 @@ const ProductCard = ({ product }) => {
         {product?.image && (
           <Link href={`/product/${product?.slug}`}>
             <Image
-              src={urlFor(product?.image).url()}
+              src={urlFor(product?.image).width(300).height(400).auto("format").url()}
               alt={product?.image?.alt}
               width={300}
-              height={400.96}
+              height={400}
               priority
               className="w-full h-full object-cover overflow-hidden hoverEffect group-hover:scale-105"
             />

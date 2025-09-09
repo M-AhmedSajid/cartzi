@@ -9,10 +9,14 @@ import { Toaster } from "sonner";
 const outfit = Outfit({
   variable: "--font-outfit",
   subsets: ["latin"],
+  display: "swap",
+  adjustFontFallback: false,
 });
 
 const inter = Inter({
-  subsets: ["latin"]
+  subsets: ["latin"],
+  display: "swap",
+  adjustFontFallback: false,
 });
 
 export const metadata = {
@@ -24,7 +28,8 @@ export default function RootLayout({ children }) {
   return (
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
-        <body suppressHydrationWarning
+        <body
+          suppressHydrationWarning
           className={`${outfit.variable} ${inter.className} antialiased`}
         >
           <USPStrip />

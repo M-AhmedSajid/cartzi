@@ -168,7 +168,7 @@ const SearchDialog = () => {
                         </span>
                       )}
                       <Image
-                        src={urlFor(product?.image).url()}
+                        src={urlFor(product?.image).width(100).height(130).auto("format").url()}
                         alt={product?.image?.alt}
                         width={100}
                         height={130}

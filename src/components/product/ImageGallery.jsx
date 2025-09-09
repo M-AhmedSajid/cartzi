@@ -75,7 +75,7 @@ export const ImageGallery = ({ images }) => {
                 onClick={() => setLightboxOpen(i)}
               >
                 <Image
-                  src={urlFor(img).url()}
+                  src={urlFor(img).width(700).height(936).auto("format").url()}
                   alt={img.alt || `Product Image ${i + 1}`}
                   width={700}
                   height={936}
@@ -136,7 +136,7 @@ export const ImageGallery = ({ images }) => {
             ref={(el) => (thumbnailRefs.current[i] = el)}
           >
             <Image
-              src={urlFor(img).url()}
+              src={urlFor(img).width(150).height(150).auto("format").url()}
               alt={img?.alt || `Product Thumbnail ${i + 1}`}
               width={150}
               height={150}

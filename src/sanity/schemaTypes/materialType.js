@@ -1,11 +1,11 @@
-import { TagIcon } from '@sanity/icons'
+import { Layers } from 'lucide-react'
 import { defineField, defineType } from 'sanity'
 
 export const materialType = defineType({
     name: 'material',
     title: 'Material',
     type: 'document',
-    icon: TagIcon,
+    icon: Layers,
     fields: [
         defineField({
             name: 'name',

@@ -1,5 +1,4 @@
 import React from "react";
-import Container from "@/components/layout/Container";
 import {
   Accordion,
   AccordionContent,
@@ -12,7 +11,7 @@ const FAQsPage = () => {
   
 
   return (
-    <Container className="py-10">
+    <div className="max-w-screen-xl mx-auto px-4 py-10">
       <div className="max-w-4xl mx-auto ">
         <h1 className="text-4xl font-bold text-foreground mb-6">
           Frequently Asked Questions
@@ -72,7 +71,7 @@ const FAQsPage = () => {
           </div>
         </div>
       </div>
-    </Container>
+    </div>
   );
 };
 

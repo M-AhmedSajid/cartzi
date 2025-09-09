@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { headerData } from "@/constants";
 
-const HeaderMenu = () => {
+const HeaderMenu = ({ categories }) => {
   const pathname = usePathname();
   return (
     <nav className="hidden lg:inline-flex w-1/3 items-center gap-5 text-sm capitalize font-semibold">

@@ -33,23 +33,23 @@ const QuantityButtons = ({ product, variant, isOutOfStock }) => {
       <Button
         variant="outline"
         size="icon"
-        className="size-6"
+        className="size-5 rounded-sm"
         disabled={itemCount === 0 || isOutOfStock}
         onClick={handleMinusAction}
       >
-        <Minus />
+        <Minus className="size-4" />
       </Button>
-      <span className="w-8 text-center font-semibold text-foreground">
+      <span className="w-8 text-center text-sm font-semibold text-foreground">
         {itemCount}
       </span>
       <Button
         variant="outline"
         size="icon"
-        className="size-6"
+        className="size-5 rounded-sm"
         disabled={isOutOfStock}
         onClick={handlePlusAction}
       >
-        <Plus />
+        <Plus className="size-4" />
       </Button>
     </div>
   );

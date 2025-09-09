@@ -8,12 +8,11 @@ import { Search } from "lucide-react";
 import Link from "next/link";
 import { Dialog, DialogTrigger } from "../ui/dialog";
 import SearchDialog from "../SearchDialog";
-import Container from "../layout/Container";
 
 const HeroSection = () => {
   return (
     <HeroBG>
-      <Container className="space-y-10 pt-10 relative w-full text-center">
+      <div className="max-w-screen-xl mx-auto px-4 space-y-10 pt-10 relative w-full text-center">
         <Title className="text-4xl md:text-5xl lg:text-6xl mb-4 md:mb-10">
           Affordable style, perfect fit
         </Title>
@@ -61,7 +60,7 @@ const HeroSection = () => {
           <Button variant="link">✔ Find your size</Button>
           <Button variant="link">📏 Size guide</Button>
         </div>
-      </Container>
+      </div>
     </HeroBG>
   );
 };

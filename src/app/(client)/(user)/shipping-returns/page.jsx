@@ -1,9 +1,8 @@
 import React from "react";
-import Container from "@/components/layout/Container";
 
 const ShippingReturnsPage = () => {
   return (
-    <Container className="py-10">
+    <div className="max-w-screen-xl mx-auto px-4 py-10">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-4xl font-bold text-foreground mb-6">Shipping & Returns</h1>
         
@@ -159,7 +158,7 @@ const ShippingReturnsPage = () => {
           </p>
         </div>
       </div>
-    </Container>
+    </div>
   );
 };
 

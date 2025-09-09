@@ -9,7 +9,6 @@ import WishlistButton from "./WishlistButton";
 const ProductActions = ({ product, variant, isOutOfStock }) => {
   const { addItem, getItemQuantity, getSubtotalCents } = useCartStore();
   const itemCount = getItemQuantity(product, variant);
-  console.log(getSubtotalCents());
 
   const priceFormatter = (amount) =>
     new Intl.NumberFormat("en-US", {

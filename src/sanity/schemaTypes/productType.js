@@ -1,4 +1,4 @@
-import { TrolleyIcon } from '@sanity/icons'
+import { ShoppingBag } from 'lucide-react'
 import { defineField, defineType } from 'sanity'
 import DiscountedPriceInput from '../lib/DiscountInput'
 
@@ -6,7 +6,7 @@ export const productType = defineType({
   name: 'product',
   title: 'Product',
   type: 'document',
-  icon: TrolleyIcon,
+  icon: ShoppingBag,
   fields: [
     defineField({
       name: 'name',

@@ -1,7 +1,6 @@
 import React from "react";
 import HeaderMenu from "./HeaderMenu";
 import Logo from "../Logo";
-import Container from "../Container";
 import MobileMenu from "./MobileMenu";
 import { Button } from "../../ui/button";
 import { currentUser } from "@clerk/nextjs/server";
@@ -11,18 +10,20 @@ import Link from "next/link";
 import { Dialog, DialogTrigger } from "../../ui/dialog";
 import SearchDialog from "../../SearchDialog";
 import CartIcon from "@/components/product/CartIcon";
+import { getCategoriesForMenu } from "@/sanity/helpers";
 
 const Header = async () => {
   const user = await currentUser();
+  const categories = await getCategoriesForMenu();
   return (
-    <header className="border-b border-border py-5 sticky top-0 bg-background z-20">
-      <Container className="flex items-center justify-between gap-7 text-foreground">
-        <HeaderMenu />
+    <header className="border-b border-border py-4 md:py-5 sticky top-0 bg-background z-20">
+      <div className="max-w-screen-xl mx-auto px-4 flex items-center justify-between gap-7 text-foreground">
+        <HeaderMenu categories={categories} />
         <div className="w-auto lg:w-1/3 flex justify-center items-center gap-2.5">
           <MobileMenu />
           <Logo>Cartzi</Logo>
         </div>
-        <div className="w-auto lg:w-1/3 flex justify-end items-center gap-5">
+        <div className="w-auto lg:w-1/3 flex justify-end items-center gap-4 md:gap-6">
           <Dialog>
             <DialogTrigger>
               <Search className="w-5 h-5 text-muted-foreground hover:text-foreground hoverEffect" />
@@ -41,13 +42,16 @@ const Header = async () => {
               <UserButton />
             </SignedIn>
             {!user && (
-              <SignInButton mode="modal">
+              <SignInButton
+                mode="modal"
+                fallback={<Button variant="ghost">Loading...</Button>}
+              >
                 <Button variant="ghost">Login</Button>
               </SignInButton>
             )}
           </ClerkLoaded>
         </div>
-      </Container>
+      </div>
     </header>
   );
 };

@@ -1,4 +1,3 @@
-import Container from "@/components/layout/Container";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -6,7 +5,7 @@ import React from "react";
 
 const ContactPage = () => {
   return (
-    <Container className="py-10">
+    <div className="max-w-screen-xl mx-auto px-4 py-10">
       <div className="max-w-2xl mx-auto">
         <h1 className="text-4xl font-bold text-foreground mb-6">Contact Us</h1>
         <p className="text-lg text-muted-foreground mb-8">
@@ -119,7 +118,7 @@ const ContactPage = () => {
           </div>
         </div>
       </div>
-    </Container>
+    </div>
   );
 };
 

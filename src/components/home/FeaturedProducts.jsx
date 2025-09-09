@@ -4,8 +4,8 @@ import { Carousel, CarouselContent, CarouselItem } from "../ui/carousel";
 import { client } from "@/sanity/lib/client";
 import ProductCard from "../product/ProductCard";
 import Autoplay from "embla-carousel-autoplay";
-import Title from "../Title";
 import SkelectonCard from "../product/SkelectonCard";
+import SectionHeading from "../SectionHeading";
 
 const FeaturedProducts = () => {
   const [products, setProducts] = useState([]);
@@ -21,6 +21,7 @@ const FeaturedProducts = () => {
       price,
       discount,
       stock,
+      sku,
       "image": coalesce(
       variants[count(sizes[stock > 0]) > 0][0].images[0],
       variants[0].images[0],
@@ -51,14 +52,10 @@ const FeaturedProducts = () => {
 
   return (
     <section>
-      <Title className="text-center">Hot Right Now</Title>
-      <p className="text-sm mb-4 text-center">
-        Trending looks, don&apos;t miss out.
-      </p>
+      <SectionHeading title="Hot Right Now" txt="Trending looks, don&apos;t miss out." />
       <Carousel
         className="w-full px-10 lg:hidden"
         opts={{
-          align: "center",
           loop: true,
         }}
         plugins={[
@@ -75,7 +72,7 @@ const FeaturedProducts = () => {
                 </CarouselItem>
               ))
             : products?.map((product) => (
-                <CarouselItem key={product?.name} className="md:basis-1/2">
+                <CarouselItem key={product?._id} className="md:basis-1/2">
                   <ProductCard product={product} />
                 </CarouselItem>
               ))}

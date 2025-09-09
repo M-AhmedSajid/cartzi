@@ -1,4 +1,3 @@
-import Container from "@/components/layout/Container";
 import ProductView from "@/components/product/ProductView";
 import {
   Breadcrumb,
@@ -70,7 +69,7 @@ const SingleProductPage = async ({ params }) => {
     return notFound();
   }
   return (
-    <Container className="grid grid-cols-1 md:grid-cols-2 gap-10 py-10">
+    <div className="max-w-screen-xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-10 py-10">
       <Breadcrumb className="md:col-span-2">
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -101,7 +100,7 @@ const SingleProductPage = async ({ params }) => {
         </BreadcrumbList>
       </Breadcrumb>
       <ProductView product={product} />
-    </Container>
+    </div>
   );
 };
 

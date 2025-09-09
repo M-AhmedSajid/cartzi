@@ -1,11 +1,11 @@
-import { TagIcon } from '@sanity/icons'
+import { Tag } from 'lucide-react'
 import { defineField, defineType } from 'sanity'
 
 export const categoryType = defineType({
   name: 'category',
   title: 'Category',
   type: 'document',
-  icon: TagIcon,
+  icon: Tag,
   fields: [
     defineField({
       name: 'name',
@@ -47,8 +47,8 @@ export const categoryType = defineType({
       description: 'Select a parent category to create a hierarchy. Leave empty for top-level categories.',
       type: 'reference',
       to: [{ type: 'category' }],
+      hidden: ({ document }) => typeof document?.order === 'number', // hide if order is set
       options: {
-        // Prevent circular references by filtering out the current document
         filter: ({ document }) => {
           if (!document._id) return {}
           return {
@@ -59,20 +59,51 @@ export const categoryType = defineType({
       },
       validation: (Rule) =>
         Rule.custom((parent, context) => {
-          if (!parent) return true // Parent is optional
+          if (!parent) return true
 
-          // Check for circular references
+          // Simplified circular check
           const checkCircular = (parentId, visited = new Set()) => {
             if (visited.has(parentId)) return false
             visited.add(parentId)
-
-            // This is a simplified check - in practice, you might want to implement
-            // a more robust circular reference detection
             return true
           }
 
-          return checkCircular(parent._ref) ? true : 'Circular reference detected'
+          return checkCircular(parent._ref)
+            ? true
+            : 'Circular reference detected'
         }),
+    }),
+
+    defineField({
+      name: 'order',
+      title: 'Display Order',
+      type: 'number',
+      description: 'Controls the order of categories in the homepage grid. Lower numbers show first.',
+      initialValue: 1,
+      hidden: ({ document }) => !!document?.parent, // hide if parent is set
+      validation: (Rule) =>
+        Rule.required()
+          .min(1)
+          .custom(async (order, context) => {
+            if (!order) return true
+
+            const { getClient } = context
+            const client = getClient({ apiVersion: '2025-07-30' })
+
+            const docId = context.document?._id || ''
+            const publishedId = docId.replace(/^drafts\./, '')
+            const draftId = `drafts.${publishedId}`
+
+            const existing = await client.fetch(
+              `*[_type == "category" && !(_id in [$draftId, $publishedId]) && order == $order][0]`,
+              { order, draftId, publishedId }
+            )
+
+            if (existing) {
+              return `Another category (${existing.name}) already uses this order number.`
+            }
+            return true
+          }),
     }),
     defineField({
       name: 'image',

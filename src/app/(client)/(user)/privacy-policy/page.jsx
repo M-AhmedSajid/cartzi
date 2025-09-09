@@ -1,9 +1,8 @@
 import React from "react";
-import Container from "@/components/layout/Container";
 
 const PrivacyPolicyPage = () => {
   return (
-    <Container className="py-10">
+    <div className="max-w-screen-xl mx-auto px-4 py-10">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-4xl font-bold text-foreground mb-6">Privacy Policy</h1>
         <div className="prose prose-lg max-w-none space-y-6">
@@ -127,7 +126,7 @@ const PrivacyPolicyPage = () => {
           </div>
         </div>
       </div>
-    </Container>
+    </div>
   );
 };
 
