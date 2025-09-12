@@ -7,7 +7,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { getProductBySlug } from "@/sanity/helpers";
+import { getProductBySlug } from "@/sanity/helpers/product";
 import { urlFor } from "@/sanity/lib/image";
 import { notFound } from "next/navigation";
 import React from "react";

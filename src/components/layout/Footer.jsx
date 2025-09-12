@@ -5,14 +5,14 @@ import { Input } from "../ui/input";
 import Logo from "./Logo";
 import SocialMedia from "../SocialMedia";
 import { categoriesData, quickLinks } from "../../constants";
+import { getMenuForFooter1, getMenuForFooter2 } from "@/sanity/helpers/menu";
+import { getSocialLinks } from "@/sanity/helpers";
 
-const paymentProviders = [
-  { name: "Stripe", src: "/payments/stripe.svg" },
-  { name: "Visa", src: "/payments/visa.svg" },
-  { name: "MasterCard", src: "/payments/mastercard.svg" },
-];
+const Footer = async () => {
+  const menu1 = await getMenuForFooter1();
+  const menu2 = await getMenuForFooter2();
+  const links = await getSocialLinks();
 
-const Footer = () => {
   return (
     <footer className="border-t">
       <div className="max-w-screen-xl mx-auto px-4 sm:px-10 lg:px-4 py-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -24,27 +24,64 @@ const Footer = () => {
             style, comfort, and quality — empowering you to wear confidence
             every day.
           </p>
-          <SocialMedia />
+          <SocialMedia links={links} />
         </div>
 
         {/* Quick Links */}
-        <div>
-          <h3 className="font-semibold text-foreground mb-4">Quick Links</h3>
-          <nav className="flex flex-col gap-3">
-            {quickLinks?.map((item) => (
-              <Link
-                key={item?.title}
-                href={item?.href}
-                className="text-muted-foreground hover:text-foreground text-sm font-medium hoverEffect w-fit"
-              >
-                {item?.title}
-              </Link>
-            ))}
-          </nav>
-        </div>
+        {menu1?.items?.length > 0 ? (
+          <div>
+            <h3 className="font-semibold text-foreground mb-4">
+              {menu1.title}
+            </h3>
+            <nav className="flex flex-col gap-3">
+              {menu1?.items?.map((item) => (
+                <Link
+                  key={item?.label}
+                  href={item?.href}
+                  className="text-muted-foreground hover:text-foreground text-sm font-medium hoverEffect w-fit"
+                >
+                  {item?.label}
+                </Link>
+              ))}
+            </nav>
+          </div>
+        ) : (
+          <div>
+            <h3 className="font-semibold text-foreground mb-4">Quick Links</h3>
+            <nav className="flex flex-col gap-3">
+              {quickLinks?.map((item) => (
+                <Link
+                  key={item?.title}
+                  href={item?.href}
+                  className="text-muted-foreground hover:text-foreground text-sm font-medium hoverEffect w-fit"
+                >
+                  {item?.title}
+                </Link>
+              ))}
+            </nav>
+          </div>
+        )}
 
         {/* Categories */}
-        <div>
+        {menu2?.items?.length > 0 ? (
+          <div>
+            <h3 className="font-semibold text-foreground mb-4">
+              {menu2.title}
+            </h3>
+            <nav className="flex flex-col gap-3">
+              {menu2?.items?.map((item) => (
+                <Link
+                  key={item?.label}
+                  href={item?.href}
+                  className="text-muted-foreground hover:text-foreground text-sm font-medium hoverEffect w-fit"
+                >
+                  {item?.label}
+                </Link>
+              ))}
+            </nav>
+          </div>
+        ) : (
+          <div>
           <h3 className="font-semibold text-foreground mb-4">Categories</h3>
           <nav className="flex flex-col gap-3">
             {categoriesData?.map((item) => (
@@ -58,6 +95,7 @@ const Footer = () => {
             ))}
           </nav>
         </div>
+        )}
 
         {/* Newsletter */}
         <div className="space-y-4 sm:col-span-2 lg:col-span-1">

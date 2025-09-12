@@ -7,8 +7,14 @@ import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import SocialMedia from "@/components/SocialMedia";
 import { headerData } from "@/constants";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from "@/components/ui/accordion";
 
-const Sidebar = ({ isOpen, onClose }) => {
+const Sidebar = ({ isOpen, onClose, menu, links }) => {
   const pathname = usePathname();
   return (
     <div>
@@ -31,23 +37,83 @@ const Sidebar = ({ isOpen, onClose }) => {
             <X />
           </Button>
         </div>
-        <nav className="flex flex-col gap-3.5 font-semibold tracking-wide w-fit">
-          {headerData.map((item) => (
-            <Link
-              onClick={onClose}
-              href={item?.href}
-              key={item?.title}
-              className={`hover:text-foreground hoverEffect ${
-                pathname === item?.href
-                  ? "text-foreground"
-                  : "text-muted-foreground"
-              }`}
-            >
-              {item?.title}
-            </Link>
-          ))}
+        <nav className="flex flex-col font-semibold tracking-wide">
+          {menu?.items?.length > 0 ? (
+            <Accordion type="single" collapsible className="w-full">
+              {menu.items.map((cat) => {
+                const isActive = pathname === cat.href;
+                const hasDropdown = cat.children?.items?.length > 0;
+                if (hasDropdown) {
+                  return (
+                    <AccordionItem key={cat.label} value={cat.label}>
+                      <AccordionTrigger className="p-2">
+                        <Link
+                          onClick={onClose}
+                          href={cat.href}
+                          className={`${
+                            isActive
+                              ? "text-foreground"
+                              : "text-muted-foreground"
+                          }`}
+                        >
+                          {cat.label}
+                        </Link>
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        <ul className="flex flex-col gap-2 pl-2">
+                          {cat.children.items.map((sub) => (
+                            <li key={sub.href}>
+                              <Link
+                                onClick={onClose}
+                                href={sub.href}
+                                className={`p-2 ${
+                                  pathname === sub.href
+                                    ? "text-foreground"
+                                    : "text-muted-foreground"
+                                }`}
+                              >
+                                {sub.name}
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      </AccordionContent>
+                    </AccordionItem>
+                  );
+                }
+                return (
+                  <AccordionItem key={cat.label}>
+                    <Link
+                      onClick={onClose}
+                      href={cat.href}
+                        className={`w-full block p-2 ${
+                        isActive ? "text-foreground" : "text-muted-foreground"
+                      }`}
+                    >
+                      {cat.label}
+                    </Link>
+                  </AccordionItem>
+                );
+              })}
+            </Accordion>
+          ) : (
+            headerData.map((item) => (
+              <Link
+                onClick={onClose}
+                href={item?.href}
+                key={item?.title}
+                className={`p-2 border-b last:border-b-0
+                  ${pathname === item?.href
+                    ? "text-foreground"
+                    : "text-muted-foreground"}
+                `}
+              >
+                {item?.title}
+              </Link>
+            ))
+          )}
         </nav>
-        <SocialMedia />
+        <SocialMedia links={links} />
       </div>
     </div>
   );

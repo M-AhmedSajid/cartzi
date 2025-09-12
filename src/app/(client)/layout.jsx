@@ -1,4 +1,4 @@
-import { Outfit, Inter } from "next/font/google";
+import localFont from "next/font/local";
 import "../globals.css";
 import Header from "@/components/layout/Header/Header";
 import Footer from "@/components/layout/Footer";
@@ -6,17 +6,16 @@ import { ClerkProvider } from "@clerk/nextjs";
 import USPStrip from "@/components/layout/USPStrip";
 import { Toaster } from "sonner";
 
-const outfit = Outfit({
-  variable: "--font-outfit",
-  subsets: ["latin"],
+const outfit = localFont({
+  src: "../fonts/outfit.ttf",
   display: "swap",
-  adjustFontFallback: false,
+  variable: "--font-outfit",
 });
 
-const inter = Inter({
-  subsets: ["latin"],
+const manrope = localFont({
+  src: "../fonts/manrope.ttf",
   display: "swap",
-  adjustFontFallback: false,
+  variable: "--font-manrope",
 });
 
 export const metadata = {
@@ -30,7 +29,7 @@ export default function RootLayout({ children }) {
       <html lang="en" suppressHydrationWarning>
         <body
           suppressHydrationWarning
-          className={`${outfit.variable} ${inter.className} antialiased`}
+          className={`${outfit.variable} ${manrope.variable} ${manrope.className} antialiased`}
         >
           <USPStrip />
           <Header />

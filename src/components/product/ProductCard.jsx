@@ -14,6 +14,7 @@ import ProductActions from "./ProductActions";
 import PriceDisplay from "./PriceDisplay";
 import { Button } from "../ui/button";
 import WishlistButton from "./WishlistButton";
+import StarRating from "./StarRating";
 
 const ProductCard = ({ product }) => {
   return (
@@ -33,7 +34,11 @@ const ProductCard = ({ product }) => {
         {product?.image && (
           <Link href={`/product/${product?.slug}`}>
             <Image
-              src={urlFor(product?.image).width(300).height(400).auto("format").url()}
+              src={urlFor(product?.image)
+                .width(300)
+                .height(400)
+                .auto("format")
+                .url()}
               alt={product?.image?.alt}
               width={300}
               height={400}
@@ -46,7 +51,8 @@ const ProductCard = ({ product }) => {
       <CardHeader className="flex-2">
         <div>
           <CardTitle className="line-clamp-1">{product?.name}</CardTitle>
-          <CardDescription className="line-clamp-2">
+          <StarRating rating={product?.rating ?? 4.2} />
+          <CardDescription className="line-clamp-2 mt-1">
             {product?.intro}
           </CardDescription>
         </div>

@@ -10,17 +10,23 @@ import Link from "next/link";
 import { Dialog, DialogTrigger } from "../../ui/dialog";
 import SearchDialog from "../../SearchDialog";
 import CartIcon from "@/components/product/CartIcon";
-import { getCategoriesForMenu } from "@/sanity/helpers";
+import {
+  getMenuForHeader,
+  getMenuForMobileSidebar,
+} from "@/sanity/helpers/menu";
+import { getSocialLinks } from "@/sanity/helpers";
 
 const Header = async () => {
   const user = await currentUser();
-  const categories = await getCategoriesForMenu();
+  const menuForHeader = await getMenuForHeader();
+  const menuForMobile = await getMenuForMobileSidebar();
+  const links = await getSocialLinks();
   return (
     <header className="border-b border-border py-4 md:py-5 sticky top-0 bg-background z-20">
       <div className="max-w-screen-xl mx-auto px-4 flex items-center justify-between gap-7 text-foreground">
-        <HeaderMenu categories={categories} />
+        <HeaderMenu menu={menuForHeader} />
         <div className="w-auto lg:w-1/3 flex justify-center items-center gap-2.5">
-          <MobileMenu />
+          <MobileMenu menu={menuForMobile} links={links} />
           <Logo>Cartzi</Logo>
         </div>
         <div className="w-auto lg:w-1/3 flex justify-end items-center gap-4 md:gap-6">

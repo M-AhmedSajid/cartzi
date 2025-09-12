@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { getParentCategories } from "@/sanity/helpers";
+import { getParentCategories } from "@/sanity/helpers/product";
 import { urlFor } from "@/sanity/lib/image";
 import SectionHeading from "../SectionHeading";
 

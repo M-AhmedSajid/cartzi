@@ -6,8 +6,6 @@ import {
   Carousel,
   CarouselContent,
   CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
 } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 import { useEffect, useState } from "react";
@@ -45,7 +43,6 @@ export default function PromoSection() {
       try {
         const response = await client.fetch(query);
         setPromos(await response);
-        console.log(await response);
       } catch (error) {
         console.log("Error in Promos Fetching", error);
       } finally {
@@ -82,7 +79,7 @@ export default function PromoSection() {
 
   // Multiple promos → render carousel with autoplay
   return (
-    <section className="max-w-screen-xl mx-auto px-4 pb-10 relative w-full">
+    <section className="max-w-screen-xl mx-auto px-4 relative w-full">
       <Carousel
         className="w-full rounded-2xl overflow-hidden"
         plugins={[Autoplay({ delay: 4000 })]} // autoplay every 4s

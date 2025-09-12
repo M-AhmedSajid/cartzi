@@ -14,7 +14,7 @@ const StarRating = ({ rating = 0, outOf = 5 }) => {
           }`}
         />
       ))}
-      <span className="text-xs text-muted-foreground ml-1 hidden sm:inline">
+      <span className="text-xs/5 text-muted-foreground ml-1 hidden sm:inline">
         {rating.toFixed(1)}
       </span>
     </div>
