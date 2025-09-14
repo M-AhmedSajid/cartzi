@@ -1,10 +1,11 @@
 import { defineQuery } from "next-sanity";
-import { sanityFetch } from "../lib/live";
+import { sanityFetch } from "@/sanity/lib/live";
 
 export const getProductBySlug = async (slug) => {
     const PRODUCT_BY_SLUG_QUERY = defineQuery(`
         *[_type == "product" && slug.current == $slug][0]{
             ...,
+            "slug": slug.current,
             material->{ name },
             categories[]->{
                 ...,
@@ -21,7 +22,7 @@ export const getProductBySlug = async (slug) => {
             },
             variants[] {
                 color->{ name, hex },
-                images[]{ asset->{ url }, alt },
+                images[],
                 sizes[] {
                     size,
                     sku,

@@ -1,3 +1,5 @@
+import { priceFormatter } from "@/lib";
+
 const sizeMap = {
   "text-2xl": "text-base",
   "text-xl": "text-sm",
@@ -13,15 +15,6 @@ function PriceDisplay({ size = "text-xl", product, variant }) {
   const discount = product?.discount ?? 0;
 
   const discountedPrice = basePrice - (basePrice * discount) / 100;
-
-  const priceFormatter = function (amount) {
-    const formattedPrice = new Number(amount).toLocaleString("en-US", {
-      style: "currency",
-      currency: "USD",
-      minimumFractionDigits: 2,
-    });
-    return formattedPrice;
-  };
 
   return (
     <p>

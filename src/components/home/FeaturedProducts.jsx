@@ -22,10 +22,10 @@ const FeaturedProducts = () => {
       discount,
       stock,
       sku,
-      "image": coalesce(
-      variants[count(sizes[stock > 0]) > 0][0].images[0],
-      variants[0].images[0],
-      images[0]
+      "images": coalesce(
+      variants[count(sizes[stock > 0]) > 0][0].images,
+      variants[0].images,
+      images
     ),
     "stock": coalesce(
           variants[count(sizes[stock > 0]) > 0][0].sizes[stock > 0][0].stock,

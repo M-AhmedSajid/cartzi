@@ -23,15 +23,16 @@ const applyDiscountCents = (baseCents, product) => {
 }
 
 const pickImage = (product, variant) => {
-    const firstVariant = product?.variants?.[0]
-    if (variant && product?.variants?.length) {
-        const v = product.variants.find(
-            (v) => v?.color?._ref === variant.colorRef
-        )
-        if (v?.images?.[0]) return v.images[0]
+    if (variant?.images?.[0]) {
+        return variant.images[0]; // full Sanity image object
     }
-    if (firstVariant?.images?.[0]) return firstVariant.images[0]
-    return product?.images?.[0]
+
+    // If no variant, return first product image
+    if (product?.images?.[0]) {
+        return product.images[0] // full image object
+    }
+
+    return null // fallback if no images exist
 }
 
 /** Always return SKU as the cart key */
@@ -83,12 +84,11 @@ export const useCartStore = create()(
                         key,
                         productId: product._id,
                         name: product.name,
-                        slug: product?.slug?.current,
+                        slug: product?.slug,
                         image,
                         product,
                         variant: variant
                             ? {
-                                colorRef: variant.colorRef,
                                 colorName: variant.colorName,
                                 size: variant.size,
                                 sku: variant.sku,
@@ -180,6 +180,11 @@ export const useCartStore = create()(
             getItemQuantity: (product, variant) => {
                 const key = resolveKey(product, variant)
                 return get().items.find((it) => it.key === key)?.quantity ?? 0
+            },
+            getItemSubtotalCents: (product, variant) => {
+                const key = resolveKey(product, variant)
+                const item = get().items.find((it) => it.key === key)
+                return item ? item.unitPriceCents * item.quantity : 0
             },
             getCartCount: () =>
                 get().items.reduce((sum, it) => sum + it.quantity, 0),

@@ -1,13 +1,13 @@
 "use client";
 import { Star } from "lucide-react";
 
-const StarRating = ({ rating = 0, outOf = 5 }) => {
+const StarRating = ({ rating = 0, outOf = 5, size = "size-4" }) => {
   return (
     <div className="flex items-center gap-0.5">
       {Array.from({ length: outOf }).map((_, i) => (
         <Star
           key={i}
-          className={`w-4 h-4 ${
+          className={`${size} ${
             i < Math.round(rating)
               ? "fill-yellow-500 text-yellow-500"
               : "text-gray-300"

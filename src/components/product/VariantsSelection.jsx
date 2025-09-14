@@ -46,7 +46,7 @@ const VariantsSelection = ({ variants, onChange }) => {
       size: selectedSize.name,
       stock: selectedSize.variant.stock,
       priceOverride: selectedSize.variant.priceOverride,
-      color: selectedColor.color,
+      colorName: selectedColor.color?.name,
       images: selectedColor.images,
     };
   }, [selectedColor, selectedSize]);

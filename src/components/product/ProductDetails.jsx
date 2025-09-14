@@ -75,7 +75,7 @@ const ProductDetails = ({ product, variant, setVariant }) => {
         </Button>
         <ShareButton
           productName={product?.name}
-          productUrl={product?.slug.current}
+          productUrl={product?.slug}
         />
       </div>
       <Accordion defaultValue="characteristics" collapsible>

@@ -15,7 +15,6 @@ import Link from "next/link";
 import { urlFor } from "@/sanity/lib/image";
 import Image from "next/image";
 import PriceDisplay from "./product/PriceDisplay";
-import ProductActions from "./product/ProductActions";
 import { Skeleton } from "./ui/skeleton";
 import useCartStore from "../../store";
 import StarRating from "./product/StarRating";

@@ -31,15 +31,15 @@ const ProductCard = ({ product }) => {
             </span>
           )
         )}
-        {product?.image && (
+        {product?.images && (
           <Link href={`/product/${product?.slug}`}>
             <Image
-              src={urlFor(product?.image)
+              src={urlFor(product?.images[0])
                 .width(300)
                 .height(400)
                 .auto("format")
                 .url()}
-              alt={product?.image?.alt}
+              alt={product?.images[0]?.alt}
               width={300}
               height={400}
               priority

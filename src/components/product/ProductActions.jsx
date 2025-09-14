@@ -6,8 +6,8 @@ import useCartStore from "../../../store";
 import { toast } from "sonner";
 import WishlistButton from "./WishlistButton";
 
-const ProductActions = ({ product, variant, isOutOfStock }) => {
-  const { addItem, getItemQuantity, getSubtotalCents } = useCartStore();
+const ProductActions = ({ product, variant = null, isOutOfStock }) => {
+  const { addItem, getItemQuantity, getItemSubtotalCents } = useCartStore();
   const itemCount = getItemQuantity(product, variant);
 
   const priceFormatter = (amount) =>
@@ -28,7 +28,7 @@ const ProductActions = ({ product, variant, isOutOfStock }) => {
       </div>
       <div className="flex justify-between items-center border-t pt-1 font-semibold text-foreground">
         <span>Subtotal</span>
-        <span className="text-sm">{priceFormatter(getSubtotalCents())}</span>
+        <span className="text-sm">{priceFormatter(getItemSubtotalCents(product, variant))}</span>
       </div>
     </div>
   ) : (
