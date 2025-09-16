@@ -1,0 +1,5 @@
+{ "_type": "shippingRule", "name": "US Standard Shipping", "region": "United States", "shippingCost": 5.99, "freeOver": 100, "deliveryTime": "3-5 business days", "minOrderValue": 0, "maxOrderWeight": 20000, "active": true }
+{ "_type": "shippingRule", "name": "US Express Shipping", "region": "United States", "shippingCost": 14.99, "freeOver": 200, "deliveryTime": "1-2 business days", "minOrderValue": 20, "maxOrderWeight": 10000, "active": true }
+{ "_type": "shippingRule", "name": "EU Standard Shipping", "region": "European Union", "shippingCost": 9.99, "freeOver": 150, "deliveryTime": "5-7 business days", "minOrderValue": 0, "maxOrderWeight": 15000, "active": true }
+{ "_type": "shippingRule", "name": "Worldwide Shipping", "region": "Worldwide", "shippingCost": 19.99, "freeOver": 250, "deliveryTime": "7-14 business days", "minOrderValue": 0, "maxOrderWeight": 10000, "active": true }
+{ "_type": "shippingRule", "name": "Heavy Freight (US Only)", "region": "United States", "shippingCost": 49.99, "freeOver": null, "deliveryTime": "5-10 business days", "minOrderValue": 50, "maxOrderWeight": 100000, "active": true }

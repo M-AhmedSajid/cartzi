@@ -194,12 +194,106 @@ export const useCartStore = create()(
                     (sum, it) => sum + it.unitPriceCents * it.quantity,
                     0
                 ),
-            // Use when shipping and taxes needed
-            getTotalCents: () =>
-                get().items.reduce(
-                    (sum, it) => sum + it.unitPriceCents * it.quantity,
-                    0
-                ),
+
+            shippingRule: null,
+            setShippingRule: (rule) => set({ shippingRule: rule }),
+            clearShippingRule: () => set({ shippingRule: null }),
+            getShippingCents: () => {
+                const rule = get().shippingRule;
+                if (!rule) return 0;
+
+                const discount = get().appliedDiscount;
+
+                // ✅ Free shipping for all rules
+                if (discount?.discountType === "shipping" && (!discount.appliesToShipping || discount.appliesToShipping.length === 0)) {
+                    return 0;
+                }
+
+                // ✅ Free shipping for specific rules (array)
+                if (
+                    discount?.discountType === "shipping" &&
+                    Array.isArray(discount.appliesToShipping) &&
+                    discount.appliesToShipping.some((r) => r._ref === rule._id)
+                ) {
+                    return 0;
+                }
+
+                // ✅ Threshold free shipping
+                const subtotalDollars = get().getSubtotalCents() / 100;
+                if (rule.freeOver && subtotalDollars >= rule.freeOver) {
+                    return 0;
+                }
+
+                // Default → normal cost
+                return Math.round((rule.shippingCost ?? 0) * 100);
+            },
+
+            appliedDiscount: null,
+            applyDiscount: (discountDoc) => {
+                // discountDoc will come from Sanity fetch (code + rules)
+                const subtotal = get().getSubtotalCents() / 100; // dollars
+                if (discountDoc?.minCartValue && subtotal < discountDoc.minCartValue) {
+                    return { error: "Cart value is too low for this discount." };
+                }
+
+                set({ appliedDiscount: discountDoc });
+                return { success: true };
+            },
+            removeDiscount: () => {
+                set({ appliedDiscount: null });
+            },
+            calculateDiscount: (subtotalCents, discount) => {
+                if (!discount) return 0;
+                const { discountType, value } = discount;
+                if (discountType === "percentage") {
+                    return Math.round((value / 100) * subtotalCents);
+                }
+                if (discountType === "fixed") {
+                    return Math.min(Math.round(value * 100), subtotalCents); // don’t exceed subtotal
+                }
+                if (discountType === "shipping") {
+                    // Shipping is handled separately → no cart discount here
+                    return 0;
+                }
+                return 0;
+            },
+            getTotalCents: () => {
+                const subtotal = get().getSubtotalCents();
+                const discount = get().appliedDiscount
+                    ? get().calculateDiscount(subtotal, get().appliedDiscount)
+                    : 0;
+
+                const shipping = get().getShippingCents();
+
+                return Math.max(0, subtotal + shipping - discount);
+            },
+
+            selectShippingRule: (rules, region) => {
+                const subtotalDollars = get().getSubtotalCents() / 100;
+                const totalWeight = get().items.reduce((sum, it) => {
+                    const weight = it.product?.weight?.value ?? 0;
+                    return sum + weight * it.quantity;
+                }, 0);
+
+                // Filter rules for the region
+                let candidates = rules.filter(
+                    (r) => r.region === region || r.region === "Worldwide"
+                );
+
+                // Apply minOrderValue and maxOrderWeight
+                candidates = candidates.filter((r) => {
+                    const meetsMin = !r.minOrderValue || subtotalDollars >= r.minOrderValue;
+                    const withinWeight = !r.maxOrderWeight || totalWeight <= r.maxOrderWeight;
+                    return meetsMin && withinWeight && r.active;
+                });
+
+                // Pick cheapest valid option
+                const bestRule =
+                    candidates.sort((a, b) => (a.shippingCost ?? 0) - (b.shippingCost ?? 0))[0] || null;
+
+                set({ shippingRule: bestRule });
+                return bestRule;
+            },
         }),
         {
             name: 'cartzi-cart-v1',

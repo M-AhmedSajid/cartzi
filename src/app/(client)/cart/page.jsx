@@ -21,21 +21,125 @@ import { priceFormatter } from "@/lib";
 import { Separator } from "@/components/ui/separator";
 import { ResetCartButton } from "@/components/ResetCart";
 import { Skeleton } from "@/components/ui/skeleton";
+import { client } from "@/sanity/lib/client";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 const CartPage = () => {
   const [isClient, setIsClient] = useState(false);
+  const [value, setValue] = useState("item-1");
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const [shippingOptions, setShippingOptions] = useState([]);
+  const [loadingShipping, setLoadingShipping] = useState(true);
+  const [discountCode, setDiscountCode] = useState("");
+  const [isApplying, setIsApplying] = useState(false);
   const {
     removeItem,
     getCartCount,
-    getSubtotalCents,
     getItems,
+    getSubtotalCents,
+    shippingRule,
+    setShippingRule,
+    getShippingCents,
+    appliedDiscount,
+    applyDiscount,
+    removeDiscount,
+    calculateDiscount,
     getTotalCents,
+    selectShippingRule,
   } = useCartStore();
+
+  const handleApplyDiscount = async () => {
+    if (!discountCode) return;
+
+    setIsApplying(true);
+    try {
+      const code = discountCode.trim().toUpperCase();
+
+      const discountDoc = await client.fetch(
+        `*[_type == "discountCode" && code == $code && active == true][0]`,
+        { code }
+      );
+
+      if (!discountDoc) {
+        toast.error("Invalid or inactive discount code.");
+        return;
+      }
+
+      if (
+        discountDoc.expiresAt &&
+        new Date(discountDoc.expiresAt) < new Date()
+      ) {
+        toast.error("This discount code has expired.");
+        return;
+      }
+
+      const result = applyDiscount(discountDoc);
+
+      if (result?.error) {
+        toast.error(result.error);
+      } else {
+        toast.success(`Discount ${code} applied!`);
+        setDiscountCode("");
+      }
+    } catch (err) {
+      toast.error("Failed to apply discount.");
+    } finally {
+      setIsApplying(false);
+    }
+  };
+
+  const handleRemoveDiscount = () => {
+    removeDiscount();
+    toast.success("Discount removed.");
+  };
 
   const cartProducts = getItems();
 
   useEffect(() => {
     setIsClient(true);
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setValue("");
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    async function fetchRules() {
+      setLoadingShipping(true);
+      try {
+        const rules = await client.fetch(
+          `*[_type == "shippingRule" && active == true] | order(shippingCost asc)`
+        );
+
+        // Example: hardcode region to US for now
+        const region = "United States";
+        const bestRule = selectShippingRule(rules, region);
+
+        setShippingOptions(
+          rules.filter((r) => r.region === region || r.region === "Worldwide")
+        );
+
+        if (!shippingRule && bestRule) {
+          setShippingRule(bestRule);
+        }
+      } finally {
+        setLoadingShipping(false);
+      }
+    }
+
+    fetchRules();
   }, []);
 
   const handleRemoveItem = (product, variant) => {
@@ -205,16 +309,16 @@ const CartPage = () => {
             </div>
             {/* Summary */}
             <div className="col-span-1">
-              <div className="hidden md:block w-full bg-card border rounded-lg p-6 shadow sticky top-24">
-                <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
+              <div className="hidden md:block w-full bg-card border rounded-lg p-6 shadow sticky top-24 space-y-2">
+                <h2 className="text-xl font-semibold">Order Summary</h2>
                 {!isClient ? (
                   <>
-                    <Skeleton className="h-5 w-full mb-2" />
                     <Skeleton className="h-5 w-full" />
-                    <Separator className="my-2" />
+                    <Skeleton className="h-5 w-full" />
+                    <Separator />
                     <Skeleton className="h-6 w-full" />
-                    <Separator className="my-2" />
-                    <Skeleton className="h-9 w-full bg-primary mb-2" />
+                    <Separator />
+                    <Skeleton className="h-9 w-full bg-primary" />
                   </>
                 ) : (
                   <>
@@ -227,19 +331,134 @@ const CartPage = () => {
                         {priceFormatter(getSubtotalCents() / 100)}
                       </span>
                     </p>
-                    <p className="flex items-center justify-between">
-                      <span>Shipping</span>
-                      <span className="font-bold">Free Over $100</span>
-                    </p>
-                    <Separator className="my-2" />
+
+                    {/* Shipping Options */}
+                    <Accordion type="single" collapsible className="w-full">
+                      <AccordionItem value="item-2">
+                        <AccordionTrigger className="w-full text-left py-0 [&[data-state=open]]:pb-2">
+                          Shipping
+                        </AccordionTrigger>
+                        {loadingShipping ? (
+                          <Skeleton className="h-5 w-full" />
+                        ) : shippingOptions.length > 0 ? (
+                          <AccordionContent className="pb-0">
+                            <RadioGroup
+                              value={shippingRule?._id || ""}
+                              onValueChange={(id) => {
+                                const selected = shippingOptions.find(
+                                  (r) => r._id === id
+                                );
+                                if (selected) setShippingRule(selected);
+                              }}
+                            >
+                              {shippingOptions.map((option) => {
+                                const subtotal = getSubtotalCents() / 100;
+                                const free =
+                                  option.freeOver &&
+                                  subtotal >= option.freeOver;
+
+                                return (
+                                  <div
+                                    key={option._id}
+                                    className="flex items-center justify-between border rounded px-3 py-2 mb-2"
+                                  >
+                                    <div className="flex items-center gap-2">
+                                      <RadioGroupItem
+                                        value={option._id}
+                                        id={option._id}
+                                      />
+                                      <Label htmlFor={option._id}>
+                                        <span className="font-medium">
+                                          {option.name}
+                                        </span>
+                                        <span className="block text-xs text-muted-foreground">
+                                          {option.deliveryTime}
+                                        </span>
+                                      </Label>
+                                    </div>
+                                    <span className="font-semibold">
+                                      {/** ✅ Handle discount free shipping */}
+                                      {appliedDiscount?.discountType ===
+                                        "shipping" &&
+                                      (!appliedDiscount.appliesToShipping || // applies to all rules
+                                        appliedDiscount.appliesToShipping.some(
+                                          (r) => r._ref === option._id
+                                        )) // or matches this rule
+                                        ? "Free"
+                                        : free // threshold-based free shipping
+                                          ? "Free"
+                                          : priceFormatter(
+                                              option.shippingCost ?? 0
+                                            )}
+                                    </span>
+                                  </div>
+                                );
+                              })}
+                            </RadioGroup>
+                          </AccordionContent>
+                        ) : (
+                          <p className="text-sm text-muted-foreground">
+                            No shipping available
+                          </p>
+                        )}
+                      </AccordionItem>
+                    </Accordion>
+                    {/* Discount Code Input */}
+                    {appliedDiscount ? (
+                      <div className="flex items-center justify-between bg-green-100 py-1 px-2 rounded-md border border-green-300">
+                        <span className="text-sm font-semibold text-green-700">
+                          Applied: {appliedDiscount.code}
+                        </span>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={handleRemoveDiscount}
+                        >
+                          Remove
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          value={discountCode}
+                          onChange={(e) => setDiscountCode(e.target.value)}
+                          placeholder="Discount code"
+                          className="flex-1 border rounded px-3 py-2 text-sm bg-background"
+                        />
+                        <Button
+                          onClick={handleApplyDiscount}
+                          disabled={isApplying}
+                        >
+                          {isApplying ? "Applying..." : "Apply"}
+                        </Button>
+                      </div>
+                    )}
+                    <Separator />
+                    {appliedDiscount && (
+                      <p className="flex items-center justify-between text-green-600 text-sm">
+                        <span>Discount ({appliedDiscount.code}):</span>
+                        <span className="font-bold">
+                          {appliedDiscount.discountType === "shipping"
+                            ? "Free Shipping"
+                            : `-${priceFormatter(
+                                calculateDiscount(
+                                  getSubtotalCents(),
+                                  appliedDiscount
+                                ) / 100
+                              )}`}
+                        </span>
+                      </p>
+                    )}
+
                     <p className="flex items-center justify-between">
                       <span>Total:</span>
                       <span className="font-bold">
                         {priceFormatter(getTotalCents() / 100)}
                       </span>
                     </p>
-                    <Separator className="my-2" />
-                    <Button className="w-full mb-2" onClick={handleCheckout}>
+                    <Separator />
+                    <Button className="w-full" onClick={handleCheckout}>
                       Checkout Securely 🔒
                     </Button>
                   </>
@@ -269,38 +488,170 @@ const CartPage = () => {
             </div>
 
             {/* Mobile Sticky Checkout */}
-            <div className="fixed bottom-0 left-0 right-0 z-50 bg-background border-t-2 p-4 pt-2 space-y-2 md:hidden">
-              <h2 className="text-lg font-semibold">Order Summary</h2>
+            <div className="fixed bottom-0 left-0 right-0 z-50 bg-background border-t-2 p-4 pt-0 space-y-2 md:hidden rounded-t-2xl shadow-[0_-4px_6px_-1px_rgba(0_0_0_/_0.1)]">
               {!isClient ? (
                 <>
-                  <Skeleton className="h-4 w-full mb-2" />
-                  <Skeleton className="h-4 w-full" />
-                  <Separator className="my-2" />
+                  <p className="text-lg font-semibold pt-2">Order Summary</p>
+                  <Separator />
+                  <Skeleton className="h-5 w-full" />
                   <Skeleton className="h-6 w-full" />
-                  <Separator className="my-2" />
-                  <Skeleton className="h-9 w-full bg-primary mb-2" />
+                  <Separator />
+                  <Skeleton className="h-9 w-full bg-primary" />
                 </>
               ) : (
                 <>
-                  <p className="flex items-center justify-between text-sm">
-                    <span>Subtotal ({getCartCount()} items):</span>
-                    <span className="font-bold">
-                      {priceFormatter(getSubtotalCents() / 100)}
-                    </span>
-                  </p>
-                  <p className="flex items-center justify-between text-sm">
-                    <span>Shipping</span>
-                    <span className="font-bold">Free Over 100</span>
-                  </p>
-                  <Separator className="my-2" />
+                  <Accordion
+                    type="single"
+                    collapsible
+                    value={value}
+                    onValueChange={setValue}
+                    className="w-full"
+                  >
+                    <AccordionItem value="item-1">
+                      <AccordionTrigger className="text-lg font-semibold pt-2 pb-0 [&[data-state=open]]:pb-2">
+                        Order Summary
+                      </AccordionTrigger>
+                      <AccordionContent className="space-y-2 pb-0">
+                        <p className="flex items-center justify-between text-sm">
+                          <span>Subtotal ({getCartCount()} items):</span>
+                          <span className="font-bold">
+                            {priceFormatter(getSubtotalCents() / 100)}
+                          </span>
+                        </p>
+                        <Accordion
+                          type="single"
+                          collapsible
+                          defaultValue="item-2"
+                          className="w-full"
+                        >
+                          <AccordionItem value="item-2">
+                            <AccordionTrigger className="w-full text-left py-0 [&[data-state=open]]:pb-2">
+                              Shipping
+                            </AccordionTrigger>
+                            {loadingShipping ? (
+                              <Skeleton className="h-5 w-full" />
+                            ) : shippingOptions.length > 0 ? (
+                              <AccordionContent className="pb-0">
+                                <RadioGroup
+                                  value={shippingRule?._id || ""}
+                                  onValueChange={(id) => {
+                                    const selected = shippingOptions.find(
+                                      (r) => r._id === id
+                                    );
+                                    if (selected) setShippingRule(selected);
+                                  }}
+                                >
+                                  {shippingOptions.map((option) => {
+                                    const subtotal = getSubtotalCents() / 100;
+                                    const free =
+                                      option.freeOver &&
+                                      subtotal >= option.freeOver;
+
+                                    return (
+                                      <div
+                                        key={option._id}
+                                        className="flex items-center justify-between border rounded px-3 py-2 mb-2"
+                                      >
+                                        <div className="flex items-center gap-2">
+                                          <RadioGroupItem
+                                            value={option._id}
+                                            id={option._id}
+                                          />
+                                          <Label htmlFor={option._id}>
+                                            <span className="font-medium">
+                                              {option.name}
+                                            </span>
+                                            <span className="block text-xs text-muted-foreground">
+                                              {option.deliveryTime}
+                                            </span>
+                                          </Label>
+                                        </div>
+                                        <span className="font-semibold">
+                                          {/** ✅ Handle discount free shipping */}
+                                          {appliedDiscount?.discountType ===
+                                            "shipping" &&
+                                          (!appliedDiscount.appliesToShipping || // applies to all rules
+                                            appliedDiscount.appliesToShipping.some(
+                                              (r) => r._ref === option._id
+                                            )) // or matches this rule
+                                            ? "Free"
+                                            : free // threshold-based free shipping
+                                              ? "Free"
+                                              : priceFormatter(
+                                                  option.shippingCost ?? 0
+                                                )}
+                                        </span>
+                                      </div>
+                                    );
+                                  })}
+                                </RadioGroup>
+                              </AccordionContent>
+                            ) : (
+                              <p className="text-sm text-muted-foreground">
+                                No shipping available
+                              </p>
+                            )}
+                          </AccordionItem>
+                        </Accordion>
+                        {/* Discount Code Input */}
+                        {appliedDiscount ? (
+                          <div className="flex items-center justify-between bg-green-100 py-1 px-2 rounded-md border border-green-300">
+                            <span className="text-sm font-semibold text-green-700">
+                              Applied: {appliedDiscount.code}
+                            </span>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={handleRemoveDiscount}
+                            >
+                              Remove
+                            </Button>
+                          </div>
+                        ) : (
+                          <div className="flex gap-2">
+                            <input
+                              type="text"
+                              value={discountCode}
+                              onChange={(e) => setDiscountCode(e.target.value)}
+                              placeholder="Discount code"
+                              className="flex-1 border rounded px-3 py-2 text-sm bg-background"
+                            />
+                            <Button
+                              onClick={handleApplyDiscount}
+                              disabled={isApplying}
+                            >
+                              {isApplying ? "Applying..." : "Apply"}
+                            </Button>
+                          </div>
+                        )}
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
+                  <Separator />
+                  {appliedDiscount && (
+                    <p className="flex items-center justify-between text-green-600 text-sm">
+                      <span>Discount ({appliedDiscount.code}):</span>
+                      <span className="font-bold">
+                        {appliedDiscount.discountType === "shipping"
+                          ? "Free Shipping"
+                          : `-${priceFormatter(
+                              calculateDiscount(
+                                getSubtotalCents(),
+                                appliedDiscount
+                              ) / 100
+                            )}`}
+                      </span>
+                    </p>
+                  )}
+
                   <p className="flex items-center justify-between font-semibold">
                     <span>Total:</span>
                     <span className="font-bold">
                       {priceFormatter(getTotalCents() / 100)}
                     </span>
                   </p>
-                  <Separator className="my-2" />
-                  <Button className="w-full my-2" onClick={handleCheckout}>
+                  <Separator />
+                  <Button className="w-full" onClick={handleCheckout}>
                     Checkout Securely 🔒
                   </Button>
                 </>
