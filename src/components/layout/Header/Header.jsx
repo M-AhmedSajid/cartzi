@@ -21,15 +21,23 @@ const Header = async () => {
   const menuForHeader = await getMenuForHeader();
   const menuForMobile = await getMenuForMobileSidebar();
   const links = await getSocialLinks();
+
   return (
     <header className="border-b border-border py-4 md:py-5 sticky top-0 bg-background z-20">
-      <div className="max-w-screen-xl mx-auto px-4 flex items-center justify-between gap-7 text-foreground">
-        <HeaderMenu menu={menuForHeader} />
-        <div className="w-auto lg:w-1/3 flex justify-center items-center gap-2.5">
+      <div className="max-w-screen-xl mx-auto px-4 grid grid-cols-2 lg:grid-cols-[1fr_auto_1fr] items-center gap-7 text-foreground">
+        {/* Left: Menu */}
+        <div className="hidden lg:flex justify-start min-w-0">
+          <HeaderMenu menu={menuForHeader} />
+        </div>
+
+        {/* Center: Logo */}
+        <div className="flex justify-start lg:justify-center items-center gap-2.5">
           <MobileMenu menu={menuForMobile} links={links} />
           <Logo>Cartzi</Logo>
         </div>
-        <div className="w-auto lg:w-1/3 flex justify-end items-center gap-4 md:gap-6">
+
+        {/* Right: Actions */}
+        <div className="flex justify-end items-center gap-4 md:gap-6">
           <Dialog>
             <DialogTrigger>
               <Search className="w-5 h-5 text-muted-foreground hover:text-foreground hoverEffect" />
