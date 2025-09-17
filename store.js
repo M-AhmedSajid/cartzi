@@ -87,6 +87,7 @@ export const useCartStore = create()(
                         slug: product?.slug,
                         image,
                         product,
+                        description: product.description || "",
                         variant: variant
                             ? {
                                 colorName: variant.colorName,

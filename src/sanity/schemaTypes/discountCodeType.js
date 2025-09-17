@@ -85,6 +85,13 @@ export const discountCodeType = defineType({
             validation: (Rule) => Rule.min(0),
         }),
         defineField({
+            name: "firstTimeCustomer",
+            title: "First Time Customer",
+            description: "Only allow use if the customer has no previous orders.",
+            type: "boolean",
+            initialValue: false,
+        }),
+        defineField({
             name: "maxRedemptions",
             title: "Maximum Redemptions",
             description: "Optional limit for how many times this code can be used across all customers.",
@@ -103,6 +110,29 @@ export const discountCodeType = defineType({
             description: "Uncheck to deactivate this code without deleting it.",
             type: "boolean",
             initialValue: true,
+        }),
+        defineField({
+            name: "redemptions",
+            title: "Redemptions Used",
+            description: "Number of times this discount code has been redeemed.",
+            type: "number",
+            readOnly: true,
+            initialValue: 0,
+            validation: (Rule) => Rule.min(0),
+        }),
+        defineField({
+            name: "stripePromoId",
+            title: "Stripe Promo ID",
+            type: "string",
+            readOnly: true,
+            hidden: true,
+        }),
+        defineField({
+            name: "updatedBySync",
+            title: "Just a flag to indicate if the last update was made by the sync process",
+            type: "boolean",
+            readOnly: true,
+            hidden: true,
         }),
     ],
     preview: {
