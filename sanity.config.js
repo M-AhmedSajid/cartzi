@@ -12,6 +12,8 @@ import { structureTool } from "sanity/structure";
 import { apiVersion, dataset, projectId } from "./src/sanity/env";
 import { schema } from "./src/sanity/schemaTypes";
 import { structure } from "./src/sanity/structure";
+import { SetUpdatedBySyncAndPublishAction } from "@/sanity/lib/set-updated-by-sync-and-publish-action";
+import { SetUpdatedBySyncAndDeleteAction } from "@/sanity/lib/set-updated-by-sync-and-delete-action";
 
 export default defineConfig({
   basePath: "/studio",
@@ -25,4 +27,16 @@ export default defineConfig({
     // https://www.sanity.io/docs/the-vision-plugin
     visionTool({ defaultApiVersion: apiVersion }),
   ],
+  document: {
+    actions: (prev, context) => {
+      if (context.schemaType === "discountCode") {
+        return prev.map((action) => {
+          if (action.action === "publish") return SetUpdatedBySyncAndPublishAction;
+          if (action.action === "delete") return SetUpdatedBySyncAndDeleteAction;
+          return action;
+        });
+      }
+      return prev;
+    },
+  },
 });

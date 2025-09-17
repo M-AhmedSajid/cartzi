@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "ngrok": "ngrok http --url=hubbly-unsupercilious-vena.ngrok-free.app 3000"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.28.0",
@@ -42,6 +43,7 @@
     "react-dom": "19.1.0",
     "sanity": "^4.2.0",
     "sonner": "^2.0.6",
+    "stripe": "^18.5.0",
     "styled-components": "^6.1.19",
     "tailwind-merge": "^3.3.1",
     "zustand": "^5.0.8"
