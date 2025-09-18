@@ -18,7 +18,6 @@ export async function POST(req) {
         if (!discount?._id || !discount?.code) {
             return NextResponse.json({ error: "Invalid payload" }, { status: 400 });
         }
-        console.log(body);
 
         // 🚫 Skip self-updates
         if (discount.updatedBySync) {
