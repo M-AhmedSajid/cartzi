@@ -264,9 +264,7 @@ export const useCartStore = create()(
                     ? get().calculateDiscount(subtotal, get().appliedDiscount)
                     : 0;
 
-                const shipping = get().getShippingCents();
-
-                return Math.max(0, subtotal + shipping - discount);
+                return Math.max(0, subtotal - discount);
             },
 
             selectShippingRule: (rules, region) => {

@@ -169,7 +169,7 @@ const CartPage = () => {
       const checkoutUrl = await createCheckoutSession(
         cartProducts,
         metadata,
-        shippingRule,
+        shippingOptions,
         getShippingCents(),
         appliedDiscount
       );
@@ -365,77 +365,33 @@ const CartPage = () => {
                       </span>
                     </p>
 
-                    {/* Shipping Options */}
-                    <Accordion type="single" collapsible className="w-full">
-                      <AccordionItem value="item-2">
-                        <AccordionTrigger className="w-full text-left py-0 [&[data-state=open]]:pb-2">
-                          Shipping
-                        </AccordionTrigger>
-                        {loadingShipping ? (
-                          <Skeleton className="h-5 w-full" />
-                        ) : shippingOptions.length > 0 ? (
-                          <AccordionContent className="pb-0">
-                            <RadioGroup
-                              value={shippingRule?._id || ""}
-                              onValueChange={(id) => {
-                                const selected = shippingOptions.find(
-                                  (r) => r._id === id
-                                );
-                                if (selected) setShippingRule(selected);
-                              }}
-                            >
-                              {shippingOptions.map((option) => {
-                                const subtotal = getSubtotalCents() / 100;
-                                const free =
-                                  option.freeOver &&
-                                  subtotal >= option.freeOver;
+                    {/* Shipping Info (not selectable) */}
+                    <p className="flex items-center justify-between">
+                      <span>Shipping:</span>
+                      <span className="font-medium">
+                        Calculated at checkout
+                      </span>
+                    </p>
 
-                                return (
-                                  <div
-                                    key={option._id}
-                                    className="flex items-center justify-between border rounded px-3 py-2 mb-2"
-                                  >
-                                    <div className="flex items-center gap-2">
-                                      <RadioGroupItem
-                                        value={option._id}
-                                        id={option._id}
-                                      />
-                                      <Label htmlFor={option._id}>
-                                        <span className="font-medium">
-                                          {option.name}
-                                        </span>
-                                        <span className="block text-xs text-muted-foreground">
-                                          {option.deliveryTime}
-                                        </span>
-                                      </Label>
-                                    </div>
-                                    <span className="font-semibold">
-                                      {/** ✅ Handle discount free shipping */}
-                                      {appliedDiscount?.discountType ===
-                                        "shipping" &&
-                                      (!appliedDiscount.appliesToShipping || // applies to all rules
-                                        appliedDiscount.appliesToShipping.some(
-                                          (r) => r._ref === option._id
-                                        )) // or matches this rule
-                                        ? "Free"
-                                        : free // threshold-based free shipping
-                                          ? "Free"
-                                          : priceFormatter(
-                                              option.shippingCost ?? 0
-                                            )}
-                                    </span>
-                                  </div>
-                                );
-                              })}
-                            </RadioGroup>
-                          </AccordionContent>
-                        ) : (
-                          <p className="text-sm text-muted-foreground">
-                            No shipping available
-                          </p>
-                        )}
-                      </AccordionItem>
-                    </Accordion>
+                    {/* Free shipping threshold badge */}
+                    {shippingOptions.length > 0 &&
+                      shippingOptions.some((opt) => opt.freeOver) && (
+                        <p className="text-xs text-green-600 font-medium mt-1">
+                          Free shipping on orders over{" "}
+                          {priceFormatter(
+                            Math.min(
+                              ...shippingOptions
+                                .filter((opt) => opt.freeOver)
+                                .map((opt) => opt.freeOver)
+                            )
+                          )}
+                        </p>
+                      )}
+
+                    <p className="text-xs text-muted-foreground -mt-1">
+                      Fast shipping • Free returns
+                    </p>
+                    
                     {/* Discount Code Input */}
                     {appliedDiscount ? (
                       <div className="flex items-center justify-between bg-green-100 py-1 px-2 rounded-md border border-green-300">
@@ -468,6 +424,7 @@ const CartPage = () => {
                       </div>
                     )}
                     <Separator />
+
                     {appliedDiscount && (
                       <p className="flex items-center justify-between text-green-600 text-sm">
                         <span>Discount ({appliedDiscount.code}):</span>
@@ -500,6 +457,7 @@ const CartPage = () => {
                     </Button>
                   </>
                 )}
+
                 <div className="text-center text-muted-foreground space-y-1">
                   <p className="text-sm font-medium">
                     Secure Checkout • Free Returns • Fast Shipping
