@@ -154,7 +154,7 @@ const ShippingReturnsPage = () => {
             If you have questions about shipping or returns, please contact our customer service team. We're here to help!
           </p>
           <p className="text-muted-foreground mt-2">
-            <strong>Email:</strong> support@cartzi.com | <strong>Phone:</strong> +1 (555) 123-4567
+            <strong>Email:</strong> support@cartzi.vercel.app | <strong>Phone:</strong> +1 (555) 123-4567
           </p>
         </div>
       </div>

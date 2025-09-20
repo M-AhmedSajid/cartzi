@@ -121,7 +121,7 @@ const PrivacyPolicyPage = () => {
               <strong>Last updated:</strong> {new Date().toLocaleDateString()}
             </p>
             <p className="text-sm text-muted-foreground mt-2">
-              If you have any questions about this Privacy Policy, please contact us at privacy@cartzi.com
+              If you have any questions about this Privacy Policy, please contact us at privacy@cartzi.vercel.app
             </p>
           </div>
         </div>
