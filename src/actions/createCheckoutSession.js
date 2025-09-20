@@ -3,7 +3,7 @@
 import stripe from "@/lib/stripe";
 import { urlFor } from "@/sanity/lib/image";
 
-export async function createCheckoutSession(items, metadata, shippingOptions, shippingCents, appliedDiscount = null) {
+export async function createCheckoutSession(items, metadata, shippingOptions, appliedDiscount = null) {
     try {
         // find existing customer
         const customers = await stripe.customers.list({
@@ -138,6 +138,14 @@ export async function createCheckoutSession(items, metadata, shippingOptions, sh
                 customerName: metadata?.customerName,
                 customerEmail: metadata?.customerEmail,
                 clerkUserId: metadata?.clerkUserId,
+                discountId: appliedDiscount?._id || "",
+                items: JSON.stringify(
+                    items.map((i) => ({
+                        productId: i.productId,
+                        variantSku: i.variant?.sku || null,
+                        quantity: i.quantity,
+                    }))
+                ),
             },
             shipping_address_collection: {
                 allowed_countries: ["US", "CA", "GB", "PK"],

@@ -2,7 +2,7 @@
 import { NextResponse } from "next/server";
 import { parseBody } from "next-sanity/webhook";
 import stripe from "@/lib/stripe";
-import { client } from "@/sanity/lib/client";
+import { backendClient } from "@/sanity/lib/backendClient";
 
 const writeToken = process.env.SANITY_WRITE_TOKEN;
 const webhookSecret = process.env.SANITY_WEBHOOK_SECRET;
@@ -27,7 +27,7 @@ export async function POST(req) {
 
         // 🚫 Skip shipping-only codes (Cart handles these)
         if (discount.discountType === "shipping") {
-            await client
+            await backendClient
                 .withConfig({ token: writeToken })
                 .patch(discount._id)
                 .set({ stripePromoId: null, updatedBySync: true, })
@@ -47,7 +47,7 @@ export async function POST(req) {
                 }
             }
 
-            await client
+            await backendClient
                 .withConfig({ token: writeToken })
                 .patch(discount._id)
                 .set({ stripePromoId: null, updatedBySync: true, })
@@ -143,7 +143,7 @@ export async function POST(req) {
         }
 
         /* ------------------ Update Sanity ------------------ */
-        await client
+        await backendClient
             .withConfig({ token: writeToken })
             .patch(discount._id)
             .set({

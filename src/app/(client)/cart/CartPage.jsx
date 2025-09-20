@@ -28,8 +28,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useClerk, useUser } from "@clerk/nextjs";
 import { createCheckoutSession } from "@/actions/createCheckoutSession";
 
@@ -138,6 +136,8 @@ const CartPage = () => {
         if (!shippingRule && bestRule) {
           setShippingRule(bestRule);
         }
+      } catch (error) {
+        console.error("Error fetching shipping rules:", error);
       } finally {
         setLoadingShipping(false);
       }
@@ -158,24 +158,24 @@ const CartPage = () => {
         openSignIn({
           afterSignInUrl: "/cart",
         });
-        return;
-      }
-      const metadata = {
-        orderNumber: crypto.randomUUID(),
-        customerName: user?.fullName ?? "Guest",
-        customerEmail: user?.emailAddresses[0]?.emailAddress ?? "guest",
-        clerkUserId: user?.id ?? "guest",
-      };
-      const checkoutUrl = await createCheckoutSession(
-        cartProducts,
-        metadata,
-        shippingOptions,
-        getShippingCents(),
-        appliedDiscount
-      );
+      } else {
+        const metadata = {
+          orderNumber: crypto.randomUUID(),
+          customerName: user?.fullName ?? "Guest",
+          customerEmail: user?.emailAddresses[0]?.emailAddress ?? "guest",
+          clerkUserId: user?.id ?? "guest",
+          discountId: appliedDiscount?._id || "",
+        };
+        const checkoutUrl = await createCheckoutSession(
+          cartProducts,
+          metadata,
+          shippingOptions,
+          appliedDiscount
+        );
 
-      if (checkoutUrl) {
-        window.open(checkoutUrl, "_blank");
+        if (checkoutUrl) {
+          window.open(checkoutUrl, "_blank");
+        }
       }
     } catch (error) {
       console.error("Error creating checkout session:", error);
@@ -391,7 +391,7 @@ const CartPage = () => {
                     <p className="text-xs text-muted-foreground -mt-1">
                       Fast shipping • Free returns
                     </p>
-                    
+
                     {/* Discount Code Input */}
                     {appliedDiscount ? (
                       <div className="flex items-center justify-between bg-green-100 py-1 px-2 rounded-md border border-green-300">
@@ -513,81 +513,32 @@ const CartPage = () => {
                             {priceFormatter(getSubtotalCents() / 100)}
                           </span>
                         </p>
-                        <Accordion
-                          type="single"
-                          collapsible
-                          defaultValue="item-2"
-                          className="w-full"
-                        >
-                          <AccordionItem value="item-2">
-                            <AccordionTrigger className="w-full text-left py-0 [&[data-state=open]]:pb-2">
-                              Shipping
-                            </AccordionTrigger>
-                            {loadingShipping ? (
-                              <Skeleton className="h-5 w-full" />
-                            ) : shippingOptions.length > 0 ? (
-                              <AccordionContent className="pb-0">
-                                <RadioGroup
-                                  value={shippingRule?._id || ""}
-                                  onValueChange={(id) => {
-                                    const selected = shippingOptions.find(
-                                      (r) => r._id === id
-                                    );
-                                    if (selected) setShippingRule(selected);
-                                  }}
-                                >
-                                  {shippingOptions.map((option) => {
-                                    const subtotal = getSubtotalCents() / 100;
-                                    const free =
-                                      option.freeOver &&
-                                      subtotal >= option.freeOver;
+                        {/* Shipping Info (not selectable) */}
+                        <p className="flex items-center justify-between">
+                          <span>Shipping:</span>
+                          <span className="font-medium">
+                            Calculated at checkout
+                          </span>
+                        </p>
 
-                                    return (
-                                      <div
-                                        key={option._id}
-                                        className="flex items-center justify-between border rounded px-3 py-2 mb-2"
-                                      >
-                                        <div className="flex items-center gap-2">
-                                          <RadioGroupItem
-                                            value={option._id}
-                                            id={option._id}
-                                          />
-                                          <Label htmlFor={option._id}>
-                                            <span className="font-medium">
-                                              {option.name}
-                                            </span>
-                                            <span className="block text-xs text-muted-foreground">
-                                              {option.deliveryTime}
-                                            </span>
-                                          </Label>
-                                        </div>
-                                        <span className="font-semibold">
-                                          {/** ✅ Handle discount free shipping */}
-                                          {appliedDiscount?.discountType ===
-                                            "shipping" &&
-                                          (!appliedDiscount.appliesToShipping || // applies to all rules
-                                            appliedDiscount.appliesToShipping.some(
-                                              (r) => r._ref === option._id
-                                            )) // or matches this rule
-                                            ? "Free"
-                                            : free // threshold-based free shipping
-                                              ? "Free"
-                                              : priceFormatter(
-                                                  option.shippingCost ?? 0
-                                                )}
-                                        </span>
-                                      </div>
-                                    );
-                                  })}
-                                </RadioGroup>
-                              </AccordionContent>
-                            ) : (
-                              <p className="text-sm text-muted-foreground">
-                                No shipping available
-                              </p>
-                            )}
-                          </AccordionItem>
-                        </Accordion>
+                        {/* Free shipping threshold badge */}
+                        {shippingOptions.length > 0 &&
+                          shippingOptions.some((opt) => opt.freeOver) && (
+                            <p className="text-xs text-green-600 font-medium mt-1">
+                              Free shipping on orders over{" "}
+                              {priceFormatter(
+                                Math.min(
+                                  ...shippingOptions
+                                    .filter((opt) => opt.freeOver)
+                                    .map((opt) => opt.freeOver)
+                                )
+                              )}
+                            </p>
+                          )}
+
+                        <p className="text-xs text-muted-foreground -mt-1">
+                          Fast shipping • Free returns
+                        </p>
                         {/* Discount Code Input */}
                         {appliedDiscount ? (
                           <div className="flex items-center justify-between bg-green-100 py-1 px-2 rounded-md border border-green-300">

@@ -106,7 +106,7 @@ const ContactPage = () => {
           </h2>
           <div className="space-y-3 text-muted-foreground">
             <p>
-              <strong>Email:</strong> support@cartzi.com
+              <strong>Email:</strong> support@cartzi.vercel.app
             </p>
             <p>
               <strong>Phone:</strong> +1 (555) 123-4567
