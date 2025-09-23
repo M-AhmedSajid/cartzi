@@ -22,9 +22,9 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import PriceDisplay from "./PriceDisplay";
+import StarRating from "./StarRating";
 
 const ProductDetails = ({ product, variant, setVariant }) => {
-
   const isInStock = () => {
     if (variant) {
       return variant.stock > 0;
@@ -35,20 +35,32 @@ const ProductDetails = ({ product, variant, setVariant }) => {
     return product?.stock > 0;
   };
 
+  const stock =
+    variant?.stock ??
+    product?.variants?.find((v) => v.stock > 0)?.stock ??
+    product?.stock;
+
   return (
-    <div className="space-y-3">
+    <div className="space-y-3 relative">
       <h2 className="text-3xl md:text-4xl/10 font-bold">{product?.name}</h2>
+      <Link href="#rating" className="block">
+        <StarRating rating={4.2} size="size-5" />
+      </Link>
       <p className="text-muted-foreground text-xs">
         {product?.sku || (variant && variant.sku)}
       </p>
       <PriceDisplay product={product} variant={variant} size="text-2xl" />
-      {isInStock() ? (
-        <p className="w-fit bg-green-100 text-green-600 text-center text-sm py-2.5 px-5 font-semibold rounded-lg">
-          In Stock
-        </p>
-      ) : (
+      {!isInStock() ? (
         <p className="w-fit bg-red-100 text-red-600 text-center text-sm py-2.5 px-5 font-semibold rounded-lg">
           Out of Stock
+        </p>
+      ) : stock < 6 ? (
+        <p className="w-fit bg-orange-100 text-orange-600 text-center text-sm py-2.5 px-5 font-semibold rounded-lg">
+          Hurry, only {stock} left!
+        </p>
+      ) : (
+        <p className="w-fit bg-green-100 text-green-600 text-center text-sm py-2.5 px-5 font-semibold rounded-lg">
+          In Stock
         </p>
       )}
       <p className="text-sm text-muted-foreground tracking-wide">
@@ -57,8 +69,40 @@ const ProductDetails = ({ product, variant, setVariant }) => {
       {product?.variants && (
         <VariantsSelection variants={product?.variants} onChange={setVariant} />
       )}
-      <div className="flex gap-2.5 justify-between items-center mt-2">
-        <ProductActions product={product} variant={variant} isOutOfStock={!isInStock()} />
+      <div className="gap-2.5 justify-between items-center mt-2 hidden md:flex">
+        <ProductActions
+          product={product}
+          variant={variant}
+          isOutOfStock={!isInStock()}
+        />
+      </div>
+      <div className="fixed md:hidden bottom-0 inset-x-0 bg-background mb-0 p-4 rounded-t-2xl shadow-[0_-4px_6px_-1px_rgba(0_0_0_/_0.1)] border-t-2 space-y-2">
+        <div className="flex justify-between items-center">
+          <PriceDisplay product={product} variant={variant} size="text-xl" />
+          {!isInStock() ? (
+            <p className="w-fit bg-red-100 text-red-600 text-center text-sm py-1 px-2 font-semibold rounded-sm">
+              Out of Stock
+            </p>
+          ) : stock < 6 ? (
+            <p className="w-fit bg-orange-100 text-orange-600 text-center text-sm py-1 px-2 font-semibold rounded-sm">
+              Hurry, only {stock} left!
+            </p>
+          ) : (
+            <p className="w-fit bg-green-100 text-green-600 text-center text-sm py-1 px-2 font-semibold rounded-sm">
+              In Stock
+            </p>
+          )}
+        </div>
+        <div className="flex gap-2.5 justify-between items-center">
+          <ProductActions
+            product={product}
+            variant={variant}
+            isOutOfStock={!isInStock()}
+          />
+        </div>
+        <p className="text-sm font-medium text-center text-muted-foreground">
+          Secure Checkout • Free Returns • Fast Shipping
+        </p>
       </div>
       <div className="flex flex-wrap items-center gap-2.5 justify-between border-b py-5 -mt-2">
         <Button variant="link" asChild>
@@ -73,10 +117,7 @@ const ProductDetails = ({ product, variant, setVariant }) => {
             <span>Shipping and Return</span>
           </Link>
         </Button>
-        <ShareButton
-          productName={product?.name}
-          productUrl={product?.slug}
-        />
+        <ShareButton productName={product?.name} productUrl={product?.slug} />
       </div>
       <Accordion defaultValue="characteristics" collapsible>
         <AccordionItem value="characteristics">

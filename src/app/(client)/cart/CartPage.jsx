@@ -483,7 +483,7 @@ const CartPage = () => {
             </div>
 
             {/* Mobile Sticky Checkout */}
-            <div className="fixed bottom-0 left-0 right-0 z-50 bg-background border-t-2 p-4 pt-0 space-y-2 md:hidden rounded-t-2xl shadow-[0_-4px_6px_-1px_rgba(0_0_0_/_0.1)]">
+            <div className="fixed bottom-0 inset-x-0 z-50 bg-background border-t-2 p-4 pt-0 space-y-2 md:hidden rounded-t-2xl shadow-[0_-4px_6px_-1px_rgba(0_0_0_/_0.1)]">
               {!isClient ? (
                 <>
                   <p className="text-lg font-semibold pt-2">Order Summary</p>
