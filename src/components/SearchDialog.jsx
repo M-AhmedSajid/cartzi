@@ -167,7 +167,11 @@ const SearchDialog = () => {
                         </span>
                       )}
                       <Image
-                        src={urlFor(product?.image).width(100).height(130).auto("format").url()}
+                        src={urlFor(product?.image)
+                          .width(100)
+                          .height(130)
+                          .auto("format")
+                          .url()}
                         alt={product?.image?.alt}
                         width={100}
                         height={130}
@@ -194,7 +198,10 @@ const SearchDialog = () => {
                     size="text-lg"
                   />
                   <div className="flex items-center gap-2.5 justify-between">
-                    <StarRating rating={product?.rating ?? 4.2} />
+                    <StarRating
+                      rating={product?.rating ?? 4.2}
+                      className="hidden sm:inline"
+                    />
                     {itemsInCart.length > 0 ? (
                       <span className="text-xs px-2 py-1 rounded-full bg-green-100 text-green-700 font-medium line-clamp-1">
                         {itemsInCart.length} variant

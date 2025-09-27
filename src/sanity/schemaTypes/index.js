@@ -6,9 +6,10 @@ import { menuType } from './menuType'
 import { orderType } from './orderType'
 import { productType } from './productType'
 import { promoType } from './promoType'
+import { reviewType } from './reviewType'
 import { shippingRuleType } from './shippingRuleType'
 import { socialLinkType } from './socialLinkType'
 
 export const schema = {
-  types: [productType, categoryType, colorType, materialType, promoType, discountCodeType, shippingRuleType, menuType, socialLinkType, orderType],
+  types: [productType, categoryType, colorType, materialType, promoType, discountCodeType, shippingRuleType, menuType, socialLinkType, orderType, reviewType],
 }

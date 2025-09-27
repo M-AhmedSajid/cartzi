@@ -29,7 +29,20 @@ export const getProductBySlug = async (slug) => {
                     stock,
                     priceOverride
                 }
-            }
+            },
+            "reviews": *[_type == "review" && references(^._id)] | order(helpfulCount desc, date desc){
+                _id,
+                title,
+                rating,
+                comment,
+                authorName,
+                verifiedBuyer,
+                date,
+                helpfulCount,
+                variantDetails
+            },
+            "averageRating": round(math::avg(*[_type == "review" && product._ref == ^._id].rating), 1),
+            "reviewCount": count(*[_type == "review" && product._ref == ^._id])
         }
       `);
     try {

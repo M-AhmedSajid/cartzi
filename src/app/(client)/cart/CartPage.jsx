@@ -319,6 +319,7 @@ const CartPage = () => {
                             <StarRating
                               rating={item?.rating ?? 4.2}
                               size="size-3.5"
+                              className="hidden sm:inline"
                             />
                             <PriceDisplay
                               product={item.product}

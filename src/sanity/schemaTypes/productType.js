@@ -38,9 +38,46 @@ export const productType = defineType({
       name: 'description',
       title: 'Description',
       description: 'Detailed product description for customers.',
-      type: 'text',
-      rows: 4,
-      validation: (Rule) => Rule.required().min(0).max(2000),
+      type: 'array',
+      of: [
+        {
+          type: 'block',
+          styles: [
+            { title: 'Normal', value: 'normal' },
+            { title: 'H2', value: 'h2' },
+            { title: 'H3', value: 'h3' },
+            { title: 'H4', value: 'h4' },
+            { title: 'H5', value: 'h5' },
+            { title: 'H6', value: 'h6' },
+            { title: 'Quote', value: 'blockquote' },
+          ],
+          lists: [
+            { title: 'Bullet', value: 'bullet' },
+            { title: 'Numbered', value: 'number' },
+          ],
+          marks: {
+            decorators: [
+              { title: 'Strong', value: 'strong' },
+              { title: 'Emphasis', value: 'em' },
+            ],
+            annotations: [
+              {
+                name: 'link',
+                type: 'object',
+                title: 'Link',
+                fields: [
+                  {
+                    name: 'href',
+                    type: 'url',
+                    title: 'URL',
+                  },
+                ],
+              },
+            ],
+          },
+        },
+      ],
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'images',

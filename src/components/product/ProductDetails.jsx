@@ -43,12 +43,18 @@ const ProductDetails = ({ product, variant, setVariant }) => {
   return (
     <div className="space-y-3 relative">
       <h2 className="text-3xl md:text-4xl/10 font-bold">{product?.name}</h2>
-      <Link href="#rating" className="block">
-        <StarRating rating={4.2} size="size-5" />
-      </Link>
-      <p className="text-muted-foreground text-xs">
-        {product?.sku || (variant && variant.sku)}
-      </p>
+      <div className="flex items-center gap-5">
+        {product?.reviewCount > 0 ? (
+          <Link href="#rating" className="block">
+            <StarRating rating={product?.averageRating} size="size-5" />
+          </Link>
+        ) : (
+          <p className="text-xs text-muted-foreground">No reviews yet</p>
+        )}
+        <p className="text-muted-foreground text-xs">
+          {product?.sku || (variant && variant.sku)}
+        </p>
+      </div>
       <PriceDisplay product={product} variant={variant} size="text-2xl" />
       {!isInStock() ? (
         <p className="w-fit bg-red-100 text-red-600 text-center text-sm py-2.5 px-5 font-semibold rounded-lg">
@@ -64,7 +70,7 @@ const ProductDetails = ({ product, variant, setVariant }) => {
         </p>
       )}
       <p className="text-sm text-muted-foreground tracking-wide">
-        {product?.description}
+        {product?.intro}
       </p>
       {product?.variants && (
         <VariantsSelection variants={product?.variants} onChange={setVariant} />
