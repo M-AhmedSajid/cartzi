@@ -1,6 +1,7 @@
 "use server";
 
 import { backendClient } from "@/sanity/lib/backendClient";
+import { revalidatePath } from "next/cache";
 
 export async function submitReview(formData) {
     try {
@@ -30,6 +31,7 @@ export async function submitReview(formData) {
         };
 
         await backendClient.create(newReview);
+        revalidatePath(`/product/${formData.get("slug")}`);
         return { success: true, message: "Review submitted successfully!" };
     } catch (err) {
         console.error("Review submit error:", err);

@@ -5,6 +5,7 @@ import Footer from "@/components/layout/Footer";
 import { ClerkProvider } from "@clerk/nextjs";
 import USPStrip from "@/components/layout/USPStrip";
 import { Toaster } from "sonner";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const outfit = localFont({
   src: "../fonts/outfit.ttf",
@@ -36,6 +37,7 @@ export default function RootLayout({ children }) {
           {children}
           <Footer />
           <Toaster position="bottom-right" richColors />
+          <SpeedInsights />
         </body>
       </html>
     </ClerkProvider>

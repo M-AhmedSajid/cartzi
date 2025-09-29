@@ -92,6 +92,14 @@ export const reviewType = defineType({
             initialValue: 0,
             validation: (Rule) => Rule.min(0),
         }),
+        defineField({
+            name: "helpfulUsers",
+            title: "Helpful Voters",
+            description: "IDs of users who marked this review as helpful (prevents duplicate votes).",
+            type: "array",
+            of: [{ type: "string" }],
+            hidden: true,
+        }),
     ],
 
     preview: {
