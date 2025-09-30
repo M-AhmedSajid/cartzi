@@ -1,4 +1,4 @@
-import { currentUser } from "@clerk/nextjs/dist/types/server";
+import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import React from "react";
 
@@ -8,7 +8,7 @@ const OrdersPage = async () => {
     redirect("/");
   }
 
-//   const orders = await ;
+  //   const orders = await ;
   return <div>OrdersPage</div>;
 };
 
