@@ -3,6 +3,15 @@
 import stripe from "@/lib/stripe";
 import { urlFor } from "@/sanity/lib/image";
 
+function portableTextToPlainText(blocks) {
+    return blocks
+        .map(block => {
+            if (block._type !== 'block' || !block.children) return ''
+            return block.children.map(child => child.text).join('')
+        })
+        .join('\n')
+}
+
 export async function createCheckoutSession(items, metadata, shippingOptions, appliedDiscount = null) {
     try {
         // find existing customer
@@ -30,7 +39,7 @@ export async function createCheckoutSession(items, metadata, shippingOptions, ap
                     unit_amount: item.unitPriceCents,
                     product_data: {
                         name: nameParts.join(" "),
-                        ...(item.description ? { description: item.description } : {}),
+                        ...(item.description ? { description: portableTextToPlainText(item.description) } : {}),
                         images: item.image ? [urlFor(item.image).url()] : [],
                         metadata: {
                             productId: item.productId,

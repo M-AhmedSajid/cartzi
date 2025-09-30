@@ -1,13 +1,24 @@
 "use client";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import useCartStore from "../../../../store";
 import { motion } from "motion/react";
 import { Check, Home, Package, ShoppingCart } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { client } from "@/sanity/lib/client";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 const SuccessPage = () => {
+  const [summary, setSummary] = useState(null);
+  const [loading, setLoading] = useState(true);
   const { resetCart } = useCartStore();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -22,6 +33,32 @@ const SuccessPage = () => {
       resetCart();
     }
   }, [orderNumber, sessionId, router, resetCart]);
+
+  const query = `*[_type == "order" && orderNumber == $orderNumber][0]
+    {
+      items,
+      total,
+      "shipping": shipping.cost,
+      discount->{
+          code, value, discountType
+      }
+    }`;
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const response = await client.fetch(query, { orderNumber });
+        setSummary(await response);
+        console.log(await response);
+      } catch (error) {
+        console.log("Error in Fetching Order Summary Products", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
 
   return (
     <motion.div
@@ -56,18 +93,84 @@ const SuccessPage = () => {
       <div className="bg-background border rounded-lg p-4 text-left">
         <h2 className="font-semibold mb-2">Order Summary</h2>
         {/* Loop order items (example below) */}
-        <div className="space-y-3">
-          <div className="flex items-center gap-3">
-            <div className="w-16 h-20 bg-muted rounded-md" />
-            <div className="flex-grow">
-              <p className="font-medium">Black Hoodie</p>
-              <p className="text-sm text-muted-foreground">Size M • Qty 1</p>
-            </div>
-            <p className="font-medium">$49.99</p>
-          </div>
-        </div>
-        <p className="text-sm mt-3 text-muted-foreground">
-          Full details are in your email receipt.
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-[60%]">Product</TableHead>
+              <TableHead className="text-right">Qty</TableHead>
+              <TableHead className="text-right">Price</TableHead>
+              <TableHead className="text-right">Subtotal</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {summary
+              ? summary?.items.map((item, i) => (
+                  <TableRow key={i}>
+                    <TableCell className="font-medium whitespace-normal break-words">
+                      <span className="line-clamp-2">{item.name}</span>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {item.quantity}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      ${item.price.toFixed(2)}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      ${item.subtotal.toFixed(2)}
+                    </TableCell>
+                  </TableRow>
+                ))
+              : Array.from({ length: 3 }).map((x, i) => (
+                  <TableRow key={i}>
+                    <TableCell className="font-medium"></TableCell>
+                    <TableCell className="text-right"></TableCell>
+                    <TableCell className="text-right"></TableCell>
+                    <TableCell className="text-right"></TableCell>
+                  </TableRow>
+                ))}
+            <TableRow className="text-right">
+              <TableCell></TableCell>
+              <TableCell></TableCell>
+              <TableCell>Total:</TableCell>
+              <TableCell className="font-semibold">
+                $
+                {summary?.items
+                  ?.reduce((acc, item) => acc + item.subtotal, 0)
+                  .toFixed(2)}
+              </TableCell>
+            </TableRow>
+            <TableRow className="text-right">
+              <TableCell></TableCell>
+              <TableCell></TableCell>
+              <TableCell>Shipping:</TableCell>
+              <TableCell className="font-semibold">
+                {summary?.shipping === 0 ? "Free" : `$${summary?.shipping}`}
+              </TableCell>
+            </TableRow>
+            {summary?.discount && (
+              <TableRow className="text-right">
+                <TableCell className="text-left">Discount Code:</TableCell>
+                <TableCell></TableCell>
+                <TableCell>{summary?.discount?.code}</TableCell>
+                <TableCell className="font-semibold">-
+                  {summary?.discount?.discountType === "percentage"
+                    ? summary?.discount?.value + "%"
+                    : summary?.discount?.discountType === "fixed"
+                      ? "$" + summary?.discount?.value
+                      : "Free Shipping"}
+                </TableCell>
+              </TableRow>
+            )}
+            <TableRow className="text-right">
+              <TableCell></TableCell>
+              <TableCell></TableCell>
+              <TableCell>Grand Total:</TableCell>
+              <TableCell className="font-semibold">${summary?.total}</TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+        <p className="text-xs mt-3 text-muted-foreground">
+          A detailed receipt has been sent to your email.
         </p>
       </div>
       <div className="bg-background border rounded-lg p-4">

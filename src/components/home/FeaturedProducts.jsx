@@ -18,6 +18,7 @@ const FeaturedProducts = () => {
       name,
       intro,
       "slug": slug.current,
+      description,
       price,
       discount,
       stock,

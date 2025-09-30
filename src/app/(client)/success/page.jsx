@@ -24,7 +24,7 @@ export const metadata = {
 
 const Success = () => {
   return (
-    <div className="py-10 md:py-20 flex items-center justify-center">
+    <div className="py-5 md:py-10 flex items-center justify-center">
       <Suspense fallback={<p>Loading</p>}>
         <SuccessPage />
       </Suspense>

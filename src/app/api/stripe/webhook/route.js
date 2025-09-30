@@ -67,7 +67,7 @@ export async function POST(req) {
                             : null,
                         quantity: item.quantity,
                         price: item.price?.unit_amount / 100,
-                        subtotal: (item.amount_total ?? 0) / 100,
+                        subtotal: (item.amount_subtotal ?? 0) / 100,
                     };
                 }),
                 shipping: {

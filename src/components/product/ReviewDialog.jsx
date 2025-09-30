@@ -16,12 +16,15 @@ import { submitReview } from "@/actions/review";
 import { useRef, useState } from "react";
 import StarRating from "./StarRating";
 import { toast } from "sonner";
+import { useClerk, useUser } from "@clerk/nextjs";
 
 const ReviewDialog = ({ productId, slug }) => {
   const [rating, setRating] = useState(0);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const form = useRef(null);
+  const { isSignedIn, user } = useUser();
+  const { openSignIn } = useClerk();
 
   async function handleSubmit(formData) {
     setLoading(true);
@@ -67,7 +70,19 @@ const ReviewDialog = ({ productId, slug }) => {
     }
   }
 
-  return (
+  return !isSignedIn ? (
+    <Button
+      className="w-full md:w-auto"
+      size="lg"
+      onClick={() =>
+        openSignIn({
+          afterSignInUrl: `/product/${slug}`,
+        })
+      }
+    >
+      ✍️ Write a Review
+    </Button>
+  ) : (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="w-full md:w-auto" size="lg">
