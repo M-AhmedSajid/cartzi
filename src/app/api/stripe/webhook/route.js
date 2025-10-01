@@ -32,48 +32,59 @@ export async function POST(req) {
 
     try {
         if (event.type === "checkout.session.completed") {
-            const session = event.data.object;
+            const session = await stripe.checkout.sessions.retrieve(
+                event.data.object.id,
+                {
+                    expand: ["shipping_cost.shipping_rate"],
+                }
+            );
 
             // Expand line items
             const lineItems = await stripe.checkout.sessions.listLineItems(session.id, {
                 expand: ["data.price.product"],
             });
 
-            // Parse items metadata we sent from the cart
+            // Parse cart items metadata (fallback if needed)
             const cartItems = session.metadata?.items
                 ? JSON.parse(session.metadata.items)
                 : [];
+
+            const sanityRuleId = session.shipping_cost?.shipping_rate?.metadata?.sanityShippingRuleId;
 
             // Build order doc for Sanity
             const orderDoc = {
                 _type: "order",
                 orderNumber: session.metadata?.orderNumber || session.id,
                 customer: {
-                    name: session.metadata?.customerName,
+                    accountName: session.metadata?.customerName,
+                    shippingName: session.customer_details?.name,
                     email: session.metadata?.customerEmail,
                     clerkUserId: session.metadata?.clerkUserId,
                 },
                 items: lineItems.data.map((item, idx) => {
-                    const cartItem = cartItems[idx]; // match order
+                    const product = item.price?.product;
+                    const productMeta = product?.metadata || {};
+                    const cartItem = cartItems[idx]; // still used as fallback
+
                     return {
                         _key: item.id,
-                        product: cartItem?.productId
-                            ? { _type: "reference", _ref: cartItem.productId }
-                            : null,
-                        name: item.description,
-                        sku: cartItem?.variant?.sku || cartItem?.sku,
-                        variant: cartItem?.variant
-                            ? `${cartItem.variant.colorName ?? ""} ${cartItem.variant.size ?? ""}`.trim()
-                            : null,
+                        product: productMeta.productId
+                            ? { _type: "reference", _ref: productMeta.productId }
+                            : cartItem?.productId
+                                ? { _type: "reference", _ref: cartItem.productId }
+                                : null,
+                        name: product?.name || item.description, // prefer product name from Stripe
+                        sku: productMeta.variantSku || cartItem?.variant?.sku || cartItem?.sku || null,
+                        variant: [productMeta.color, productMeta.size].filter(Boolean).join(" / ") || null,
                         quantity: item.quantity,
-                        price: item.price?.unit_amount / 100,
+                        price: (item.price?.unit_amount ?? 0) / 100,
                         subtotal: (item.amount_subtotal ?? 0) / 100,
                     };
                 }),
                 shipping: {
-                    rule: session.metadata?.shippingRuleId
-                        ? { _type: "reference", _ref: session.metadata.shippingRuleId }
-                        : null,
+                    ...(sanityRuleId && {
+                        rule: { _type: "reference", _ref: sanityRuleId },
+                    }),
                     address: session.customer_details?.address
                         ? {
                             line1: session.customer_details.address.line1,
@@ -88,11 +99,10 @@ export async function POST(req) {
                         ? session.shipping_cost.amount_total / 100
                         : 0,
                 },
-
-                discount: session.metadata?.discountId
-                    ? { _type: "reference", _ref: session.metadata.discountId }
-                    : null,
-                total: session.amount_total / 100,
+                ...(session.metadata?.discountId
+                    ? { discount: { _type: "reference", _ref: session.metadata.discountId } }
+                    : {}),
+                total: (session.amount_total ?? 0) / 100,
                 status: "paid",
                 payment: {
                     provider: "stripe",
@@ -102,6 +112,7 @@ export async function POST(req) {
                 },
                 createdAt: new Date().toISOString(),
             };
+
 
             // Save in Sanity
             await backendClient.create(orderDoc);

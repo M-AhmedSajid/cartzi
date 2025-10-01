@@ -18,7 +18,8 @@ export const orderType = defineType({
             title: "Customer",
             type: "object",
             fields: [
-                { name: "name", title: "Full Name", type: "string" },
+                { name: "accountName", title: "Account Name", type: "string" },
+                { name: "shippingName", title: "Shipping Name", type: "string" },
                 { name: "email", title: "Email", type: "string" },
                 { name: "clerkUserId", title: "Clerk User ID", type: "string" },
             ],
@@ -126,12 +127,13 @@ export const orderType = defineType({
         select: {
             title: "orderNumber",
             subtitle: "status",
-            customer: "customer.name",
+            shippingName: "customer.shippingName",
+            accountName: "customer.accountName",
         },
-        prepare({ title, subtitle, customer }) {
+        prepare({ title, subtitle, shippingName, accountName }) {
             return {
                 title: title || "Order",
-                subtitle: `${subtitle} • ${customer ?? "Guest"}`,
+                subtitle: `${subtitle} • ${shippingName || accountName || "Guest"}`,
             };
         },
     },

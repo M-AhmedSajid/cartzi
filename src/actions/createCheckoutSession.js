@@ -29,21 +29,23 @@ export async function createCheckoutSession(items, metadata, shippingOptions, ap
 
         // build line items
         const lineItems = items.map((item) => {
-            const nameParts = [item.name];
-            if (item.variant?.colorName) nameParts.push(item.variant.colorName);
-            if (item.variant?.size) nameParts.push(item.variant.size);
-
+            const variantParts = [item.variant?.colorName, item.variant?.size].filter(Boolean);
+            const productName = variantParts.length
+                ? `${item.name} - ${variantParts.join(" / ")}`
+                : item.name;
             return {
                 price_data: {
                     currency: "USD",
                     unit_amount: item.unitPriceCents,
                     product_data: {
-                        name: nameParts.join(" "),
+                        name: productName,
                         ...(item.description ? { description: portableTextToPlainText(item.description) } : {}),
                         images: item.image ? [urlFor(item.image).url()] : [],
                         metadata: {
                             productId: item.productId,
-                            variantSku: item.variant?.sku || "",
+                            variantSku: item.variant?.sku || null,
+                            size: item.variant?.size || null,
+                            color: item.variant?.colorName || null,
                         },
                     },
                 },
@@ -123,6 +125,9 @@ export async function createCheckoutSession(items, metadata, shippingOptions, ap
                     currency: "USD",
                 },
                 type: "fixed_amount",
+                metadata: {
+                    sanityShippingRuleId: rule._id,
+                },
             };
 
             if (rule.freeOver) {

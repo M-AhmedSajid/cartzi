@@ -1,6 +1,6 @@
 "use client";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import useCartStore from "../../../../store";
 import { motion } from "motion/react";
 import { Check, Home, Package, ShoppingCart } from "lucide-react";
@@ -15,6 +15,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Skeleton } from "@/components/ui/skeleton";
+import { priceFormatter } from "@/lib";
 
 const SuccessPage = () => {
   const [summary, setSummary] = useState(null);
@@ -60,13 +62,13 @@ const SuccessPage = () => {
     fetchData();
   }, []);
 
+  const subtotal = useMemo(
+    () => summary?.items?.reduce((acc, item) => acc + item.subtotal, 0) || 0,
+    [summary]
+  );
+
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="bg-card rounded-2xl shadow-xl p-8 max-w-md w-full space-y-8 border text-center"
-    >
+    <div className="bg-card rounded-2xl shadow-xl p-8 max-w-md w-full space-y-8 border text-center">
       <motion.div
         animate={{ scale: [1, 1.15, 1], rotate: [0, 20, -20, 0] }}
         transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
@@ -92,7 +94,6 @@ const SuccessPage = () => {
       {/* Order Snapshot */}
       <div className="bg-background border rounded-lg p-4 text-left">
         <h2 className="font-semibold mb-2">Order Summary</h2>
-        {/* Loop order items (example below) */}
         <Table>
           <TableHeader>
             <TableRow>
@@ -103,74 +104,127 @@ const SuccessPage = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {summary
-              ? summary?.items.map((item, i) => (
+            {!loading
+              ? summary.items.map((item, i) => (
                   <TableRow key={i}>
                     <TableCell className="font-medium whitespace-normal break-words">
                       <span className="line-clamp-2">{item.name}</span>
+                      {item.variant && (
+                        <p className="text-xs text-muted-foreground">
+                          {item.variant}
+                        </p>
+                      )}
                     </TableCell>
                     <TableCell className="text-right">
                       {item.quantity}
                     </TableCell>
                     <TableCell className="text-right">
-                      ${item.price.toFixed(2)}
+                      {priceFormatter(item.price)}
                     </TableCell>
                     <TableCell className="text-right">
-                      ${item.subtotal.toFixed(2)}
+                      {priceFormatter(item.subtotal)}
                     </TableCell>
                   </TableRow>
                 ))
-              : Array.from({ length: 3 }).map((x, i) => (
+              : Array.from({ length: 3 }).map((_, i) => (
                   <TableRow key={i}>
-                    <TableCell className="font-medium"></TableCell>
-                    <TableCell className="text-right"></TableCell>
-                    <TableCell className="text-right"></TableCell>
-                    <TableCell className="text-right"></TableCell>
+                    <TableCell className="space-y-[0.3125rem]">
+                      <Skeleton className="h-4 w-full" />
+                      <Skeleton className="h-4 w-1/2" />
+                      <Skeleton className="h-3.5 w-5" />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton className="ml-auto h-[1.125rem]" />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton className="ml-auto h-[1.125rem] w-10" />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton className="ml-auto h-[1.125rem] w-12" />
+                    </TableCell>
                   </TableRow>
                 ))}
+
+            {/* Totals */}
             <TableRow className="text-right">
               <TableCell></TableCell>
               <TableCell></TableCell>
-              <TableCell>Total:</TableCell>
+              <TableCell>Subtotal:</TableCell>
               <TableCell className="font-semibold">
-                $
-                {summary?.items
-                  ?.reduce((acc, item) => acc + item.subtotal, 0)
-                  .toFixed(2)}
+                {!loading ? (
+                  priceFormatter(subtotal)
+                ) : (
+                  <Skeleton className="ml-auto h-[1.125rem] w-14" />
+                )}
               </TableCell>
             </TableRow>
+
+            {summary?.discount && (
+              <TableRow className="text-right">
+                <TableCell className="text-left">Discount Code:</TableCell>
+                <TableCell></TableCell>
+                <TableCell>
+                  {!loading ? (
+                    summary.discount.code
+                  ) : (
+                    <Skeleton className="ml-auto h-[1.125rem] w-full" />
+                  )}
+                </TableCell>
+                <TableCell className="font-semibold text-red-500 whitespace-normal break-words">
+                  {!loading ? (
+                    summary.discount.discountType === "percentage" ? (
+                      "-" + summary.discount.value + "%"
+                    ) : summary.discount.discountType === "fixed" ? (
+                      "-" + priceFormatter(summary.discount.value)
+                    ) : (
+                      "Free Shipping"
+                    )
+                  ) : (
+                    <Skeleton className="ml-auto h-[1.125rem] w-8" />
+                  )}
+                </TableCell>
+              </TableRow>
+            )}
+
             <TableRow className="text-right">
               <TableCell></TableCell>
               <TableCell></TableCell>
               <TableCell>Shipping:</TableCell>
               <TableCell className="font-semibold">
-                {summary?.shipping === 0 ? "Free" : `$${summary?.shipping}`}
+                {!loading ? (
+                  summary?.shipping === 0 ? (
+                    "Free"
+                  ) : (
+                    priceFormatter(summary?.shipping || 0)
+                  )
+                ) : (
+                  <Skeleton className="ml-auto h-[1.125rem] w-8" />
+                )}
               </TableCell>
             </TableRow>
-            {summary?.discount && (
-              <TableRow className="text-right">
-                <TableCell className="text-left">Discount Code:</TableCell>
-                <TableCell></TableCell>
-                <TableCell>{summary?.discount?.code}</TableCell>
-                <TableCell className="font-semibold">-
-                  {summary?.discount?.discountType === "percentage"
-                    ? summary?.discount?.value + "%"
-                    : summary?.discount?.discountType === "fixed"
-                      ? "$" + summary?.discount?.value
-                      : "Free Shipping"}
-                </TableCell>
-              </TableRow>
-            )}
-            <TableRow className="text-right">
+
+            <TableRow className="text-right border-t-2 border-muted">
               <TableCell></TableCell>
               <TableCell></TableCell>
-              <TableCell>Grand Total:</TableCell>
-              <TableCell className="font-semibold">${summary?.total}</TableCell>
+              <TableCell className="font-semibold">Grand Total:</TableCell>
+              <TableCell className="font-bold text-lg">
+                {!loading ? (
+                  priceFormatter(summary?.total || 0)
+                ) : (
+                  <Skeleton className="ml-auto h-7 w-full" />
+                )}
+              </TableCell>
             </TableRow>
           </TableBody>
         </Table>
+
         <p className="text-xs mt-3 text-muted-foreground">
-          A detailed receipt has been sent to your email.
+          A detailed receipt has been sent to your email. Didn&apos;t get it?
+          Check spam or{" "}
+          <a href="/orders" className="underline">
+            track your order
+          </a>
+          .
         </p>
       </div>
       <div className="bg-background border rounded-lg p-4">
@@ -209,7 +263,7 @@ const SuccessPage = () => {
           Contact support
         </Link>
       </p>
-    </motion.div>
+    </div>
   );
 };
 
