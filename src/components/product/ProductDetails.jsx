@@ -24,7 +24,7 @@ import { Separator } from "@/components/ui/separator";
 import PriceDisplay from "./PriceDisplay";
 import StarRating from "./StarRating";
 
-const ProductDetails = ({ product, variant, setVariant }) => {
+const ProductDetails = ({ product, variant, setVariant, reviews }) => {
   const isInStock = () => {
     if (variant) {
       return variant.stock > 0;
@@ -44,9 +44,9 @@ const ProductDetails = ({ product, variant, setVariant }) => {
     <div className="space-y-3 relative">
       <h2 className="text-3xl md:text-4xl/10 font-bold">{product?.name}</h2>
       <div className="flex items-center gap-5">
-        {product?.reviewCount > 0 ? (
+        {reviews?.reviewCount > 0 ? (
           <Link href="#rating" className="block">
-            <StarRating rating={product?.averageRating} size="size-5" />
+            <StarRating rating={reviews?.averageRating} size="size-5" />
           </Link>
         ) : (
           <p className="text-xs text-muted-foreground">No reviews yet</p>

@@ -50,6 +50,10 @@ const ReviewDialog = ({ productId, slug }) => {
         toast.error("Name must be at least 3 characters long.");
         return;
       }
+      if (isSignedIn) {
+        // await 
+        formData.append("verifiedBuyer", user?.id);
+      }
       formData.append("slug", slug);
       const result = await submitReview(formData);
 

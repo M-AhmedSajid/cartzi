@@ -7,8 +7,10 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { getReviewsByProduct } from "@/sanity/helpers";
 import { getProductBySlug } from "@/sanity/helpers/product";
 import { urlFor } from "@/sanity/lib/image";
+import { currentUser } from "@clerk/nextjs/server";
 import { notFound } from "next/navigation";
 import React from "react";
 
@@ -63,7 +65,9 @@ export async function generateMetadata({ params }) {
 
 const SingleProductPage = async ({ params }) => {
   const { slug } = await params;
+  const user = await currentUser();
   const product = await getProductBySlug(slug);
+  const reviews = await getReviewsByProduct(product._id, user ? user.id : null);
 
   if (!product) {
     return notFound();
@@ -99,7 +103,7 @@ const SingleProductPage = async ({ params }) => {
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-      <ProductView product={product} />
+      <ProductView product={product} reviews={reviews} />
     </div>
   );
 };

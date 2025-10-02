@@ -4,7 +4,7 @@ import { ImageGallery } from "./ImageGallery";
 import ProductDetails from "./ProductDetails";
 import ProductTabs from "./ProductTabs";
 
-function ProductView({ product }) {
+function ProductView({ product, reviews }) {
   const [variant, setVariant] = useState(null);
 
   return (
@@ -18,8 +18,9 @@ function ProductView({ product }) {
         product={product}
         variant={variant}
         setVariant={setVariant}
+        reviews={reviews}
       />
-      <ProductTabs product={product} />
+      <ProductTabs product={product} reviews={reviews} />
     </>
   );
 }

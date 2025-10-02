@@ -3,7 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { PortableText } from "next-sanity";
 import ReviewTab from "./ReviewTab";
 
-const ProductTabs = ({ product }) => {
+const ProductTabs = ({ product, reviews }) => {
   const components = {
     block: {
       h2: ({ children }) => (
@@ -58,7 +58,7 @@ const ProductTabs = ({ product }) => {
           value="reviews"
           className="data-[state=active]:shadow-none flex-none hover:border-b border-accent border-0 rounded-none hover:text-primary data-[state=active]:border-b data-[state=active]:border-primary data-[state=active]:text-primary text-muted-foreground"
         >
-          Reviews ({product?.reviewCount})
+          Reviews ({reviews?.reviewCount})
         </TabsTrigger>
         <TabsTrigger
           value="qanda"
@@ -71,7 +71,7 @@ const ProductTabs = ({ product }) => {
         <PortableText value={product.description} components={components} />
       </TabsContent>
       <TabsContent value="reviews">
-        <ReviewTab product={product} />
+        <ReviewTab product={product} reviews={reviews} />
       </TabsContent>
     </Tabs>
   );

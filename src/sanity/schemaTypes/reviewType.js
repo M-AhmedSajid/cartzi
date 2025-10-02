@@ -75,7 +75,13 @@ export const reviewType = defineType({
             type: "boolean",
             initialValue: false,
         }),
-
+        defineField({
+            name: "clerkUserId",
+            title: "Clerk User ID",
+            type: "string",
+            description: "The Clerk user ID of the reviewer (enforces unique review per product).",
+            readOnly: true,
+        }),
         defineField({
             name: "date",
             title: "Review Date",
