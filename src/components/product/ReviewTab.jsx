@@ -7,8 +7,35 @@ import { dateFormatter } from "@/lib";
 import ReviewDialog from "./ReviewDialog";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
+import { toast } from "sonner";
+import { deleteReview } from "@/actions/review";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "../ui/alert-dialog";
+import { useState } from "react";
 
 const ReviewTab = ({ product, reviews }) => {
+  const [loading, setLoading] = useState(false);
+
+  const handleDelete = async (reviewId) => {
+    setLoading(true);
+    const result = await deleteReview(reviewId, product?.slug);
+    if (result.success) {
+      toast.success(result.message);
+    } else {
+      toast.error(result.message);
+    }
+    setLoading(false);
+  };
+
   return (
     <>
       <div className="md:flex justify-between items-center space-y-3 md:space-y-0 border-b pb-5">
@@ -28,7 +55,7 @@ const ReviewTab = ({ product, reviews }) => {
         <ReviewDialog
           productId={product?._id}
           slug={product?.slug}
-          variant={product?.variants}
+          variants={product?.variants}
         />
       </div>
       {reviews?.reviewCount > 0 ? (
@@ -41,9 +68,39 @@ const ReviewTab = ({ product, reviews }) => {
                   <Button size="sm" variant="ghost" className="size-7">
                     <Pencil className="size-[1.125rem]" />
                   </Button>
-                  <Button size="sm" variant="ghost" className="size-7 text-destructive hover:bg-destructive/75 hover:text-background">
-                    <Trash2 className="size-[1.125rem]" />
-                  </Button>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="size-7 text-destructive hover:bg-destructive/75 hover:text-background"
+                      >
+                        <Trash2 className="size-[1.125rem]" />
+                      </Button>
+                    </AlertDialogTrigger>
+
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Delete this review?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This action cannot be undone. Your review will be
+                          permanently removed.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel disabled={loading}>
+                          No
+                        </AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={() => handleDelete(review._id)}
+                          disabled={loading}
+                          variant="destructive"
+                        >
+                          {loading ? "Deleting..." : "Yes, Delete"}
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 </div>
               </div>
             )}
@@ -62,7 +119,9 @@ const ReviewTab = ({ product, reviews }) => {
                 </Tooltip>
               )}
               <span className="font-bold">•</span>
-              <span>{review.date ? dateFormatter(review.date): "No Date"}</span>
+              <span>
+                {review.date ? dateFormatter(review.date) : "No Date"}
+              </span>
             </div>
             {review.variantDetails && (
               <p className="text-sm text-muted-foreground">

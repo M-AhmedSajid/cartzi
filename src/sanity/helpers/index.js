@@ -44,7 +44,7 @@ export const getMyOrders = async (userId) => {
 
 export const getReviewsByProduct = async (productId, clerkUserId = null) => {
     if (!productId) {
-        throw new Error("❌ productId is required to fetch reviews");
+        throw new Error("productId is required to fetch reviews");
     }
 
     const REVIEWS_QUERY = defineQuery(`
@@ -94,7 +94,7 @@ export const getReviewsByProduct = async (productId, clerkUserId = null) => {
             reviewCount: result?.data?.reviewCount || 0,
         };
     } catch (error) {
-        console.error("❌ Error fetching product reviews:", error);
+        console.error("Error fetching product reviews:", error);
         return { reviews: [], averageRating: 0, reviewCount: 0 };
     }
 };

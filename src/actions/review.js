@@ -2,8 +2,6 @@
 
 import { backendClient } from "@/sanity/lib/backendClient";
 import { revalidatePath } from "next/cache";
-import { defineQuery } from "next-sanity";
-import { sanityFetch } from "@/sanity/lib/live";
 
 export async function submitReview(formData) {
     try {
@@ -13,84 +11,56 @@ export async function submitReview(formData) {
         const comment = formData.get("comment");
         const authorName = formData.get("authorName") || "Anonymous";
         const slug = formData.get("slug");
-
-        // Clerk user info
-        const clerkUserId = formData.get("verifiedBuyer") || null;
-        console.log("➡️ Review submission received", {
-      productId,
-      title,
-      rating,
-      comment,
-      authorName,
-      slug,
-      clerkUserId,
-    });
+        const clerkUserId = formData.get("clerkUserId") || null;
+        const variantSku = formData.get("variantSku") || null;
+        const isVerified = Boolean(clerkUserId);
 
         if (!productId || !title || !rating || !comment) {
             return { success: false, message: "All fields are required." };
         }
 
-        /* ---------------- Verify Buyer & Get Variant ---------------- */
-        let isVerified = false;
-        let variantDetails = null;
+        // 🔍 Check if review already exists
+        let existing = null;
 
-        if (clerkUserId) {
-            const VERIFIED_BUYER_QUERY = defineQuery(`
-                *[_type == "order" && customer.clerkUserId == $clerkUserId]{
-                    items[]{
-                        product->{_id},
-                        variant
-                    }
-                }
-            `);
-
-            const orders = await sanityFetch({
-                query: VERIFIED_BUYER_QUERY,
-                params: { clerkUserId },
+        if (variantSku) {
+            // ✅ Verified buyer with variant — check product + user + variant
+            const EXISTING_REVIEW_QUERY = `
+                *[_type == "review" 
+                && product._ref == $productId 
+                && clerkUserId == $clerkUserId 
+                && variantDetails.color == $color 
+                && variantDetails.size == $size][0]{_id}
+            `;
+            const [color, size] = variantSku.split("/").map((s) => s.trim());
+            existing = await backendClient.fetch(EXISTING_REVIEW_QUERY, {
+                productId,
+                clerkUserId,
+                color,
+                size,
             });
-      console.log("🧾 Orders found for user:", orders);
-
-            const purchasedItems =
-                orders?.data?.flatMap((o) => o.items || []) || [];
-
-      console.log("🛒 Flattened purchased items:", purchasedItems);
-            const match = purchasedItems.find(
-                (i) => i.product?._id === productId
-            );
-            
-      console.log("🎯 Matched purchased item:", match);
-
-            if (match) {
-                isVerified = true;
-                if (match.variant) {
-                    const parts = match.variant.split("/").map((s) => s.trim());
-                    variantDetails = {
-                        color: parts[0] || null,
-                        size: parts[1] || null,
-                    };
-                    
-          console.log("🎨 Parsed variant details:", variantDetails);
-                }
-            }
+        } else {
+            // Unverified buyer — only one review per product
+            const EXISTING_REVIEW_QUERY = `
+                *[_type == "review" 
+                && product._ref == $productId 
+                && clerkUserId == $clerkUserId][0]{_id}
+            `;
+            existing = await backendClient.fetch(EXISTING_REVIEW_QUERY, {
+                productId,
+                clerkUserId,
+            });
         }
 
-        /* ---------------- Check for Existing Review ---------------- */
-        const EXISTING_REVIEW_QUERY = defineQuery(`
-            *[_type == "review" && product._ref == $productId && clerkUserId == $clerkUserId][0]{_id}
-        `);
-
-        const existing = await sanityFetch({
-            query: EXISTING_REVIEW_QUERY,
-            params: { productId, clerkUserId },
-        });
-    console.log("🔍 Existing review result:", existing);
-
-        if (existing?.data?._id) {
-      console.log("🗑️ Deleting old review:", existing.data._id);
-            await backendClient.delete(existing.data._id);
+        if (existing?._id) {
+            return {
+                success: false,
+                message: variantSku
+                    ? "You already reviewed this variant."
+                    : "You already reviewed this product.",
+            };
         }
 
-        /* ---------------- Create New Review ---------------- */
+        // 🆕 Create new review
         const newReview = {
             _type: "review",
             title,
@@ -101,20 +71,16 @@ export async function submitReview(formData) {
             date: new Date().toISOString(),
             helpfulCount: 0,
             clerkUserId,
-            product: {
-                _type: "reference",
-                _ref: productId,
-            },
+            product: { _type: "reference", _ref: productId },
         };
 
-        if (variantDetails) {
-            newReview.variantDetails = variantDetails;
+        if (variantSku) {
+            const [color, size] = variantSku.split("/").map((s) => s.trim());
+            newReview.variantDetails = { color, size };
         }
 
-    console.log("📝 Creating new review:", newReview);
         await backendClient.create(newReview);
 
-    console.log("✅ Review created successfully for product:", productId);
         revalidatePath(`/product/${slug}`);
 
         return { success: true, message: "Review submitted successfully!" };
@@ -122,4 +88,20 @@ export async function submitReview(formData) {
         console.error("Review submit error:", err);
         return { success: false, message: "Something went wrong." };
     }
+}
+
+export async function deleteReview(reviewId, slug) {
+  try {
+    if (!reviewId) {
+      return { success: false, message: "Invalid review ID." };
+    }
+
+    await backendClient.delete(reviewId);
+    revalidatePath(`/product/${slug}`);
+
+    return { success: true, message: "Review deleted successfully." };
+  } catch (err) {
+    console.error("Delete review error:", err);
+    return { success: false, message: "Failed to delete review." };
+  }
 }

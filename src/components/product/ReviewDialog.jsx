@@ -13,18 +13,60 @@ import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
 import { Input } from "../ui/input";
 import { submitReview } from "@/actions/review";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import StarRating from "./StarRating";
 import { toast } from "sonner";
 import { useClerk, useUser } from "@clerk/nextjs";
+import { client } from "@/sanity/lib/client";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 
-const ReviewDialog = ({ productId, slug }) => {
+const ReviewDialog = ({ productId, slug, variants }) => {
   const [rating, setRating] = useState(0);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isVerifiedBuyer, setIsVerifiedBuyer] = useState(false);
+  const [orderedVariants, setOrderedVariants] = useState([]);
+  const [selectedVariant, setSelectedVariant] = useState("");
   const form = useRef(null);
   const { isSignedIn, user } = useUser();
   const { openSignIn } = useClerk();
+  const query = `*[_type == "order" && customer.clerkUserId == $clerkUserId]{
+        items[]{
+          product->{_id, name},
+          variant
+        }
+      }`;
+
+  useEffect(() => {
+    async function fetchBuyerVariants() {
+      if (isSignedIn && open) {
+        console.log(user?.id);
+        const orders = await client.fetch(query, { clerkUserId: user?.id });
+        const items = (await orders?.flatMap((o) => o.items || [])) || [];
+        const variants = items
+          .filter((i) => i.product?._id === productId && i.variant)
+          .map((i) => {
+            const [colorName, size] = i.variant.split("/").map((x) => x.trim());
+            return { sku: i.variant, colorName, size };
+          });
+        // remove duplicates by SKU
+        const uniqueVariants = Array.from(
+          new Map(variants.map((v) => [v.sku, v])).values()
+        );
+
+        setIsVerifiedBuyer(uniqueVariants.length > 0);
+        setOrderedVariants(uniqueVariants);
+        console.log(uniqueVariants);
+      }
+    }
+    fetchBuyerVariants();
+  }, [open, isSignedIn, productId, user?.id]);
 
   async function handleSubmit(formData) {
     setLoading(true);
@@ -50,9 +92,19 @@ const ReviewDialog = ({ productId, slug }) => {
         toast.error("Name must be at least 3 characters long.");
         return;
       }
+      if (
+        isVerifiedBuyer &&
+        variants?.length > 0 &&
+        !selectedVariant
+      ) {
+        toast.error("Please select the variant you purchased.");
+        return;
+      }
       if (isSignedIn) {
-        // await 
-        formData.append("verifiedBuyer", user?.id);
+        formData.append("clerkUserId", user?.id);
+      }
+      if (selectedVariant) {
+        formData.append("variantSku", selectedVariant);
       }
       formData.append("slug", slug);
       const result = await submitReview(formData);
@@ -127,6 +179,30 @@ const ReviewDialog = ({ productId, slug }) => {
             />
             <p className="text-xs text-muted-foreground">Select 1 to 5 stars</p>
           </div>
+          {/* 🧩 Variant Selector */}
+          {isVerifiedBuyer && variants?.length > 0 && (
+            <div>
+              <Label htmlFor="variant">Select Variant</Label>
+              <Select
+                onValueChange={(value) => setSelectedVariant(value)}
+                value={selectedVariant}
+              >
+                <SelectTrigger id="variant" className="w-full">
+                  <SelectValue placeholder="Select one" />
+                </SelectTrigger>
+                <SelectContent>
+                  {orderedVariants.map((v) => (
+                    <SelectItem key={v.sku} value={v.sku}>
+                      {v.colorName} / {v.size}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-muted-foreground">
+                Only variants you purchased are shown.
+              </p>
+            </div>
+          )}
           <div>
             <Label htmlFor="comment">Your Review</Label>
             <Textarea
