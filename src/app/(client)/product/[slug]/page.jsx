@@ -73,7 +73,7 @@ const SingleProductPage = async ({ params }) => {
     return notFound();
   }
   return (
-    <div className="max-w-screen-xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-10 py-10">
+    <div className="max-w-screen-xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-5 pt-5 pb-10 md:gap-10 md:py-10">
       <Breadcrumb className="md:col-span-2">
         <BreadcrumbList>
           <BreadcrumbItem>

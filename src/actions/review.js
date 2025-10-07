@@ -1,7 +1,8 @@
 "use server";
 
 import { backendClient } from "@/sanity/lib/backendClient";
-import { revalidatePath } from "next/cache";
+import { client } from "@/sanity/lib/client";
+import { revalidateTag } from "next/cache";
 
 export async function submitReview(formData) {
     try {
@@ -10,7 +11,6 @@ export async function submitReview(formData) {
         const rating = Number(formData.get("rating"));
         const comment = formData.get("comment");
         const authorName = formData.get("authorName") || "Anonymous";
-        const slug = formData.get("slug");
         const clerkUserId = formData.get("clerkUserId") || null;
         const variantSku = formData.get("variantSku") || null;
         const isVerified = Boolean(clerkUserId);
@@ -45,7 +45,7 @@ export async function submitReview(formData) {
                 && product._ref == $productId 
                 && clerkUserId == $clerkUserId][0]{_id}
             `;
-            existing = await backendClient.fetch(EXISTING_REVIEW_QUERY, {
+            existing = await client.fetch(EXISTING_REVIEW_QUERY, {
                 productId,
                 clerkUserId,
             });
@@ -80,8 +80,7 @@ export async function submitReview(formData) {
         }
 
         await backendClient.create(newReview);
-
-        revalidatePath(`/product/${slug}`);
+        revalidateTag(`reviews:${productId}`)
 
         return { success: true, message: "Review submitted successfully!" };
     } catch (err) {
@@ -90,18 +89,111 @@ export async function submitReview(formData) {
     }
 }
 
-export async function deleteReview(reviewId, slug) {
-  try {
-    if (!reviewId) {
-      return { success: false, message: "Invalid review ID." };
+export async function updateReview(formData, reviewId) {
+    try {
+        const productId = formData.get("productId");
+        const title = formData.get("title");
+        const rating = Number(formData.get("rating"));
+        const comment = formData.get("comment");
+        const authorName = formData.get("authorName") || "Anonymous";
+        const variantSku = formData.get("variantSku") || null;
+        const slug = formData.get("slug");
+
+        if (!reviewId) {
+            return { success: false, message: "Invalid review ID." };
+        }
+
+        const updatedReview = {
+            title,
+            rating,
+            comment,
+            authorName,
+            date: new Date().toISOString(),
+        };
+
+        if (variantSku) {
+            const [color, size] = variantSku.split("/").map((s) => s.trim());
+            updatedReview.variantDetails = { color, size };
+        }
+
+        await backendClient
+            .patch(reviewId)
+            .set(updatedReview)
+            .commit();
+
+        revalidateTag(`reviews:${productId}`)
+
+        return { success: true, message: "Review updated successfully!" };
+    } catch (err) {
+        console.error("Review update error:", err);
+        return { success: false, message: "Failed to update review." };
+    }
+}
+
+export async function deleteReview(reviewId, productId) {
+    try {
+        if (!reviewId) {
+            return { success: false, message: "Invalid review ID." };
+        }
+
+        await backendClient.delete(reviewId);
+        revalidateTag(`reviews:${productId}`)
+
+        return { success: true, message: "Review deleted successfully." };
+    } catch (err) {
+        console.error("Delete review error:", err);
+        return { success: false, message: "Failed to delete review." };
+    }
+}
+
+export async function toggleReviewHelpful(reviewId, productId, userId) {
+    if (!userId) {
+        return { success: false, message: "You must be logged in to vote." };
     }
 
-    await backendClient.delete(reviewId);
-    revalidatePath(`/product/${slug}`);
+    try {
+        const review = await client.fetch(
+            `*[_type == "review" && _id == $reviewId][0]{
+        helpfulUsers,
+        helpfulCount
+      }`,
+            { reviewId }
+        );
 
-    return { success: true, message: "Review deleted successfully." };
-  } catch (err) {
-    console.error("Delete review error:", err);
-    return { success: false, message: "Failed to delete review." };
-  }
+        if (!review) {
+            return { success: false, message: "Review not found." };
+        }
+
+        const alreadyVoted = review.helpfulUsers?.includes(userId);
+
+        if (alreadyVoted) {
+            // Remove user and decrement
+            const updatedUsers = review.helpfulUsers.filter((id) => id !== userId);
+
+            await backendClient
+                .patch(reviewId)
+                .set({
+                    helpfulUsers: updatedUsers,
+                    helpfulCount: Math.max((review.helpfulCount || 1) - 1, 0),
+                })
+                .commit();
+
+            revalidateTag(`reviews:${productId}`);
+            return { success: true, message: "Removed your helpful vote." };
+        } else {
+            // Add user and increment safely
+            await backendClient
+                .patch(reviewId)
+                .setIfMissing({ helpfulUsers: [] })
+                .insert("after", "helpfulUsers[-1]", [userId])
+                .set({ helpfulCount: (review.helpfulCount || 0) + 1 })
+                .commit();
+
+            revalidateTag(`reviews:${productId}`);
+            return { success: true, message: "Thanks for your feedback!" };
+        }
+    } catch (error) {
+        console.error("Error toggling helpful vote:", error);
+        return { success: false, message: "Something went wrong." };
+    }
 }

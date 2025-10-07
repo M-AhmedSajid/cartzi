@@ -4,6 +4,7 @@ import {
   Dialog,
   DialogClose,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -12,8 +13,8 @@ import {
 import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
 import { Input } from "../ui/input";
-import { submitReview } from "@/actions/review";
-import { useEffect, useRef, useState } from "react";
+import { submitReview, updateReview } from "@/actions/review";
+import { useEffect, useState } from "react";
 import StarRating from "./StarRating";
 import { toast } from "sonner";
 import { useClerk, useUser } from "@clerk/nextjs";
@@ -26,27 +27,41 @@ import {
   SelectValue,
 } from "../ui/select";
 
-const ReviewDialog = ({ productId, slug, variants }) => {
-  const [rating, setRating] = useState(0);
+const ReviewDialog = ({
+  productId,
+  slug,
+  variants,
+  existingReview = null,
+  mode = "add",
+  children,
+}) => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isVerifiedBuyer, setIsVerifiedBuyer] = useState(false);
   const [orderedVariants, setOrderedVariants] = useState([]);
-  const [selectedVariant, setSelectedVariant] = useState("");
-  const form = useRef(null);
   const { isSignedIn, user } = useUser();
   const { openSignIn } = useClerk();
-  const query = `*[_type == "order" && customer.clerkUserId == $clerkUserId]{
-        items[]{
-          product->{_id, name},
-          variant
-        }
-      }`;
 
+  // Single state for all form fields
+  const [formData, setFormData] = useState({
+    title: "",
+    rating: 0,
+    comment: "",
+    authorName: "",
+    selectedVariant: "",
+  });
+
+  const query = `*[_type == "order" && customer.clerkUserId == $clerkUserId]{
+    items[]{
+      product->{_id, name},
+      variant
+    }
+  }`;
+
+  // Fetch variants for verified buyers
   useEffect(() => {
     async function fetchBuyerVariants() {
       if (isSignedIn && open) {
-        console.log(user?.id);
         const orders = await client.fetch(query, { clerkUserId: user?.id });
         const items = (await orders?.flatMap((o) => o.items || [])) || [];
         const variants = items
@@ -55,32 +70,54 @@ const ReviewDialog = ({ productId, slug, variants }) => {
             const [colorName, size] = i.variant.split("/").map((x) => x.trim());
             return { sku: i.variant, colorName, size };
           });
-        // remove duplicates by SKU
+
         const uniqueVariants = Array.from(
           new Map(variants.map((v) => [v.sku, v])).values()
         );
 
         setIsVerifiedBuyer(uniqueVariants.length > 0);
         setOrderedVariants(uniqueVariants);
-        console.log(uniqueVariants);
       }
     }
     fetchBuyerVariants();
   }, [open, isSignedIn, productId, user?.id]);
 
-  async function handleSubmit(formData) {
+  // Prefill form when editing
+  useEffect(() => {
+    if (existingReview && open) {
+      setFormData({
+        title: existingReview.title || "",
+        rating: existingReview.rating || 0,
+        comment: existingReview.comment || "",
+        authorName: existingReview.authorName || "",
+        selectedVariant: existingReview.variantDetails
+          ? `${existingReview.variantDetails.color} / ${existingReview.variantDetails.size}`
+          : "",
+      });
+    } else if (!existingReview && open) {
+      setFormData({
+        title: "",
+        rating: 0,
+        comment: "",
+        authorName: "",
+        selectedVariant: "",
+      });
+    }
+  }, [existingReview, open]);
+
+  // Handle submit
+  async function handleSubmit(e) {
+    e.preventDefault();
     setLoading(true);
-    const title = formData.get("title")?.trim();
-    const ratingValue = Number(formData.get("rating"));
-    const comment = formData.get("comment")?.trim();
-    const authorName = formData.get("authorName")?.trim();
+
+    const { title, rating, comment, authorName, selectedVariant } = formData;
 
     try {
       if (!title || title.length < 5) {
         toast.error("Title must be at least 5 characters long.");
         return;
       }
-      if (!ratingValue || ratingValue < 1 || ratingValue > 5) {
+      if (!rating || rating < 1 || rating > 5) {
         toast.error("Please select a star rating between 1 and 5.");
         return;
       }
@@ -92,29 +129,29 @@ const ReviewDialog = ({ productId, slug, variants }) => {
         toast.error("Name must be at least 3 characters long.");
         return;
       }
-      if (
-        isVerifiedBuyer &&
-        variants?.length > 0 &&
-        !selectedVariant
-      ) {
+      if (isVerifiedBuyer && variants?.length > 0 && !selectedVariant) {
         toast.error("Please select the variant you purchased.");
         return;
       }
-      if (isSignedIn) {
-        formData.append("clerkUserId", user?.id);
-      }
-      if (selectedVariant) {
-        formData.append("variantSku", selectedVariant);
-      }
-      formData.append("slug", slug);
-      const result = await submitReview(formData);
+
+      // Prepare payload
+      const payload = new FormData();
+      payload.append("productId", productId);
+      payload.append("title", title);
+      payload.append("rating", rating);
+      payload.append("comment", comment);
+      payload.append("authorName", authorName);
+      payload.append("slug", slug);
+      if (isSignedIn) payload.append("clerkUserId", user?.id);
+      if (selectedVariant) payload.append("variantSku", selectedVariant);
+
+      const result =
+        mode === "edit"
+          ? await updateReview(payload, existingReview._id)
+          : await submitReview(payload);
 
       if (result.success) {
         toast.success(result.message);
-
-        // reset form + rating
-        form.current?.reset();
-        setRating(0);
         setOpen(false);
       } else {
         toast.error(result.message);
@@ -140,52 +177,55 @@ const ReviewDialog = ({ productId, slug, variants }) => {
     </Button>
   ) : (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button className="w-full md:w-auto" size="lg">
-          ✍️ Write a Review
-        </Button>
-      </DialogTrigger>
+      <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Write a Review</DialogTitle>
+          <DialogTitle>
+            {mode === "edit" ? "Edit Review" : "Write a Review"}
+          </DialogTitle>
         </DialogHeader>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            const formData = new FormData(e.currentTarget);
-            handleSubmit(formData);
-          }}
-          className="space-y-4"
-          ref={form}
-        >
-          <input type="hidden" name="productId" value={productId} />
+        <DialogDescription className="hidden" />
 
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Title */}
           <div>
             <Label htmlFor="title">Review Title</Label>
             <Input
               id="title"
               name="title"
               placeholder="e.g. Great quality and perfect fit"
+              value={formData.title}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, title: e.target.value }))
+              }
             />
           </div>
+
+          {/* Rating */}
           <div>
-            <input type="hidden" name="rating" value={rating} />
+            <input type="hidden" name="rating" value={formData.rating} />
             <Label>Star Rating</Label>
             <StarRating
-              rating={rating}
-              setRating={setRating}
+              rating={formData.rating}
+              setRating={(val) =>
+                setFormData((prev) => ({ ...prev, rating: val }))
+              }
               size="size-6"
               interactive
             />
             <p className="text-xs text-muted-foreground">Select 1 to 5 stars</p>
           </div>
-          {/* 🧩 Variant Selector */}
+
+          {/* Variant Selector */}
           {isVerifiedBuyer && variants?.length > 0 && (
             <div>
               <Label htmlFor="variant">Select Variant</Label>
               <Select
-                onValueChange={(value) => setSelectedVariant(value)}
-                value={selectedVariant}
+                onValueChange={(value) =>
+                  setFormData((prev) => ({ ...prev, selectedVariant: value }))
+                }
+                value={formData.selectedVariant}
+                disabled={mode === "edit"}
               >
                 <SelectTrigger id="variant" className="w-full">
                   <SelectValue placeholder="Select one" />
@@ -203,6 +243,8 @@ const ReviewDialog = ({ productId, slug, variants }) => {
               </p>
             </div>
           )}
+
+          {/* Comment */}
           <div>
             <Label htmlFor="comment">Your Review</Label>
             <Textarea
@@ -210,22 +252,33 @@ const ReviewDialog = ({ productId, slug, variants }) => {
               name="comment"
               rows={4}
               placeholder="Tell us about the fit, quality, and your experience..."
+              value={formData.comment}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, comment: e.target.value }))
+              }
             />
             <p className="text-xs text-muted-foreground">
               Minimum 10 characters
             </p>
           </div>
+
+          {/* Author Name */}
           <div>
             <Label htmlFor="authorName">Your Name (Optional)</Label>
             <Input
               id="authorName"
               name="authorName"
               placeholder="Enter your name (at least 3 letters)"
+              value={formData.authorName}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, authorName: e.target.value }))
+              }
             />
             <p className="text-xs text-muted-foreground">
               Shown publicly with your review
             </p>
           </div>
+
           <DialogFooter className="justify-end">
             <DialogClose asChild>
               <Button type="button" variant="ghost" disabled={loading}>
@@ -233,7 +286,13 @@ const ReviewDialog = ({ productId, slug, variants }) => {
               </Button>
             </DialogClose>
             <Button type="submit" disabled={loading}>
-              {loading ? "Submitting..." : "Submit Review"}
+              {loading && mode === "edit"
+                ? "Saving..."
+                : loading
+                  ? "Submitting..."
+                  : mode === "edit"
+                    ? "Save Changes"
+                    : "Submit Review"}
             </Button>
           </DialogFooter>
         </form>

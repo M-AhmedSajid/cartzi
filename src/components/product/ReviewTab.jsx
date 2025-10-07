@@ -2,13 +2,12 @@
 import StarRating from "./StarRating";
 import { BadgeCheck, Pencil, ThumbsUp, Trash2 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
-import Link from "next/link";
 import { dateFormatter } from "@/lib";
 import ReviewDialog from "./ReviewDialog";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
-import { deleteReview } from "@/actions/review";
+import { deleteReview, toggleReviewHelpful } from "@/actions/review";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -21,19 +20,65 @@ import {
   AlertDialogTrigger,
 } from "../ui/alert-dialog";
 import { useState } from "react";
+import { useClerk, useUser } from "@clerk/nextjs";
 
 const ReviewTab = ({ product, reviews }) => {
+  const [localReviews, setLocalReviews] = useState(reviews?.reviews || []);
+
   const [loading, setLoading] = useState(false);
+  const { isSignedIn, user } = useUser();
+  const { openSignIn } = useClerk();
 
   const handleDelete = async (reviewId) => {
     setLoading(true);
-    const result = await deleteReview(reviewId, product?.slug);
+    const result = await deleteReview(reviewId, product?._id);
     if (result.success) {
       toast.success(result.message);
     } else {
       toast.error(result.message);
     }
     setLoading(false);
+  };
+
+  const handleHelpful = async (reviewId, clerkId) => {
+    if (!isSignedIn) {
+      return openSignIn({
+        afterSignInUrl: `/product/${product?.slug}`,
+      });
+    }
+    // Don’t allow self-voting
+    if (clerkId === user?.id) {
+      return toast.error("You can't mark your own review as helpful.");
+    }
+
+    const previousReviews = [...localReviews];
+
+    // Optimistic update using hasVotedHelpful
+    const updatedReviews = localReviews.map((r) => {
+      if (r._id === reviewId) {
+        const newHasVoted = !r.hasVotedHelpful;
+        return {
+          ...r,
+          hasVotedHelpful: newHasVoted,
+          helpfulCount: r.helpfulCount + (newHasVoted ? 1 : -1),
+        };
+      }
+      return r;
+    });
+
+    setLocalReviews(updatedReviews);
+
+    try {
+      const result = await toggleReviewHelpful(reviewId, product._id, user.id);
+
+      if (!result.success) {
+        toast.error(result.message);
+        setLocalReviews(previousReviews);
+      }
+    } catch (err) {
+      toast.error("Something went wrong!");
+      setLocalReviews(previousReviews);
+    }
   };
 
   return (
@@ -56,18 +101,30 @@ const ReviewTab = ({ product, reviews }) => {
           productId={product?._id}
           slug={product?.slug}
           variants={product?.variants}
-        />
+        >
+          <Button className="w-full md:w-auto" size="lg">
+            ✍️ Write a Review
+          </Button>
+        </ReviewDialog>
       </div>
       {reviews?.reviewCount > 0 ? (
-        reviews?.reviews?.map((review) => (
+        localReviews?.map((review) => (
           <div className="py-5 border-b space-y-2" key={review._id}>
             {review.isUserReview && (
               <div className="flex justify-between items-end mb-0">
                 <Badge>Your Review</Badge>
                 <div className="flex justify-center items-center">
-                  <Button size="sm" variant="ghost" className="size-7">
-                    <Pencil className="size-[1.125rem]" />
-                  </Button>
+                  <ReviewDialog
+                    productId={product?._id}
+                    slug={product?.slug}
+                    variants={product?.variants}
+                    existingReview={review}
+                    mode="edit"
+                  >
+                    <Button size="sm" variant="ghost" className="size-7">
+                      <Pencil className="size-[1.125rem]" />
+                    </Button>
+                  </ReviewDialog>
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
                       <Button
@@ -130,13 +187,23 @@ const ReviewTab = ({ product, reviews }) => {
               </p>
             )}
             <p>{review.comment}</p>
-            <Link
-              href="#"
-              className="text-muted-foreground text-sm flex items-center space-x-2 border-b border-transparent hover:border-primary hover:text-foreground w-fit"
+            <Button
+              variant="link"
+              className={`hoverEffect ${
+                review.hasVotedHelpful
+                  ? "text-primary font-semibold"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+              onClick={() => handleHelpful(review._id, review?.clerkUserId)}
+              disabled={loading}
             >
-              <ThumbsUp className="size-4 inline" />
-              <span>Helpful ({review.helpfulCount})</span>
-            </Link>
+              <ThumbsUp
+                className={`size-4 inline ${
+                  review.hasVotedHelpful ? "fill-primary" : ""
+                }`}
+              />
+              <span>Helpful ({review.helpfulCount || 0})</span>
+            </Button>
           </div>
         ))
       ) : (

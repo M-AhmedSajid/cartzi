@@ -56,8 +56,10 @@ export const getReviewsByProduct = async (productId, clerkUserId = null) => {
         comment,
         authorName,
         verifiedBuyer,
+        clerkUserId,
         date,
         helpfulCount,
+        helpfulUsers,
         variantDetails
       },
       "otherReviews": *[_type == "review" && product._ref == $productId && clerkUserId != $clerkUserId] 
@@ -68,8 +70,10 @@ export const getReviewsByProduct = async (productId, clerkUserId = null) => {
           comment,
           authorName,
           verifiedBuyer,
+          clerkUserId,
           date,
           helpfulCount,
+          helpfulUsers,
           variantDetails
       },
       "averageRating": round(math::avg(*[_type == "review" && product._ref == $productId].rating), 1),
@@ -81,11 +85,19 @@ export const getReviewsByProduct = async (productId, clerkUserId = null) => {
         const result = await sanityFetch({
             query: REVIEWS_QUERY,
             params: { productId, clerkUserId },
+            next: { tags: [`reviews:${productId}`] }
         });
 
         const reviews = [
-            ...(result?.data?.userReview?.map(r => ({ ...r, isUserReview: true })) || []),
-            ...(result?.data?.otherReviews || []),
+            ...(result?.data?.userReview?.map(r => ({
+                ...r,
+                isUserReview: true,
+                hasVotedHelpful: r?.helpfulUsers?.includes(clerkUserId) || false
+            })) || []),
+            ...(result?.data?.otherReviews?.map(r => ({
+                ...r,
+                hasVotedHelpful: r?.helpfulUsers?.includes(clerkUserId) || false
+            })) || []),
         ];
 
         return {
