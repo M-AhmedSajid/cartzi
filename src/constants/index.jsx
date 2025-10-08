@@ -1,4 +1,14 @@
-import { Facebook, Github, Instagram, Linkedin } from "lucide-react";
+import {
+  Archive,
+  CircleCheck,
+  CircleX,
+  Clock,
+  Facebook,
+  Github,
+  Instagram,
+  Linkedin,
+  Truck,
+} from "lucide-react";
 
 export const headerData = [
   { title: "Home", href: "/" },
@@ -9,11 +19,12 @@ export const headerData = [
   { title: "Featured", href: "/featured" },
   { title: "Gift", href: "/gift" },
 ];
+
 export const socialLinks = [
-  { title: "Facebook", href: "/", icon: <Facebook className="w-5 h-5" /> },
-  { title: "Instagram", href: "/", icon: <Instagram className="w-5 h-5" /> },
-  { title: "Linkedin", href: "/", icon: <Linkedin className="w-5 h-5" /> },
-  { title: "Github", href: "/", icon: <Github className="w-5 h-5" /> },
+  { title: "Facebook", href: "/", icon: <Facebook className="size-5" /> },
+  { title: "Instagram", href: "/", icon: <Instagram className="size-5" /> },
+  { title: "Linkedin", href: "/", icon: <Linkedin className="size-5" /> },
+  { title: "Github", href: "/", icon: <Github className="size-5" /> },
 ];
 
 export const productType = [
@@ -125,4 +136,12 @@ export const usps = [
   { text: "Free Returns" },
   { text: "3-5 Day Delivery" },
   { text: "Secure Checkout" },
+];
+
+export const orderFilters = [
+  { title: "All Orders", value: "all", icon: <Archive /> },
+  { title: "Processing", value: "processing", icon: <Clock /> },
+  { title: "Shipped", value: "shipped", icon: <Truck /> },
+  { title: "Delivered", value: "delivered", icon: <CircleCheck /> },
+  { title: "Cancelled", value: "cancelled", icon: <CircleX /> },
 ];

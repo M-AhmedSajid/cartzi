@@ -46,26 +46,13 @@ const ProductTabs = ({ product, reviews }) => {
   };
 
   return (
-    <Tabs defaultValue="description" className="gap-4">
-      <TabsList className="border-b h-10 bg-background rounded-none w-full justify-start p-0 gap-8">
-        <TabsTrigger
-          value="description"
-          className="data-[state=active]:shadow-none flex-none hover:border-b border-accent border-0 rounded-none hover:text-primary data-[state=active]:border-b data-[state=active]:border-primary data-[state=active]:text-primary text-muted-foreground"
-        >
-          Description
-        </TabsTrigger>
-        <TabsTrigger
-          value="reviews"
-          className="data-[state=active]:shadow-none flex-none hover:border-b border-accent border-0 rounded-none hover:text-primary data-[state=active]:border-b data-[state=active]:border-primary data-[state=active]:text-primary text-muted-foreground"
-        >
+    <Tabs defaultValue="description">
+      <TabsList>
+        <TabsTrigger value="description">Description</TabsTrigger>
+        <TabsTrigger value="reviews">
           Reviews ({reviews?.reviewCount})
         </TabsTrigger>
-        <TabsTrigger
-          value="qanda"
-          className="data-[state=active]:shadow-none flex-none hover:border-b border-accent border-0 rounded-none hover:text-primary data-[state=active]:border-b data-[state=active]:border-primary data-[state=active]:text-primary text-muted-foreground"
-        >
-          Q&As
-        </TabsTrigger>
+        <TabsTrigger value="qanda">Q&As</TabsTrigger>
       </TabsList>
       <TabsContent value="description">
         <PortableText value={product.description} components={components} />

@@ -36,7 +36,6 @@ const CartPage = () => {
   const [value, setValue] = useState("item-1");
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [shippingOptions, setShippingOptions] = useState([]);
-  const [loadingShipping, setLoadingShipping] = useState(true);
   const [discountCode, setDiscountCode] = useState("");
   const [isApplying, setIsApplying] = useState(false);
   const { isSignedIn, user } = useUser();
@@ -46,20 +45,20 @@ const CartPage = () => {
     getCartCount,
     getItems,
     getSubtotalCents,
-    shippingRule,
-    setShippingRule,
-    getShippingCents,
     appliedDiscount,
     applyDiscount,
     removeDiscount,
     calculateDiscount,
     getTotalCents,
-    selectShippingRule,
   } = useCartStore();
 
-  const handleApplyDiscount = async () => {
+  const handleApplyDiscount = async (e) => {
+    e.preventDefault();
     if (!discountCode) return;
-
+    if (!isSignedIn) {
+      toast.error("Please sign in to use discount codes.");
+      return;
+    }
     setIsApplying(true);
     try {
       const code = discountCode.trim().toUpperCase();
@@ -80,6 +79,19 @@ const CartPage = () => {
       ) {
         toast.error("This discount code has expired.");
         return;
+      }
+
+      // Handle first-time customer rule
+      if (discountDoc.firstTimeCustomer) {
+        const hasOrders = await client.fetch(
+          `count(*[_type == "order" && customer.email == $email]) > 0`,
+          { email: user?.emailAddresses[0]?.emailAddress }
+        );
+
+        if (hasOrders) {
+          toast.error("This discount is only for first-time customers.");
+          return;
+        }
       }
 
       const result = applyDiscount(discountDoc);
@@ -119,7 +131,6 @@ const CartPage = () => {
 
   useEffect(() => {
     async function fetchRules() {
-      setLoadingShipping(true);
       try {
         const rules = await client.fetch(
           `*[_type == "shippingRule" && active == true] | order(shippingCost asc)`
@@ -127,19 +138,13 @@ const CartPage = () => {
 
         // Example: hardcode region to US for now
         const region = "United States";
-        const bestRule = selectShippingRule(rules, region);
 
         setShippingOptions(
           rules.filter((r) => r.region === region || r.region === "Worldwide")
         );
-
-        if (!shippingRule && bestRule) {
-          setShippingRule(bestRule);
-        }
       } catch (error) {
         console.error("Error fetching shipping rules:", error);
       } finally {
-        setLoadingShipping(false);
       }
     }
 
@@ -408,7 +413,10 @@ const CartPage = () => {
                         </Button>
                       </div>
                     ) : (
-                      <div className="flex gap-2">
+                      <form
+                        onSubmit={handleApplyDiscount}
+                        className="flex gap-2"
+                      >
                         <input
                           type="text"
                           value={discountCode}
@@ -416,13 +424,10 @@ const CartPage = () => {
                           placeholder="Discount code"
                           className="flex-1 border rounded px-3 py-2 text-sm bg-background"
                         />
-                        <Button
-                          onClick={handleApplyDiscount}
-                          disabled={isApplying}
-                        >
+                        <Button disabled={isApplying}>
                           {isApplying ? "Applying..." : "Apply"}
                         </Button>
-                      </div>
+                      </form>
                     )}
                     <Separator />
 

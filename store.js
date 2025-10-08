@@ -196,39 +196,6 @@ export const useCartStore = create()(
                     0
                 ),
 
-            shippingRule: null,
-            setShippingRule: (rule) => set({ shippingRule: rule }),
-            clearShippingRule: () => set({ shippingRule: null }),
-            getShippingCents: () => {
-                const rule = get().shippingRule;
-                if (!rule) return 0;
-
-                const discount = get().appliedDiscount;
-
-                // ✅ Free shipping for all rules
-                if (discount?.discountType === "shipping" && (!discount.appliesToShipping || discount.appliesToShipping.length === 0)) {
-                    return 0;
-                }
-
-                // ✅ Free shipping for specific rules (array)
-                if (
-                    discount?.discountType === "shipping" &&
-                    Array.isArray(discount.appliesToShipping) &&
-                    discount.appliesToShipping.some((r) => r._ref === rule._id)
-                ) {
-                    return 0;
-                }
-
-                // ✅ Threshold free shipping
-                const subtotalDollars = get().getSubtotalCents() / 100;
-                if (rule.freeOver && subtotalDollars >= rule.freeOver) {
-                    return 0;
-                }
-
-                // Default → normal cost
-                return Math.round((rule.shippingCost ?? 0) * 100);
-            },
-
             appliedDiscount: null,
             applyDiscount: (discountDoc) => {
                 // discountDoc will come from Sanity fetch (code + rules)
@@ -265,33 +232,6 @@ export const useCartStore = create()(
                     : 0;
 
                 return Math.max(0, subtotal - discount);
-            },
-
-            selectShippingRule: (rules, region) => {
-                const subtotalDollars = get().getSubtotalCents() / 100;
-                const totalWeight = get().items.reduce((sum, it) => {
-                    const weight = it.product?.weight?.value ?? 0;
-                    return sum + weight * it.quantity;
-                }, 0);
-
-                // Filter rules for the region
-                let candidates = rules.filter(
-                    (r) => r.region === region || r.region === "Worldwide"
-                );
-
-                // Apply minOrderValue and maxOrderWeight
-                candidates = candidates.filter((r) => {
-                    const meetsMin = !r.minOrderValue || subtotalDollars >= r.minOrderValue;
-                    const withinWeight = !r.maxOrderWeight || totalWeight <= r.maxOrderWeight;
-                    return meetsMin && withinWeight && r.active;
-                });
-
-                // Pick cheapest valid option
-                const bestRule =
-                    candidates.sort((a, b) => (a.shippingCost ?? 0) - (b.shippingCost ?? 0))[0] || null;
-
-                set({ shippingRule: bestRule });
-                return bestRule;
             },
         }),
         {

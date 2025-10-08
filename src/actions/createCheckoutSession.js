@@ -176,14 +176,10 @@ export async function createCheckoutSession(items, metadata, shippingOptions, ap
             sessionPayload.customer_email = metadata.customerEmail;
         }
 
-        // If you store the Stripe promotion code id on the discount, attach it so Stripe does the discount
         if (appliedDiscount?.stripePromoId) {
             sessionPayload.discounts = [
                 { promotion_code: appliedDiscount.stripePromoId }
             ];
-        } else {
-            // No discount applied → let user enter one in Stripe checkout
-            sessionPayload.allow_promotion_codes = true;
         }
 
         // Create Checkout Session
