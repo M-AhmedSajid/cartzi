@@ -26,19 +26,129 @@ export const getMyOrders = async (userId) => {
         throw new Error("User Id is required!")
     }
 
-    const MY_ORDERS_QUERY = defineQuery(`*[
-        _type == "order" && customer.clerkUserId == $userId]
-        | order(order desc){
-            ...products[]
+    const MY_ORDERS_QUERY = defineQuery(`*[_type == "order" && customer.clerkUserId == $userId] 
+    | order(createdAt desc) {
+        _id,
+        orderNumber,
+        createdAt,
+        total,
+        status,
+        // Customer info
+        customer {
+            shippingName,
+            accountName,
+            email
+        },
+        // Items list with product details
+        items[] {
+            variant,
+            quantity,
+            price,
+            subtotal,
+            "name": product->name,
+            "productId": product->_id,
+            "productSlug": product->slug.current,
+            "image": product->images[0],
+            "sku": product->sku,
+        },
+        // Shipping details
+        shipping {
+            cost,
+            rule->{
+            name,
+            deliveryTime
+            },
+            address {
+            line1,
+            city,
+            postalCode,
+            country
+            }
+        },
+        // Discount details
+        discount->{
+            code,
+            discountType,
+            value
+        },
+        payment {
+            provider,
+            status
         }
+    }
     `);
     try {
         const orders = await sanityFetch({
             query: MY_ORDERS_QUERY,
+            params: { userId }
         });
         return orders?.data || [];
     } catch (error) {
         console.error("Error fetching my orders:", error);
+        return []
+    }
+};
+
+export const getVariantInfo = async (productId, variantString) => {
+    //Case 1: No variant (simple product)
+    if (!variantString) {
+        const FALLBACK_QUERY = defineQuery(`*[_type == "product" && _id == $id][0]{
+      "sku": sku,
+      "image": images[0]
+    }`);
+        try {
+            const res = await sanityFetch({
+                query: FALLBACK_QUERY,
+                params: { id: productId },
+            });
+            return res?.data || {};
+        } catch (error) {
+            console.error("Error fetching fallback product info:", error);
+            return {};
+        }
+    }
+
+    //Case 2: Has variant string ("Black / M" or just "Black")
+    const [color, size] = variantString.includes("/")
+        ? variantString.split("/").map((s) => s.trim())
+        : [variantString.trim(), null];
+
+    // If variant has size → check both color and size
+    const VARIANT_WITH_SIZE_QUERY = defineQuery(`*[_type == "product" && _id == $id][0]{
+    "sku": coalesce(
+      variants[color->name == $color].sizes[size == $size][0].sku,
+      variants[color->name == $color].sizes[0].sku,
+      sku
+    ),
+    "image": coalesce(
+      variants[color->name == $color].images[0],
+      images[0]
+    )
+  }`);
+
+    // If variant only has color (no size)
+    const VARIANT_COLOR_ONLY_QUERY = defineQuery(`*[_type == "product" && _id == $id][0]{
+    "sku": coalesce(
+      variants[color->name == $color].sizes[0].sku,
+      sku
+    ),
+    "image": coalesce(
+      variants[color->name == $color].images[0],
+      images[0]
+    )
+  }`);
+
+    const queryToUse = size ? VARIANT_WITH_SIZE_QUERY : VARIANT_COLOR_ONLY_QUERY;
+
+    try {
+        const variant = await sanityFetch({
+            query: queryToUse,
+            params: { id: productId, color, size },
+        });
+        return variant?.data || {};
+    } catch (error) {
+        console.error("Error fetching variant Image/SKU:", error);
+        return {};
     }
 };
 

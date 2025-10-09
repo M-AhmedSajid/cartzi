@@ -165,7 +165,7 @@ const CartPage = () => {
         });
       } else {
         const metadata = {
-          orderNumber: crypto.randomUUID(),
+          orderNumber: `ORD-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
           customerName: user?.fullName ?? "Guest",
           customerEmail: user?.emailAddresses[0]?.emailAddress ?? "guest",
           clerkUserId: user?.id ?? "guest",
