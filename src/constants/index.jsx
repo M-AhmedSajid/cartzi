@@ -7,6 +7,8 @@ import {
   Github,
   Instagram,
   Linkedin,
+  Loader2,
+  PackageOpen,
   Truck,
 } from "lucide-react";
 
@@ -139,9 +141,10 @@ export const usps = [
 ];
 
 export const orderFilters = [
-  { title: "All Orders", value: "all", icon: <Archive /> },
-  { title: "Processing", value: "processing", icon: <Clock /> },
+  { title: "All", value: "all", icon: <PackageOpen /> },
+  { title: "Processing", value: "paid", icon: <Clock /> },
   { title: "Shipped", value: "shipped", icon: <Truck /> },
   { title: "Delivered", value: "delivered", icon: <CircleCheck /> },
+  { title: "Pending", value: "pending", icon: <Loader2 className="animate-spin [animation-duration:3s]" /> },
   { title: "Cancelled", value: "cancelled", icon: <CircleX /> },
 ];

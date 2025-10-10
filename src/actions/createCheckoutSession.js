@@ -127,11 +127,12 @@ export async function createCheckoutSession(items, metadata, shippingOptions, ap
                 type: "fixed_amount",
                 metadata: {
                     sanityShippingRuleId: rule._id,
+                    ruleName: rule.name,
                 },
             };
 
             if (rule.freeOver) {
-                shippingRateData.metadata = { freeOver: rule.freeOver };
+                shippingRateData.metadata.freeOver = rule.freeOver;
             }
 
             return { shipping_rate_data: shippingRateData };
