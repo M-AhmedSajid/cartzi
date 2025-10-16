@@ -1,6 +1,21 @@
 import { auth } from "@clerk/nextjs/server";
 import OrdersClient from "./OrdersClient";
 import { getMyOrders, getVariantInfo } from "@/sanity/helpers";
+import { redirect } from "next/navigation";
+
+export const metadata = {
+  title: "My Orders | Cartzi",
+  description:
+    "View all your Cartzi orders in one place — track your recent purchases, shipping status, and past orders easily.",
+  openGraph: {
+    title: "My Orders | Cartzi",
+    description:
+      "Check your Cartzi orders, see order history, and track deliveries.",
+    url: `${process.env.NEXT_PUBLIC_BASE_URL}/orders`,
+    siteName: "Cartzi",
+    type: "website",
+  },
+};
 
 export default async function OrdersPage() {
   const { userId } = await auth();

@@ -9,7 +9,7 @@ export const metadata = {
     title: "Order Successful | Cartzi",
     description:
       "Your order was placed successfully at Cartzi. Track your order and enjoy fast shipping with free returns.",
-    url: "https://cartzi.vercel.app/success",
+    url: `${process.env.NEXT_PUBLIC_BASE_URL}/success`,
     siteName: "Cartzi",
     locale: "en_US",
     type: "website",

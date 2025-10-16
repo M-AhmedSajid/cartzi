@@ -12,7 +12,7 @@ export const metadata = {
     title: "Shopping Cart | Cartzi",
     description:
       "See your selected Cartzi products and checkout securely with free returns & fast shipping.",
-    url: "https://cartzi.com/cart",
+    url: `${process.env.NEXT_PUBLIC_BASE_URL}/cart`,
     siteName: "Cartzi",
     type: "website",
   },

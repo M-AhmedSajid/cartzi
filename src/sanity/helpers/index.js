@@ -152,6 +152,71 @@ export const getVariantInfo = async (productId, variantString) => {
     }
 };
 
+export const getOrderById = async (orderId) => {
+    if (!orderId) {
+        throw new Error("Order Id is required!")
+    }
+
+    const ORDER_BY_ID_QUERY = defineQuery(`*[_type == "order" && _id == $orderId][0]{
+      _id,
+      orderNumber,
+      createdAt,
+      status,
+      total,
+      customer {
+        clerkUserId,
+        shippingName,
+        accountName,
+        email
+        },
+      discount->{
+            code,
+            discountType,
+            value
+        },
+      items[] {
+            variant,
+            quantity,
+            price,
+            subtotal,
+            "name": product->name,
+            "productId": product->_id,
+            "productSlug": product->slug.current,
+            "image": product->images[0],
+            "sku": product->sku,
+        },
+      shipping {
+            cost,
+            rule->{
+            name,
+            deliveryTime
+            },
+            address {
+            line1,
+            city,
+            postalCode,
+            country,
+            state
+            }
+        },
+      payment {
+            provider,
+            status
+        }
+    }
+    `);
+    try {
+        const order = await sanityFetch({
+            query: ORDER_BY_ID_QUERY,
+            params: { orderId }
+        });
+        return order?.data || [];
+    } catch (error) {
+        console.error("Error fetching order by ID:", error);
+        return []
+    }
+};
+
 export const getReviewsByProduct = async (productId, clerkUserId = null) => {
     if (!productId) {
         throw new Error("productId is required to fetch reviews");

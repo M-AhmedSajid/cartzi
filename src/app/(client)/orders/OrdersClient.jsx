@@ -90,6 +90,7 @@ const OrdersClient = ({ orders }) => {
               placeholder="Search by product or order number..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
+              disabled={filteredOrders.length === 0}
               className="pr-10"
             />
             {search && (
@@ -104,7 +105,11 @@ const OrdersClient = ({ orders }) => {
           </div>
 
           {/* Sort */}
-          <Select value={sort} onValueChange={setSort}>
+          <Select
+            value={sort}
+            onValueChange={setSort}
+            disabled={filteredOrders.length === 0}
+          >
             <SelectTrigger className="w-full md:w-60">
               <SelectValue placeholder="Sort by" />
             </SelectTrigger>

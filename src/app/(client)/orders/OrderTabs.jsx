@@ -7,121 +7,16 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Badge } from "@/components/ui/badge";
-import { priceFormatter } from "@/lib";
-import {
-  CircleCheck,
-  Clock,
-  Truck,
-  CircleX,
-  Loader2,
-  PackageOpen,
-} from "lucide-react";
+import { formatRelativeDate, getStatusBadge, priceFormatter } from "@/lib";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { urlFor } from "@/sanity/lib/image";
 import Image from "next/image";
 import { useMemo, useState } from "react";
+import Link from "next/link";
 
 const OrderTabs = ({ orders }) => {
   const [activeFilter, setActiveFilter] = useState("all");
-
-  function formatRelativeDate(dateString) {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffMs = now - date;
-    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-
-    // If more than 30 days old → return formatted date
-    if (diffDays > 30) {
-      return date.toLocaleDateString("en-GB", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-      });
-    }
-
-    // Otherwise → relative time
-    if (diffDays >= 1)
-      return `about ${diffDays} day${diffDays > 1 ? "s" : ""} ago`;
-
-    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-    if (diffHours >= 1)
-      return `about ${diffHours} hour${diffHours > 1 ? "s" : ""} ago`;
-
-    const diffMinutes = Math.floor(diffMs / (1000 * 60));
-    if (diffMinutes >= 1)
-      return `about ${diffMinutes} minute${diffMinutes > 1 ? "s" : ""} ago`;
-
-    return "just now";
-  }
-
-  function getStatusBadge(status) {
-    switch (status) {
-      case "pending":
-        return (
-          <Badge
-            variant="outline"
-            className="border-amber-400 text-amber-600 group-[&[data-state=open]]:bg-amber-200"
-          >
-            <Loader2 className="animate-spin [animation-duration:3s]" />
-            Pending
-          </Badge>
-        );
-
-      case "paid":
-        return (
-          <Badge
-            variant="outline"
-            className="border-blue-400 text-blue-600 group-[&[data-state=open]]:bg-blue-200"
-          >
-            <Clock />
-            Processing
-          </Badge>
-        );
-
-      case "shipped":
-        return (
-          <Badge
-            variant="outline"
-            className="border-purple-400 text-purple-600 group-[&[data-state=open]]:bg-purple-200"
-          >
-            <Truck />
-            Shipped
-          </Badge>
-        );
-
-      case "delivered":
-        return (
-          <Badge
-            variant="outline"
-            className="border-green-400 text-green-600 group-[&[data-state=open]]:bg-green-200"
-          >
-            <CircleCheck />
-            Delivered
-          </Badge>
-        );
-
-      case "cancelled":
-        return (
-          <Badge
-            variant="outline"
-            className="border-red-400 text-red-600 group-[&[data-state=open]]:bg-red-200"
-          >
-            <CircleX />
-            Cancelled
-          </Badge>
-        );
-
-      default:
-        return (
-          <Badge variant="outline">
-            <PackageOpen />
-            Unknown
-          </Badge>
-        );
-    }
-  }
 
   const filteredOrders = useMemo(() => {
     if (activeFilter === "all") return orders;
@@ -150,6 +45,7 @@ const OrderTabs = ({ orders }) => {
                   (acc, item) => acc + (item?.subtotal ?? 0),
                   0
                 ) || 0;
+                const placed = formatRelativeDate(order?.createdAt);
               return (
                 <AccordionItem
                   value={order?._id}
@@ -167,10 +63,10 @@ const OrderTabs = ({ orders }) => {
                         </div>
                         <div className="font-normal text-sm">
                           <time
-                            dateTime={formatRelativeDate(order?.createdAt)}
-                            title={formatRelativeDate(order?.createdAt)}
+                            dateTime={order?.createdAt}
+                            title={placed.text}
                           >
-                            {formatRelativeDate(order?.createdAt)}
+                            {placed.text}
                           </time>
                           <span className="mx-1">•</span>
                           <span>
@@ -301,7 +197,11 @@ const OrderTabs = ({ orders }) => {
                           <div
                             className={`grid gap-2 ${["cancelled", "shipped"].includes(order.status) ? "grid-cols-2" : "grid-cols-2 md:grid-cols-3"}`}
                           >
-                            <Button>View Details</Button>
+                            <Button>
+                              <Link href={`/orders/${order?._id}`}>
+                                View Details
+                              </Link>
+                            </Button>
 
                             {order.status === "delivered" && (
                               <Button
@@ -330,7 +230,7 @@ const OrderTabs = ({ orders }) => {
                               }
                               asChild
                             >
-                              <a href="/contact">Need Help?</a>
+                              <Link href="/contact">Need Help?</Link>
                             </Button>
                           </div>
                         </div>

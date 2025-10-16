@@ -12,11 +12,27 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuSubContent,
 } from "@/components/ui/dropdown-menu";
-import { useMediaQuery } from "@/lib";
+import { useEffect, useState } from "react";
 
 const HeaderMenu = ({ menu }) => {
   const pathname = usePathname();
   const items = menu?.items ?? [];
+
+  function useMediaQuery(query) {
+    const [matches, setMatches] = useState(false);
+
+    useEffect(() => {
+      const media = window.matchMedia(query);
+      if (media.matches !== matches) {
+        setMatches(media.matches);
+      }
+      const listener = () => setMatches(media.matches);
+      media.addEventListener("change", listener);
+      return () => media.removeEventListener("change", listener);
+    }, [matches, query]);
+
+    return matches;
+  }
 
   // Split into visible + overflow
   const isXl = useMediaQuery("(min-width: 1280px)");
