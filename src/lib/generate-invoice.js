@@ -16,13 +16,13 @@ async function getBase64FromUrl(url) {
 export async function generateInvoice(order) {
     const doc = new jsPDF({ unit: "pt", format: "a4" });
     const pageWidth = doc.internal.pageSize.getWidth();
-    console.log(order);
 
     // Fonts & Colors
     const primary = "#1e2f41";
     const black = "#0d0d0d";
     const gray = "#5d5446";
     const green = "#00a63e";
+    const border = "#d7d7d7";
 
     let y = 60;
 
@@ -82,7 +82,7 @@ export async function generateInvoice(order) {
 
     // Divider line
     y += 20;
-    doc.setDrawColor(200);
+    doc.setDrawColor(border);
     doc.line(40, y, pageWidth - 40, y);
     y += 30;
 
@@ -93,7 +93,7 @@ export async function generateInvoice(order) {
     doc.text("Subtotal", pageWidth - 40, y, { align: "right" });
 
     y += 10;
-    doc.setDrawColor("#d7d7d7");
+    doc.setDrawColor(border);
     doc.line(40, y, pageWidth - 40, y);
     y += 40;
 
@@ -130,9 +130,9 @@ export async function generateInvoice(order) {
         doc.text(priceFormatter(item.subtotal), pageWidth - 40, y - 10, { align: "right" });
 
         y += 30;
-        doc.setDrawColor("#d7d7d7");
+        doc.setDrawColor(border);
         doc.line(40, y, pageWidth - 40, y);
-        
+
         y += 40;
         if (y > doc.internal.pageSize.getHeight() - 100) {
             doc.addPage();
@@ -151,17 +151,19 @@ export async function generateInvoice(order) {
     const shipping = order.shipping?.cost ?? 0;
     doc.text(`Shipping (${order.shipping.rule.name})`, 40, y);
     doc.text(shipping === 0 ? "Free" : priceFormatter(shipping), summaryX, y, { align: "right" });
-    y += 20;
 
     const discount = order.discount?.discountType === "percentage"
         ? (subtotal * (order.discount.value ?? 0)) / 100
         : order.discount?.discountType === "fixed"
             ? order.discount.value
             : 0;
-    doc.setTextColor(green);
-    doc.text(`Discount (${order.discount?.code})`, 40, y);
-    doc.text(`-${priceFormatter(discount)}`, summaryX, y, { align: "right" });
-    doc.setTextColor(black);
+    if (discount && discount > 0) {
+        y += 20;
+        doc.setTextColor(green);
+        doc.text(`Discount (${order.discount?.code})`, 40, y);
+        doc.text(`-${priceFormatter(discount)}`, summaryX, y, { align: "right" });
+        doc.setTextColor(black);
+    }
 
     y += 30;
     doc.setFont("helvetica", "bold");

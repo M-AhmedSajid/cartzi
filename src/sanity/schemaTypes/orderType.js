@@ -106,6 +106,13 @@ export const orderType = defineType({
             initialValue: "pending",
         }),
         defineField({
+            name: "cancelledAt",
+            title: "Cancelled At",
+            type: "datetime",
+            readOnly: true,
+            hidden: ({ parent }) => parent?.status !== "cancelled",
+        }),
+        defineField({
             name: "payment",
             title: "Payment",
             type: "object",
