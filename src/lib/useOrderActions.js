@@ -1,5 +1,5 @@
 "use client"
-import { cancelOrder } from "@/actions/cancelOrder";
+import { cancelOrder } from "@/actions";
 import { useState } from "react";
 import { toast } from "sonner";
 import useCartStore from "../../store";

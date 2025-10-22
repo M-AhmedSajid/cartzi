@@ -30,7 +30,7 @@ function AccordionTrigger({
   ...props
 }) {
   return (
-    (<AccordionPrimitive.Header className="flex font-(family-name:--font-manrope)!">
+    (<AccordionPrimitive.Header className="flex flex-1 font-(family-name:--font-manrope)!">
       <AccordionPrimitive.Trigger
         data-slot="accordion-trigger"
         className={cn(

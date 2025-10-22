@@ -189,7 +189,7 @@ const ReviewDialog = ({
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Title */}
           <div>
-            <Label htmlFor="title">Review Title</Label>
+            <Label className="mb-1.5" htmlFor="title">Review Title</Label>
             <Input
               id="title"
               name="title"
@@ -219,7 +219,7 @@ const ReviewDialog = ({
           {/* Variant Selector */}
           {isVerifiedBuyer && variants?.length > 0 && (
             <div>
-              <Label htmlFor="variant">Select Variant</Label>
+              <Label className="mb-1.5" htmlFor="variant">Select Variant</Label>
               <Select
                 onValueChange={(value) =>
                   setFormData((prev) => ({ ...prev, selectedVariant: value }))
@@ -246,7 +246,7 @@ const ReviewDialog = ({
 
           {/* Comment */}
           <div>
-            <Label htmlFor="comment">Your Review</Label>
+            <Label className="mb-1.5" htmlFor="comment">Your Review</Label>
             <Textarea
               id="comment"
               name="comment"
@@ -264,7 +264,7 @@ const ReviewDialog = ({
 
           {/* Author Name */}
           <div>
-            <Label htmlFor="authorName">Your Name (Optional)</Label>
+            <Label className="mb-1.5" htmlFor="authorName">Your Name (Optional)</Label>
             <Input
               id="authorName"
               name="authorName"

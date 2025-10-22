@@ -25,3 +25,21 @@ export async function cancelOrder(orderId) {
         return { success: false, message: "Failed to cancel order" };
     }
 }
+
+// Server Action — no client event handlers
+export async function applyFilters(formData) {
+    const params = new URLSearchParams();
+
+    const categories = formData.getAll("category");
+    if (categories.length) params.set("category", categories.join(","));
+
+    const min = formData.get("min");
+    const max = formData.get("max");
+    if (min) params.set("min", min);
+    if (max) params.set("max", max);
+
+    const materials = formData.getAll("material");
+    if (materials.length) params.set("material", materials.join(","));
+
+    redirect(`/shop?${params.toString()}`);
+}

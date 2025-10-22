@@ -14,9 +14,22 @@ import { urlFor } from "@/sanity/lib/image";
 import Image from "next/image";
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { useOrderActions } from "@/lib/useOrderActions";
 
 const OrderTabs = ({ orders }) => {
   const [activeFilter, setActiveFilter] = useState("all");
+  const { loading, handleCancelOrder, buyAgain } = useOrderActions();
 
   const filteredOrders = useMemo(() => {
     if (activeFilter === "all") return orders;
@@ -45,7 +58,7 @@ const OrderTabs = ({ orders }) => {
                   (acc, item) => acc + (item?.subtotal ?? 0),
                   0
                 ) || 0;
-                const placed = formatRelativeDate(order?.createdAt);
+              const placed = formatRelativeDate(order?.createdAt);
               return (
                 <AccordionItem
                   value={order?._id}
@@ -62,10 +75,7 @@ const OrderTabs = ({ orders }) => {
                           {getStatusBadge(order?.status)}
                         </div>
                         <div className="font-normal text-sm">
-                          <time
-                            dateTime={order?.createdAt}
-                            title={placed.text}
-                          >
+                          <time dateTime={order?.createdAt} title={placed.text}>
                             {placed.text}
                           </time>
                           <span className="mx-1">•</span>
@@ -206,19 +216,50 @@ const OrderTabs = ({ orders }) => {
                             {order.status === "delivered" && (
                               <Button
                                 variant="outline"
-                                onClick={() => handleReorder(order.items)}
+                                onClick={() => buyAgain(order.items)}
+                                disabled={loading}
                               >
-                                Buy Again
+                                {loading ? "Adding..." : "Buy Again"}
                               </Button>
                             )}
 
                             {["pending", "paid"].includes(order.status) && (
-                              <Button
-                                variant="destructive"
-                                onClick={() => handleCancelOrder(order._id)}
-                              >
-                                Cancel Order
-                              </Button>
+                              <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                  <Button variant="destructive">
+                                    Cancel Order
+                                  </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle>
+                                      Cancel this order?
+                                    </AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                      This action will cancel your order and
+                                      stop it from being processed. You
+                                      can&apos;t undo this once it&apos;s
+                                      cancelled.
+                                    </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <AlertDialogFooter>
+                                    <AlertDialogCancel disabled={loading}>
+                                      No
+                                    </AlertDialogCancel>
+                                    <AlertDialogAction
+                                      onClick={() =>
+                                        handleCancelOrder(order._id)
+                                      }
+                                      disabled={loading}
+                                      variant="destructive"
+                                    >
+                                      {loading
+                                        ? "Cancelling..."
+                                        : "Yes, Cancel"}
+                                    </AlertDialogAction>
+                                  </AlertDialogFooter>
+                                </AlertDialogContent>
+                              </AlertDialog>
                             )}
 
                             <Button
