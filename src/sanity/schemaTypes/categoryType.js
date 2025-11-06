@@ -22,6 +22,7 @@ export const categoryType = defineType({
       options: {
         source: 'name',
         maxLength: 96,
+        isUnique: () => true,
         slugify: (input) =>
           input
             .toLowerCase()
@@ -82,8 +83,7 @@ export const categoryType = defineType({
       initialValue: 1,
       hidden: ({ document }) => !!document?.parent, // hide if parent is set
       validation: (Rule) =>
-        Rule.required()
-          .min(1)
+        Rule.min(1)
           .custom(async (order, context) => {
             if (!order) return true
 
