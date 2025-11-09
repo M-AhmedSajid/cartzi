@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader } from "../ui/card";
 const SkelectonCard = () => {
   return (
     <Card className="w-full">
-      <CardContent className="relative aspect-[3/4] flex-5 rounded-t-lg overflow-hidden">
+      <CardContent className="relative aspect-3/4 flex-5 rounded-t-lg overflow-hidden">
         <Skeleton className="w-full h-full rounded-none" />
       </CardContent>
       

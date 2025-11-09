@@ -71,7 +71,8 @@ const SearchDialog = () => {
           sizes[]{ size, sku, stock, priceOverride }
         },
         tags,
-        material->{ name }
+        material->{ name },
+      "rating": round(math::avg(*[_type == "review" && product._ref == ^._id].rating), 1)
       }[0...8] | order(name asc)
       `;
       const params = { q: `${search}*` };
@@ -133,8 +134,8 @@ const SearchDialog = () => {
               key={i}
               className="p-2 flex items-center gap-2 border-b last:border-b-0"
             >
-              <Skeleton className="rounded-md aspect-[3/4] w-20 md:w-24 flex-shrink-0" />
-              <div className="flex-grow pl-2 space-y-1">
+              <Skeleton className="rounded-md aspect-3/4 w-20 md:w-24 shrink-0" />
+              <div className="grow pl-2 space-y-1">
                 <Skeleton className="h-4 md:h-6 md:w-2/3" />
                 <Skeleton className="h-4" />
                 <div className="flex items-baseline gap-1">
@@ -160,7 +161,7 @@ const SearchDialog = () => {
               >
                 <DialogClose asChild>
                   <Link href={`/product/${product?.slug}`}>
-                    <div className="relative bg-card rounded-md overflow-hidden aspect-[3/4] group border w-20 md:w-24 shrink-0">
+                    <div className="relative bg-card rounded-md overflow-hidden aspect-3/4 group border w-20 md:w-24 shrink-0">
                       {(product?.stock === 0 || product?.stock == null) && (
                         <span className="bg-foreground/50 absolute inset-0 text-base text-background flex items-center justify-center text-center font-semibold pointer-events-none z-10">
                           Out of Stock
@@ -181,7 +182,7 @@ const SearchDialog = () => {
                     </div>
                   </Link>
                 </DialogClose>
-                <div className="flex-grow pl-2">
+                <div className="grow pl-2">
                   <h3 className="text-base md:text-lg font-semibold line-clamp-1">
                     <DialogClose asChild>
                       <Link href={`/product/${product?.slug}`}>
@@ -198,10 +199,16 @@ const SearchDialog = () => {
                     size="text-lg"
                   />
                   <div className="flex items-center gap-2.5 justify-between">
-                    <StarRating
-                      rating={product?.rating ?? 4.2}
-                      className="hidden sm:inline"
-                    />
+                    {product?.rating !== null ? (
+                      <StarRating
+                        rating={product?.rating ?? 0}
+                        className="hidden sm:inline"
+                      />
+                    ) : (
+                      <span className="text-xs/5 text-muted-foreground">
+                        No ratings yet
+                      </span>
+                    )}
                     {itemsInCart.length > 0 ? (
                       <span className="text-xs px-2 py-1 rounded-full bg-green-100 text-green-700 font-medium line-clamp-1">
                         {itemsInCart.length} variant

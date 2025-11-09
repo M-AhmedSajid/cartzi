@@ -28,7 +28,7 @@ const Header = async () => {
 
   return (
     <header className="border-b border-border py-4 md:py-5 sticky top-0 bg-background z-20">
-      <div className="max-w-screen-xl mx-auto px-4 grid grid-cols-2 lg:grid-cols-[1fr_auto_1fr] items-center gap-7 text-foreground">
+      <div className="max-w-7xl mx-auto px-4 grid grid-cols-2 lg:grid-cols-[1fr_auto_1fr] items-center gap-7 text-foreground">
         {/* Left: Menu */}
         <div className="hidden lg:flex justify-start min-w-0">
           <HeaderMenu menu={menuForHeader} />
@@ -53,7 +53,7 @@ const Header = async () => {
             <SignedIn>
               <Link href={"/orders"} className="relative group">
                 <ListOrdered className="w-5 h-5 text-muted-foreground group-hover:text-foreground hoverEffect" />
-                <span className="absolute -top-[0.4375rem] -right-1/2 bg-foreground text-background px-0.5 min-w-3.5 h-3.5 rounded-full text-xs font-semibold flex items-center justify-center">
+                <span className="absolute -top-1.75 -right-1/2 bg-foreground text-background px-0.5 min-w-3.5 h-3.5 rounded-full text-xs font-semibold flex items-center justify-center">
                   {orders?.length ? orders.length : 0}
                 </span>
               </Link>

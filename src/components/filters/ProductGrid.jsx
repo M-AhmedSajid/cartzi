@@ -1,19 +1,5 @@
 "use client";
-
-import Link from "next/link";
-import Image from "next/image";
-import { urlFor } from "@/sanity/lib/image";
-import PriceDisplay from "@/components/product/PriceDisplay";
-import StarRating from "@/components/product/StarRating";
-import WishlistButton from "@/components/product/WishlistButton";
-import { Skeleton } from "@/components/ui/skeleton";
 import ProductCard from "../product/ProductCard";
-
-/**
- * ProductGrid.jsx
- * Renders a responsive grid of products for the Shop page.
- * Expects props.products = array of product documents from Sanity.
- */
 
 const ProductGrid = ({ products }) => {
   if (!products?.length) {

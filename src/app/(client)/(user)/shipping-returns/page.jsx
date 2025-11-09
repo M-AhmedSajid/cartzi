@@ -2,7 +2,7 @@ import React from "react";
 
 const ShippingReturnsPage = () => {
   return (
-    <div className="max-w-screen-xl mx-auto px-4 py-10">
+    <div className="max-w-7xl mx-auto px-4 py-10">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-4xl font-bold text-foreground mb-6">Shipping & Returns</h1>
         
@@ -101,19 +101,19 @@ const ShippingReturnsPage = () => {
               <h3 className="text-xl font-semibold text-foreground mb-3">How to Return</h3>
               <div className="space-y-3">
                 <div className="flex items-start space-x-3">
-                  <span className="bg-accent text-accent-foreground rounded-full w-6 h-6 flex items-center justify-center text-sm font-medium flex-shrink-0 mt-0.5">1</span>
+                  <span className="bg-accent text-accent-foreground rounded-full w-6 h-6 flex items-center justify-center text-sm font-medium shrink-0 mt-0.5">1</span>
                   <p className="text-muted-foreground">Log into your account and go to "Order History"</p>
                 </div>
                 <div className="flex items-start space-x-3">
-                  <span className="bg-accent text-accent-foreground rounded-full w-6 h-6 flex items-center justify-center text-sm font-medium flex-shrink-0 mt-0.5">2</span>
+                  <span className="bg-accent text-accent-foreground rounded-full w-6 h-6 flex items-center justify-center text-sm font-medium shrink-0 mt-0.5">2</span>
                   <p className="text-muted-foreground">Select the order and items you want to return</p>
                 </div>
                 <div className="flex items-start space-x-3">
-                  <span className="bg-accent text-accent-foreground rounded-full w-6 h-6 flex items-center justify-center text-sm font-medium flex-shrink-0 mt-0.5">3</span>
+                  <span className="bg-accent text-accent-foreground rounded-full w-6 h-6 flex items-center justify-center text-sm font-medium shrink-0 mt-0.5">3</span>
                   <p className="text-muted-foreground">Print the return label and package your items</p>
                 </div>
                 <div className="flex items-start space-x-3">
-                  <span className="bg-accent text-accent-foreground rounded-full w-6 h-6 flex items-center justify-center text-sm font-medium flex-shrink-0 mt-0.5">4</span>
+                  <span className="bg-accent text-accent-foreground rounded-full w-6 h-6 flex items-center justify-center text-sm font-medium shrink-0 mt-0.5">4</span>
                   <p className="text-muted-foreground">Drop off at any authorized shipping location</p>
                 </div>
               </div>

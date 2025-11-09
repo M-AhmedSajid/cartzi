@@ -11,7 +11,7 @@ export default async function CategoryPage({ params }) {
   const { slug } = await params;
 
   return (
-    <div className="max-w-screen-xl mx-auto px-4 md:px-8 py-8">
+    <div className="max-w-7xl mx-auto px-4 md:px-8 py-8">
       <h1 className="text-2xl font-bold mb-6 capitalize">
         {slug.replace(/-/g, " ")}
       </h1>

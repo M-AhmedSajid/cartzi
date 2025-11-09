@@ -58,7 +58,7 @@ export default function PromoSection() {
   if (promos.length === 1) {
     const promo = promos[0];
     return (
-      <section className="relative w-full aspect-square md:aspect-video lg:aspect-[21/9] overflow-hidden">
+      <section className="relative w-full aspect-square md:aspect-video lg:aspect-21/9 overflow-hidden">
         <Image
           src={urlFor(promo.image).url()}
           alt={promo.image.alt || promo.title}
@@ -79,7 +79,7 @@ export default function PromoSection() {
 
   // Multiple promos → render carousel with autoplay
   return (
-    <section className="max-w-screen-xl mx-auto px-4 relative w-full">
+    <section className="max-w-7xl mx-auto px-4 relative w-full">
       <Carousel
         className="w-full rounded-2xl overflow-hidden"
         plugins={[Autoplay({ delay: 4000 })]} // autoplay every 4s
@@ -88,7 +88,7 @@ export default function PromoSection() {
         <CarouselContent>
           {promos.map((promo) => (
             <CarouselItem key={promo._id}>
-              <div className="relative w-full aspect-square md:aspect-video lg:aspect-[21/9] overflow-hidden rounded-2xl">
+              <div className="relative w-full aspect-square md:aspect-video lg:aspect-21/9 overflow-hidden rounded-2xl">
                 <Image
                   src={urlFor(promo.image).url()}
                   alt={promo.image.alt || promo.title}

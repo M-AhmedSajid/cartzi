@@ -5,7 +5,7 @@ import React from "react";
 
 const ContactPage = () => {
   return (
-    <div className="max-w-screen-xl mx-auto px-4 py-10">
+    <div className="max-w-7xl mx-auto px-4 py-10">
       <div className="max-w-2xl mx-auto">
         <h1 className="text-4xl font-bold text-foreground mb-6">Contact Us</h1>
         <p className="text-lg text-muted-foreground mb-8">

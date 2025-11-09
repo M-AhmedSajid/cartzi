@@ -8,25 +8,38 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const FilterClient = ({ filters, searchParams, products }) => {
+  const router = useRouter();
+  const params = useSearchParams();
+  const sort = params.get("sort");
   return (
     <>
       <FilterSidebar filters={filters} searchParams={searchParams} />
       <div className="col-span-full md:col-span-3">
         <div className="flex items-center justify-between p-5 text-center w-full border border-l-0 bg-card rounded-r-lg">
-          <p className="text-lg font-medium">0 Products</p>
-          <Select name="sort" defaultValue="featured">
+          <p className="text-base font-medium">
+            {products?.length} Product{products?.length !== 1 && "s"}
+          </p>
+          <Select
+            name="sort"
+            value={sort || "newest"}
+            onValueChange={(value) => {
+              const currentParams = Object.fromEntries([...params.entries()]);
+              currentParams.sort = value;
+              const queryString = new URLSearchParams(currentParams).toString();
+              router.push(`?${queryString}`);
+            }}
+          >
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Sort by" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="featured">Featured</SelectItem>
               <SelectItem value="newest">Newest Arrivals</SelectItem>
+              <SelectItem value="rating">Top Rated</SelectItem>
               <SelectItem value="price-asc">Price: Low to High</SelectItem>
               <SelectItem value="price-desc">Price: High to Low</SelectItem>
-              <SelectItem value="rating">Top Rated</SelectItem>
-              <SelectItem value="bestseller">Best Selling</SelectItem>
             </SelectContent>
           </Select>
         </div>

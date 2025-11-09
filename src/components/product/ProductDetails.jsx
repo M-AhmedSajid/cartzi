@@ -82,7 +82,7 @@ const ProductDetails = ({ product, variant, setVariant, reviews }) => {
           isOutOfStock={!isInStock()}
         />
       </div>
-      <div className="fixed md:hidden bottom-0 inset-x-0 bg-background mb-0 p-4 rounded-t-2xl shadow-[0_-4px_6px_-1px_rgba(0_0_0_/_0.1)] border-t-2 space-y-2">
+      <div className="fixed md:hidden bottom-0 inset-x-0 bg-background mb-0 p-4 rounded-t-2xl shadow-[0_-4px_6px_-1px_rgba(0_0_0/0.1)] border-t-2 space-y-2">
         <div className="flex justify-between items-center">
           <PriceDisplay product={product} variant={variant} size="text-xl" />
           {!isInStock() ? (

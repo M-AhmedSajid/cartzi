@@ -107,7 +107,7 @@ const SuccessPage = () => {
             {!loading
               ? summary.items.map((item, i) => (
                   <TableRow key={i}>
-                    <TableCell className="font-medium whitespace-normal break-words">
+                    <TableCell className="font-medium whitespace-normal wrap-break-word">
                       <span className="line-clamp-2">{item.name}</span>
                       {item.variant && (
                         <p className="text-xs text-muted-foreground">
@@ -128,19 +128,19 @@ const SuccessPage = () => {
                 ))
               : Array.from({ length: 3 }).map((_, i) => (
                   <TableRow key={i}>
-                    <TableCell className="space-y-[0.3125rem]">
+                    <TableCell className="space-y-1.25">
                       <Skeleton className="h-4 w-full" />
                       <Skeleton className="h-4 w-1/2" />
                       <Skeleton className="h-3.5 w-5" />
                     </TableCell>
                     <TableCell>
-                      <Skeleton className="ml-auto h-[1.125rem]" />
+                      <Skeleton className="ml-auto h-4.5" />
                     </TableCell>
                     <TableCell>
-                      <Skeleton className="ml-auto h-[1.125rem] w-10" />
+                      <Skeleton className="ml-auto h-4.5 w-10" />
                     </TableCell>
                     <TableCell>
-                      <Skeleton className="ml-auto h-[1.125rem] w-12" />
+                      <Skeleton className="ml-auto h-4.5 w-12" />
                     </TableCell>
                   </TableRow>
                 ))}
@@ -154,7 +154,7 @@ const SuccessPage = () => {
                 {!loading ? (
                   priceFormatter(subtotal)
                 ) : (
-                  <Skeleton className="ml-auto h-[1.125rem] w-14" />
+                  <Skeleton className="ml-auto h-4.5 w-14" />
                 )}
               </TableCell>
             </TableRow>
@@ -167,10 +167,10 @@ const SuccessPage = () => {
                   {!loading ? (
                     summary.discount.code
                   ) : (
-                    <Skeleton className="ml-auto h-[1.125rem] w-full" />
+                    <Skeleton className="ml-auto h-4.5 w-full" />
                   )}
                 </TableCell>
-                <TableCell className="font-semibold text-red-500 whitespace-normal break-words">
+                <TableCell className="font-semibold text-red-500 whitespace-normal wrap-break-words">
                   {!loading ? (
                     summary.discount.discountType === "percentage" ? (
                       "-" + summary.discount.value + "%"
@@ -180,7 +180,7 @@ const SuccessPage = () => {
                       "Free Shipping"
                     )
                   ) : (
-                    <Skeleton className="ml-auto h-[1.125rem] w-8" />
+                    <Skeleton className="ml-auto h-4.5 w-8" />
                   )}
                 </TableCell>
               </TableRow>
@@ -198,7 +198,7 @@ const SuccessPage = () => {
                     priceFormatter(summary?.shipping || 0)
                   )
                 ) : (
-                  <Skeleton className="ml-auto h-[1.125rem] w-8" />
+                  <Skeleton className="ml-auto h-4.5 w-8" />
                 )}
               </TableCell>
             </TableRow>

@@ -12,7 +12,7 @@ import { Separator } from "@/components/ui/separator";
 import { Label } from "../ui/label";
 import { Slider } from "../ui/slider";
 import { Input } from "../ui/input";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Filter } from "lucide-react";
 import {
@@ -23,13 +23,15 @@ import {
   SheetTrigger,
 } from "../ui/sheet";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 export default function FilterSidebar({ filters, searchParams }) {
+  const [filterOpen, setFilterOpen] = useState(false);
   return (
     <>
       {/* MOBILE FILTER BUTTON */}
       <div className="flex items-center justify-end md:hidden mb-4">
-        <Sheet>
+        <Sheet open={filterOpen} onOpenChange={setFilterOpen}>
           <SheetTrigger asChild>
             <Button
               variant="outline"
@@ -48,7 +50,11 @@ export default function FilterSidebar({ filters, searchParams }) {
               <SheetTitle>Filters</SheetTitle>
             </SheetHeader>
             <div className="mb-5">
-              <FilterContent filters={filters} searchParams={searchParams} />
+              <FilterContent
+                filters={filters}
+                searchParams={searchParams}
+                setFilterOpen={setFilterOpen}
+              />
             </div>
           </SheetContent>
         </Sheet>
@@ -60,15 +66,17 @@ export default function FilterSidebar({ filters, searchParams }) {
           filters={filters}
           searchParams={searchParams}
           desktop={true}
+          setFilterOpen={setFilterOpen}
         />
       </div>
     </>
   );
 }
 
-function FilterContent({ filters, searchParams, desktop }) {
+function FilterContent({ filters, searchParams, desktop, setFilterOpen }) {
   const router = useRouter();
   const params = useSearchParams();
+  const [pendingUpdate, setPendingUpdate] = useState(null);
 
   // Initialize from URL params
   const [formState, setFormState] = useState(() => {
@@ -84,18 +92,36 @@ function FilterContent({ filters, searchParams, desktop }) {
     Number(params.get("max")) || filters.maxPrice,
   ]);
 
-  // Helper to update URL with filters
   const updateSearchParams = (newState, newRange = range) => {
+    setPendingUpdate({ newState, newRange });
+  };
+
+  useEffect(() => {
+    if (!pendingUpdate) return;
+
+    const { newState, newRange } = pendingUpdate;
     const url = new URL(window.location.href);
+
+    // Handle checkboxes and lists
     Object.entries(newState).forEach(([key, values]) => {
       if (!values || values.length === 0) url.searchParams.delete(key);
       else url.searchParams.set(key, values.join(","));
     });
 
-    url.searchParams.set("min", newRange[0]);
-    url.searchParams.set("max", newRange[1]);
+    // Handle min/max only if changed from defaults
+    const [minVal, maxVal] = newRange;
+    const defaultMin = filters.minPrice;
+    const defaultMax = filters.maxPrice;
+
+    if (minVal !== defaultMin) url.searchParams.set("min", minVal);
+    else url.searchParams.delete("min");
+
+    if (maxVal !== defaultMax) url.searchParams.set("max", maxVal);
+    else url.searchParams.delete("max");
+
     router.push(url.pathname + "?" + url.searchParams.toString());
-  };
+    setPendingUpdate(null);
+  }, [pendingUpdate, router, filters.minPrice, filters.maxPrice]);
 
   // Checkbox/option changes
   const handleChange = (name, value, checked) => {
@@ -123,8 +149,8 @@ function FilterContent({ filters, searchParams, desktop }) {
   };
 
   const groupedCategories = filters.categories
-    // Remove "New Arrivals" and "Featured"
-    .filter((cat) => !["New Arrivals", "Featured"].includes(cat.name))
+    // Remove "New Arrivals"
+    .filter((cat) => !["New Arrivals"].includes(cat.name))
     // Remove parent categories (those that appear as a parent for others)
     .filter((cat) => !filters.categories.some((c) => c.parent?._id === cat._id))
     // Group remaining ones by their parent name or "Others"
@@ -142,6 +168,15 @@ function FilterContent({ filters, searchParams, desktop }) {
       return a.localeCompare(b);
     })
   );
+
+  const handleReset = () => {
+    setFormState({});
+    setFilterOpen(false);
+    setRange([filters.minPrice, filters.maxPrice]);
+    const url = new URL(window.location.href);
+    url.search = "";
+    router.push(url.pathname);
+  };
 
   return (
     <form onSubmit={desktop ? (e) => e.preventDefault() : handleSubmit}>
@@ -268,31 +303,30 @@ function FilterContent({ filters, searchParams, desktop }) {
         </AccordionItem>
 
         {/* COLOR */}
-        <AccordionItem value="color" className="px-4">
-          <AccordionTrigger>Color</AccordionTrigger>
-          <AccordionContent className="flex flex-wrap gap-2">
+        <AccordionItem value="color">
+          <AccordionTrigger className="px-4">Color</AccordionTrigger>
+          <AccordionContent className="flex flex-wrap gap-2 pt-3 px-4">
             {filters.colors?.map((color) => (
-              <label
-                key={color._id}
-                className="size-6 rounded-full border cursor-pointer relative"
-                style={{
-                  backgroundColor: color.hex,
-                  borderColor:
-                    color.hex.toLowerCase() === "#ffffff" ? "#ccc" : color.hex,
-                }}
-              >
-                <input
-                  type="checkbox"
-                  className="sr-only"
-                  checked={formState.color?.includes(color._id) || false}
-                  onChange={(e) =>
-                    handleChange("color", color._id, e.target.checked)
-                  }
-                />
-                {formState.color?.includes(color._id) && (
-                  <span className="absolute inset-0 ring-2 ring-offset-2 ring-primary rounded-full" />
-                )}
-              </label>
+              <Tooltip key={color._id}>
+                <TooltipTrigger asChild>
+                  <label
+                    className={`size-6 rounded-full border-2 cursor-pointer relative ${formState.color?.includes(color.name) ? "ring-2 ring-offset-1 ring-primary" : "ring-transparent"}`}
+                    style={{
+                      backgroundColor: color.hex,
+                    }}
+                  >
+                    <input
+                      type="checkbox"
+                      className="sr-only"
+                      checked={formState.color?.includes(color.name) || false}
+                      onChange={(e) =>
+                        handleChange("color", color.name, e.target.checked)
+                      }
+                    />
+                  </label>
+                </TooltipTrigger>
+                <TooltipContent>{color.name}</TooltipContent>
+              </Tooltip>
             ))}
           </AccordionContent>
         </AccordionItem>
@@ -304,13 +338,13 @@ function FilterContent({ filters, searchParams, desktop }) {
             {filters.materials?.map((mat) => (
               <div key={mat._id} className="flex items-center space-x-2">
                 <Checkbox
-                  id={mat._id}
-                  checked={formState.material?.includes(mat._id) || false}
+                  id={mat.name}
+                  checked={formState.material?.includes(mat.name) || false}
                   onCheckedChange={(checked) =>
-                    handleChange("material", mat._id, checked)
+                    handleChange("material", mat.name, checked)
                   }
                 />
-                <Label htmlFor={mat._id} className="text-sm">
+                <Label htmlFor={mat.name} className="text-sm">
                   {mat.name}
                 </Label>
               </div>
@@ -361,15 +395,23 @@ function FilterContent({ filters, searchParams, desktop }) {
 
       <div className="px-4 mt-4 space-y-3">
         {!desktop && (
-          <Button type="submit" variant="default" className="w-full">
+          <Button
+            type="submit"
+            variant="default"
+            className="w-full"
+            onClick={() => setFilterOpen(false)}
+          >
             Apply Filters
           </Button>
         )}
-        <Link href="/shop" className="block">
-          <Button type="button" variant="outline" className="w-full">
-            Reset
-          </Button>
-        </Link>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={handleReset}
+          className="w-full"
+        >
+          Reset
+        </Button>
       </div>
     </form>
   );

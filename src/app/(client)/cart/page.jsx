@@ -25,7 +25,7 @@ export const metadata = {
 
 const Cart = () => {
   return (
-    <div className="max-w-screen-xl mx-auto py-5 md:py-10 px-4">
+    <div className="max-w-7xl mx-auto py-5 md:py-10 px-4">
       <CartPage />
     </div>
   );

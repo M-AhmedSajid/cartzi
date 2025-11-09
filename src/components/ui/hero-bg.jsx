@@ -21,8 +21,7 @@ export const HeroBG = ({
           className="absolute inset-0 overflow-hidden"
           style={{
             // Aurora using only light brand colors
-            "--aurora":
-              `repeating-linear-gradient(100deg,
+            "--aurora": `repeating-linear-gradient(100deg,
                 oklch(0.3 0.04 250) 10%,   /* primary navy */
                 oklch(0.93 0.03 80) 15%,   /* secondary beige */
                 oklch(0.82 0.03 250) 20%,  /* accent warm gray-blue */
@@ -43,10 +42,10 @@ export const HeroBG = ({
         >
           <div
             className={cn(
-              `after:animate-aurora pointer-events-none absolute -inset-[10px]
+              `after:animate-aurora pointer-events-none absolute -inset-2.5
               [background-image:var(--white-gradient),var(--aurora)]
-              [background-size:300%,_200%]
-              [background-position:50%_50%,50%_50%]
+              bg-size-[300%,200%]
+              bg-position-[50%_50%,50%_50%]
               opacity-50 blur-[10px] invert filter will-change-transform
 
               [--aurora:repeating-linear-gradient(100deg,
@@ -61,12 +60,12 @@ export const HeroBG = ({
 
               after:absolute after:inset-0
               after:[background-image:var(--white-gradient),var(--aurora)]
-              after:[background-size:200%,_100%]
-              after:[background-attachment:fixed]
+              after:bg-size-[200%,100%]
+              after:bg-fixed
               after:mix-blend-difference
               after:content-[""]`,
               showRadialGradient &&
-                `[mask-image:radial-gradient(ellipse_at_100%_0%,black_10%,var(--transparent)_70%)]`
+                `mask-[radial-gradient(ellipse_at_100%_0%,black_10%,var(--transparent)_70%)]`
             )}
           ></div>
         </div>

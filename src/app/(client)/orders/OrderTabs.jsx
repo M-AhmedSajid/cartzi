@@ -65,7 +65,7 @@ const OrderTabs = ({ orders }) => {
                   className="border-b-0"
                   key={order?._id}
                 >
-                  <AccordionTrigger className="border rounded-lg overflow-hidden bg-background px-4 py-3 md:p-4 items-center hoverEffect hover:no-underline hover:shadow-md hover:border-primary [&[data-state=open]]:hover:border-b-border [&[data-state=open]]:hover:shadow-none [&[data-state=open]]:rounded-b-none [&[data-state=open]]:border-t-primary [&[data-state=open]]:border-x-primary group">
+                  <AccordionTrigger className="border rounded-lg overflow-hidden bg-background px-4 py-3 md:p-4 items-center hoverEffect hover:no-underline hover:shadow-md hover:border-primary data-[state=open]:hover:border-b-border data-[state=open]:hover:shadow-none data-[state=open]:rounded-b-none data-[state=open]:border-t-primary data-[state=open]:border-x-primary group">
                     <div className="flex-1 flex items-center justify-between">
                       <div>
                         <div className="flex md:items-center flex-col-reverse md:flex-row gap-1.5 md:gap-3">

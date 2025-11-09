@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <main className="pb-8">
       <HeroSection />
-      <div className="max-w-screen-xl mx-auto px-4 py-8 space-y-8">
+      <div className="max-w-7xl mx-auto px-4 py-8 space-y-8">
         <div className="flex flex-col lg:flex-col-reverse gap-6">
           <CategoriesGrid />
           <FeaturedProducts />

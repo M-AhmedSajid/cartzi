@@ -71,7 +71,7 @@ export const ImageGallery = ({ images }) => {
           {images?.map((img, i) => (
             <CarouselItem key={img?._key || i}>
               <div
-                className="relative bg-card rounded-lg overflow-hidden aspect-[3/4] group border"
+                className="relative bg-card rounded-lg overflow-hidden aspect-3/4 group border"
                 onClick={() => setLightboxOpen(i)}
               >
                 <Image
@@ -106,7 +106,7 @@ export const ImageGallery = ({ images }) => {
               ✕
             </Button>
             <div
-              className="relative w-auto h-full aspect-[3/4] z-40"
+              className="relative w-auto h-full aspect-3/4 z-40"
               onClick={(e) => e.stopPropagation()}
             >
               <Image

@@ -26,13 +26,14 @@ const FeaturedProducts = () => {
       "images": coalesce(
       variants[count(sizes[stock > 0]) > 0][0].images,
       variants[0].images,
-      images
+      images,
     ),
     "stock": coalesce(
           variants[count(sizes[stock > 0]) > 0][0].sizes[stock > 0][0].stock,
           stock
         ),
-    "variants": count(variants[])
+    "variants": count(variants[]),
+      "rating": round(math::avg(*[_type == "review" && product._ref == ^._id].rating), 1)
     }
   `;
 
@@ -53,7 +54,10 @@ const FeaturedProducts = () => {
 
   return (
     <section>
-      <SectionHeading title="Hot Right Now" txt="Trending looks, don&apos;t miss out." />
+      <SectionHeading
+        title="Hot Right Now"
+        txt="Trending looks, don't miss out."
+      />
       <Carousel
         className="w-full px-10 lg:hidden"
         opts={{

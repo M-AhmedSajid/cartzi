@@ -19,7 +19,7 @@ import StarRating from "./StarRating";
 const ProductCard = ({ product }) => {
   return (
     <Card className="overflow-hidden group w-full">
-      <CardContent className="relative aspect-[3/4] flex-5 overflow-hidden rounded-t-lg">
+      <CardContent className="relative aspect-3/4 flex-5 overflow-hidden rounded-t-lg">
         {product?.stock === 0 || product?.stock == null ? (
           <span className="bg-foreground/50 absolute inset-0 text-2xl text-background flex items-center justify-center font-semibold pointer-events-none z-10">
             Out of Stock
@@ -51,7 +51,13 @@ const ProductCard = ({ product }) => {
       <CardHeader className="flex-2">
         <div>
           <CardTitle className="line-clamp-1">{product?.name}</CardTitle>
-          <StarRating rating={product?.rating ?? 4.2} />
+          {product?.rating !== null ? (
+            <StarRating rating={product?.rating ?? 0} />
+          ) : (
+            <span className="text-xs/5 text-muted-foreground">
+              No ratings yet
+            </span>
+          )}
           <CardDescription className="line-clamp-2 mt-1">
             {product?.intro}
           </CardDescription>

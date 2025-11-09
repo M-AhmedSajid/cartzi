@@ -145,6 +145,6 @@ export const orderFilters = [
   { title: "Processing", value: "paid", icon: <Clock /> },
   { title: "Shipped", value: "shipped", icon: <Truck /> },
   { title: "Delivered", value: "delivered", icon: <CircleCheck /> },
-  { title: "Pending", value: "pending", icon: <Loader2 className="animate-spin [animation-duration:3s]" /> },
+  { title: "Pending", value: "pending", icon: <Loader2 className="animate-spin animation-duration-[3s]" /> },
   { title: "Cancelled", value: "cancelled", icon: <CircleX /> },
 ];

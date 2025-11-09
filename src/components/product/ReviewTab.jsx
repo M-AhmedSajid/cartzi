@@ -122,7 +122,7 @@ const ReviewTab = ({ product, reviews }) => {
                     mode="edit"
                   >
                     <Button size="sm" variant="ghost" className="size-7">
-                      <Pencil className="size-[1.125rem]" />
+                      <Pencil className="size-4.5" />
                     </Button>
                   </ReviewDialog>
                   <AlertDialog>
@@ -132,7 +132,7 @@ const ReviewTab = ({ product, reviews }) => {
                         variant="ghost"
                         className="size-7 text-destructive hover:bg-destructive/75 hover:text-background"
                       >
-                        <Trash2 className="size-[1.125rem]" />
+                        <Trash2 className="size-4.5" />
                       </Button>
                     </AlertDialogTrigger>
 

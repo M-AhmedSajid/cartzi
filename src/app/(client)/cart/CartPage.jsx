@@ -208,12 +208,12 @@ const CartPage = () => {
                         key={i}
                       >
                         {/* Thumbnail placeholder */}
-                        <div className="relative bg-card rounded-md overflow-hidden aspect-[3/4] border w-28 md:w-[7.5rem] shrink-0">
+                        <div className="relative bg-card rounded-md overflow-hidden aspect-3/4 border w-28 md:w-30 shrink-0">
                           <Skeleton className="w-full h-full" />
                         </div>
 
                         {/* Content placeholders */}
-                        <div className="flex-grow space-y-1">
+                        <div className="grow space-y-1">
                           {/* Title + actions */}
                           <div className="flex items-center justify-between gap-2">
                             <Skeleton className="h-5 w-4/5" />
@@ -262,7 +262,7 @@ const CartPage = () => {
                           className="p-2 flex items-center gap-3 md:gap-5 border-b last:border-b-0"
                         >
                           <Link href={`/product/${item?.slug}`}>
-                            <div className="relative bg-card rounded-md overflow-hidden aspect-[3/4] group border w-28 md:w-[7.5rem] shrink-0">
+                            <div className="relative bg-card rounded-md overflow-hidden aspect-3/4 group border w-28 md:w-30 shrink-0">
                               <Image
                                 src={urlFor(item?.image)
                                   .width(100)
@@ -277,7 +277,7 @@ const CartPage = () => {
                               />
                             </div>
                           </Link>
-                          <div className="flex-grow">
+                          <div className="grow">
                             <div className="flex items-center justify-between gap-2">
                               <h3 className="text-base md:text-lg font-semibold line-clamp-1">
                                 <Link href={`/product/${item?.slug}`}>
@@ -321,11 +321,17 @@ const CartPage = () => {
                             <p className="text-sm text-muted-foreground line-clamp-1">
                               {item.product?.intro}
                             </p>
-                            <StarRating
-                              rating={item?.rating ?? 4.2}
-                              size="size-3.5"
-                              className="hidden sm:inline"
-                            />
+                            {item?.product?.rating !== null ? (
+                              <StarRating
+                                rating={item?.product?.rating ?? 0}
+                                size="size-3.5"
+                                className="hidden sm:inline"
+                              />
+                            ) : (
+                              <span className="text-xs/5 text-muted-foreground">
+                                No ratings yet
+                              </span>
+                            )}
                             <PriceDisplay
                               product={item.product}
                               variant={item?.product?.variants}
@@ -489,7 +495,7 @@ const CartPage = () => {
             </div>
 
             {/* Mobile Sticky Checkout */}
-            <div className="fixed bottom-0 inset-x-0 z-50 bg-background border-t-2 p-4 pt-0 space-y-2 md:hidden rounded-t-2xl shadow-[0_-4px_6px_-1px_rgba(0_0_0_/_0.1)]">
+            <div className="fixed bottom-0 inset-x-0 z-50 bg-background border-t-2 p-4 pt-0 space-y-2 md:hidden rounded-t-2xl shadow-[0_-4px_6px_-1px_rgba(0_0_0/0.1)]">
               {!isClient ? (
                 <>
                   <p className="text-lg font-semibold pt-2">Order Summary</p>
@@ -509,7 +515,7 @@ const CartPage = () => {
                     className="w-full"
                   >
                     <AccordionItem value="item-1">
-                      <AccordionTrigger className="text-lg font-semibold pt-2 pb-0 [&[data-state=open]]:pb-2">
+                      <AccordionTrigger className="text-lg font-semibold pt-2 pb-0 data-[state=open]:pb-2">
                         Order Summary
                       </AccordionTrigger>
                       <AccordionContent className="space-y-2 pb-0">

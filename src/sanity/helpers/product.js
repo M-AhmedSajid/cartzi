@@ -6,6 +6,7 @@ export const getProductBySlug = async (slug) => {
         *[_type == "product" && slug.current == $slug][0]{
             ...,
             "slug": slug.current,
+            "rating": round(math::avg(*[_type == "review" && product._ref == ^._id].rating), 1),
             material->{ name },
             categories[]->{
                 ...,

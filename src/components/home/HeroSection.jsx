@@ -12,7 +12,7 @@ import SearchDialog from "../SearchDialog";
 const HeroSection = () => {
   return (
     <HeroBG>
-      <div className="max-w-screen-xl mx-auto px-4 space-y-10 pt-8 relative w-full text-center">
+      <div className="max-w-7xl mx-auto px-4 space-y-10 pt-8 relative w-full text-center">
         <Title className="text-4xl md:text-5xl lg:text-6xl mb-4 md:mb-10">
           Affordable style, perfect fit
         </Title>

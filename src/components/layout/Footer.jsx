@@ -15,7 +15,7 @@ const Footer = async () => {
 
   return (
     <footer className="border-t">
-      <div className="max-w-screen-xl mx-auto px-4 sm:px-10 lg:px-4 py-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-10 lg:px-4 py-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
         {/* Brand */}
         <div className="space-y-4 sm:col-span-2 lg:col-span-1">
           <Logo>Cartzi</Logo>

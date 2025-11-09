@@ -65,9 +65,9 @@ export function getStatusBadge(status) {
       return (
         <Badge
           variant="outline"
-          className="border-amber-400 text-amber-600 group-[&[data-state=open]]:bg-amber-200"
+          className="border-amber-400 text-amber-600 group-data-[state=open]:bg-amber-200"
         >
-          <Loader2 className="animate-spin [animation-duration:3s]" />
+          <Loader2 className="animate-spin animation-duration-[3s]" />
           Pending
         </Badge>
       );
@@ -76,7 +76,7 @@ export function getStatusBadge(status) {
       return (
         <Badge
           variant="outline"
-          className="border-blue-400 text-blue-600 group-[&[data-state=open]]:bg-blue-200"
+          className="border-blue-400 text-blue-600 group-data-[state=open]:bg-blue-200"
         >
           <Clock />
           Processing
@@ -87,7 +87,7 @@ export function getStatusBadge(status) {
       return (
         <Badge
           variant="outline"
-          className="border-purple-400 text-purple-600 group-[&[data-state=open]]:bg-purple-200"
+          className="border-purple-400 text-purple-600 group-data-[state=open]:bg-purple-200"
         >
           <Truck />
           Shipped
@@ -98,7 +98,7 @@ export function getStatusBadge(status) {
       return (
         <Badge
           variant="outline"
-          className="border-green-400 text-green-600 group-[&[data-state=open]]:bg-green-200"
+          className="border-green-400 text-green-600 group-data-[state=open]:bg-green-200"
         >
           <CircleCheck />
           Delivered
@@ -109,7 +109,7 @@ export function getStatusBadge(status) {
       return (
         <Badge
           variant="outline"
-          className="border-red-400 text-red-600 group-[&[data-state=open]]:bg-red-200"
+          className="border-red-400 text-red-600 group-data-[state=open]:bg-red-200"
         >
           <CircleX />
           Cancelled
