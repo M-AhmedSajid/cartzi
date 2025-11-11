@@ -60,10 +60,7 @@ const Header = async () => {
               <UserButton />
             </SignedIn>
             {!user && (
-              <SignInButton
-                mode="modal"
-                fallback={<Button variant="ghost">Loading...</Button>}
-              >
+              <SignInButton mode="modal">
                 <Button variant="ghost">Login</Button>
               </SignInButton>
             )}

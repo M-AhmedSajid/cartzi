@@ -6,7 +6,7 @@ const Filters = async ({ searchParams, appliedFilters, range }) => {
   const filters = await getFiltersData();
   const products = await getFilteredProducts(appliedFilters, range);
   return (
-    <div className="py-10 grid grid-cols-1 md:grid-cols-4">
+    <div className="grid grid-cols-1 md:grid-cols-4 mt-6">
       <FilterClient
         filters={filters}
         searchParams={searchParams}

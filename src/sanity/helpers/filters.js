@@ -31,16 +31,6 @@ export const getFiltersData = async () => {
 export const getFilteredProducts = async (filters = {}, range = []) => {
   const { color, size, material, stock, discount, sort } = filters;
   const [minPrice, maxPrice] = range;
-  console.log({
-    color,
-    size,
-    material,
-    minPrice,
-    maxPrice,
-    stock,
-    discount,
-    sort
-  });
 
   let sortQuery = "_createdAt desc"
   switch (sort) {

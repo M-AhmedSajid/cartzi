@@ -2,7 +2,7 @@
 
 import { backendClient } from "@/sanity/lib/backendClient";
 import { client } from "@/sanity/lib/client";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 
 export async function submitReview(formData) {
     try {
@@ -80,7 +80,7 @@ export async function submitReview(formData) {
         }
 
         await backendClient.create(newReview);
-        revalidateTag(`reviews:${productId}`)
+        updateTag(`reviews:${productId}`)
 
         return { success: true, message: "Review submitted successfully!" };
     } catch (err) {
@@ -121,7 +121,7 @@ export async function updateReview(formData, reviewId) {
             .set(updatedReview)
             .commit();
 
-        revalidateTag(`reviews:${productId}`)
+        updateTag(`reviews:${productId}`)
 
         return { success: true, message: "Review updated successfully!" };
     } catch (err) {
@@ -137,7 +137,7 @@ export async function deleteReview(reviewId, productId) {
         }
 
         await backendClient.delete(reviewId);
-        revalidateTag(`reviews:${productId}`)
+        updateTag(`reviews:${productId}`)
 
         return { success: true, message: "Review deleted successfully." };
     } catch (err) {
@@ -178,7 +178,7 @@ export async function toggleReviewHelpful(reviewId, productId, userId) {
                 })
                 .commit();
 
-            revalidateTag(`reviews:${productId}`);
+            updateTag(`reviews:${productId}`);
             return { success: true, message: "Removed your helpful vote." };
         } else {
             // Add user and increment safely
@@ -189,7 +189,7 @@ export async function toggleReviewHelpful(reviewId, productId, userId) {
                 .set({ helpfulCount: (review.helpfulCount || 0) + 1 })
                 .commit();
 
-            revalidateTag(`reviews:${productId}`);
+            updateTag(`reviews:${productId}`);
             return { success: true, message: "Thanks for your feedback!" };
         }
     } catch (error) {

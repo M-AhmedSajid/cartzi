@@ -22,15 +22,57 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "../ui/sheet";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+import {
+  Breadcrumb,
+  BreadcrumbEllipsis,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "../ui/breadcrumb";
 
 export default function FilterSidebar({ filters, searchParams }) {
+  const pathname = usePathname();
   const [filterOpen, setFilterOpen] = useState(false);
   return (
     <>
       {/* MOBILE FILTER BUTTON */}
-      <div className="flex items-center justify-end md:hidden mb-4">
+      <div className="flex items-center justify-between md:hidden mb-4 gap-5">
+        <Breadcrumb className="md:hidden overflow-auto">
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/">Home</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            {pathname.split("/")[3] ? (
+              <>
+                <BreadcrumbItem>
+                  <BreadcrumbLink
+                    href={`/${pathname.split("/")[2]}`}
+                    className="capitalize"
+                  >
+                    {pathname.split("/")[2]}
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbPage className="capitalize">
+                    {pathname.split("/")[3]}
+                  </BreadcrumbPage>
+                </BreadcrumbItem>
+              </>
+            ) : (
+              <BreadcrumbItem>
+                <BreadcrumbPage className="capitalize">
+                  {pathname.split("/")[2]}
+                </BreadcrumbPage>
+              </BreadcrumbItem>
+            )}
+          </BreadcrumbList>
+        </Breadcrumb>
         <Sheet open={filterOpen} onOpenChange={setFilterOpen}>
           <SheetTrigger asChild>
             <Button
@@ -49,13 +91,11 @@ export default function FilterSidebar({ filters, searchParams }) {
             <SheetHeader>
               <SheetTitle>Filters</SheetTitle>
             </SheetHeader>
-            <div className="mb-5">
-              <FilterContent
-                filters={filters}
-                searchParams={searchParams}
-                setFilterOpen={setFilterOpen}
-              />
-            </div>
+            <FilterContent
+              filters={filters}
+              searchParams={searchParams}
+              setFilterOpen={setFilterOpen}
+            />
           </SheetContent>
         </Sheet>
       </div>
@@ -76,6 +116,7 @@ export default function FilterSidebar({ filters, searchParams }) {
 function FilterContent({ filters, searchParams, desktop, setFilterOpen }) {
   const router = useRouter();
   const params = useSearchParams();
+  const pathname = usePathname();
   const [pendingUpdate, setPendingUpdate] = useState(null);
 
   // Initialize from URL params
@@ -189,17 +230,35 @@ function FilterContent({ filters, searchParams, desktop, setFilterOpen }) {
           <AccordionContent className="space-y-2">
             {Object.entries(groupedCategoriesOrdered)
               .reverse()
+              .filter(([parentName, subcategories]) => {
+                const parentSlug = subcategories[0]?.parent?.slug;
+                const activeParent = pathname.split("/")[2];
+                // if pathname parent exists, only show that parent; else show all
+                return !activeParent || parentSlug === activeParent;
+              })
               .map(([parentName, subcategories]) => {
-                const parentSlug = subcategories[0]?.parent?.slug; // assuming all subs share same parent
+                const parentSlug = subcategories[0]?.parent?.slug;
 
                 return (
-                  <Accordion key={parentName} type="single" collapsible>
+                  <Accordion
+                    key={parentName}
+                    type="single"
+                    defaultValue={
+                      pathname.split("/")[2] === parentSlug ? parentName : null
+                    }
+                    collapsible
+                  >
                     <AccordionItem value={parentName}>
                       {/* PARENT CATEGORY LINK */}
                       <AccordionTrigger className="py-1">
                         <Link
                           href={`/category/${parentSlug}`}
-                          className="text-sm font-medium hover:text-primary transition"
+                          className={`text-sm hover:text-primary transition ${
+                            pathname.split("/")[2] &&
+                            pathname.split("/")[2] === parentSlug
+                              ? "underline font-bold"
+                              : "font-medium"
+                          }`}
                         >
                           {parentName}
                         </Link>
@@ -215,7 +274,12 @@ function FilterContent({ filters, searchParams, desktop, setFilterOpen }) {
                             <Link
                               key={cat._id}
                               href={parentPath}
-                              className="block text-sm text-muted-foreground hover:text-primary transition"
+                              className={`block text-sm hover:text-primary transition ${
+                                pathname.split("/")[3] &&
+                                pathname.split("/")[3] === cat.slug
+                                  ? "font-bold"
+                                  : "text-muted-foreground"
+                              }`}
                             >
                               {cat.name}
                             </Link>
@@ -391,9 +455,7 @@ function FilterContent({ filters, searchParams, desktop, setFilterOpen }) {
         </AccordionItem>
       </Accordion>
 
-      <Separator className="my-4" />
-
-      <div className="px-4 mt-4 space-y-3">
+      <div className="px-4 space-y-3 border-t py-4 md:pb-0 sticky md:block md:bottom-auto bottom-0 bg-background md:bg-transparent shadow-[0_-4px_6px_-1px_rgba(0_0_0/0.1)] md:shadow-none rounded-t-2xl md:rounded-none">
         {!desktop && (
           <Button
             type="submit"

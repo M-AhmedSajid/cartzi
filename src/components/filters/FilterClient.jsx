@@ -18,7 +18,7 @@ const FilterClient = ({ filters, searchParams, products }) => {
     <>
       <FilterSidebar filters={filters} searchParams={searchParams} />
       <div className="col-span-full md:col-span-3">
-        <div className="flex items-center justify-between p-5 text-center w-full border border-l-0 bg-card rounded-r-lg">
+        <div className="flex items-center justify-between p-5 text-center w-full border md:border-l-0 bg-card rounded-lg md:rounded-l-none">
           <p className="text-base font-medium">
             {products?.length} Product{products?.length !== 1 && "s"}
           </p>
@@ -32,7 +32,7 @@ const FilterClient = ({ filters, searchParams, products }) => {
               router.push(`?${queryString}`);
             }}
           >
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="w-40 md:w-44">
               <SelectValue placeholder="Sort by" />
             </SelectTrigger>
             <SelectContent>
@@ -43,7 +43,7 @@ const FilterClient = ({ filters, searchParams, products }) => {
             </SelectContent>
           </Select>
         </div>
-        <div className="p-3">
+        <div className="pt-4 md:pl-4">
           <ProductGrid products={products} />
         </div>
       </div>
