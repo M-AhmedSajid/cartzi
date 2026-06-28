@@ -1,5 +1,5 @@
 import { defineField, defineType } from 'sanity'
-import { Globe } from 'lucide-react'
+import { FiGlobe as Globe } from "react-icons/fi"
 
 export const socialLinkType = defineType({
   name: 'socialLink',

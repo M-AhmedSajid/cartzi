@@ -8,14 +8,7 @@ import {
 import { socialLinks } from "../constants";
 import Link from "next/link";
 import { Button } from "./ui/button";
-import {
-  Facebook,
-  Github,
-  Instagram,
-  Linkedin,
-  Twitter,
-  Youtube,
-} from "lucide-react";
+import { FiFacebook as Facebook, FiGithub as Github, FiInstagram as Instagram, FiLinkedin as Linkedin, FiTwitter as Twitter, FiYoutube as Youtube } from "react-icons/fi";
 
 const socialIcons = {
   Facebook: Facebook,

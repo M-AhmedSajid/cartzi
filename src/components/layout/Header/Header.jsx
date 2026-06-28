@@ -5,7 +5,8 @@ import MobileMenu from "./MobileMenu";
 import { Button } from "../../ui/button";
 import { currentUser } from "@clerk/nextjs/server";
 import { ClerkLoaded, SignedIn, SignInButton, UserButton } from "@clerk/nextjs";
-import { ListOrdered, Search } from "lucide-react";
+import { FiSearch } from "react-icons/fi";
+import { LuListOrdered } from "react-icons/lu";
 import Link from "next/link";
 import { Dialog, DialogTrigger } from "../../ui/dialog";
 import SearchDialog from "../../SearchDialog";
@@ -44,7 +45,7 @@ const Header = async () => {
         <div className="flex justify-end items-center gap-4 md:gap-6">
           <Dialog>
             <DialogTrigger>
-              <Search className="w-5 h-5 text-muted-foreground hover:text-foreground hoverEffect" />
+              <FiSearch className="w-5 h-5 text-muted-foreground hover:text-foreground hoverEffect" />
             </DialogTrigger>
             <SearchDialog />
           </Dialog>
@@ -52,7 +53,7 @@ const Header = async () => {
           <ClerkLoaded>
             <SignedIn>
               <Link href={"/orders"} className="relative group">
-                <ListOrdered className="w-5 h-5 text-muted-foreground group-hover:text-foreground hoverEffect" />
+                <LuListOrdered className="w-5 h-5 text-muted-foreground group-hover:text-foreground hoverEffect" />
                 <span className="absolute -top-1.75 -right-1/2 bg-foreground text-background px-0.5 min-w-3.5 h-3.5 rounded-full text-xs font-semibold flex items-center justify-center">
                   {orders?.length ? orders.length : 0}
                 </span>

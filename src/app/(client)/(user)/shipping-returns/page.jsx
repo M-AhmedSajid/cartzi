@@ -60,7 +60,7 @@ const ShippingReturnsPage = () => {
             <div>
               <h3 className="text-xl font-semibold text-foreground mb-3">Tracking Your Order</h3>
               <p className="text-muted-foreground">
-                Once your order ships, you'll receive a confirmation email with tracking information. You can also track your order through your account dashboard.
+                Once your order ships, you&apos;ll receive a confirmation email with tracking information. You can also track your order through your account dashboard.
               </p>
             </div>
           </div>
@@ -73,7 +73,7 @@ const ShippingReturnsPage = () => {
             <div>
               <h3 className="text-xl font-semibold text-foreground mb-3">Return Policy</h3>
               <p className="text-muted-foreground">
-                We want you to love your purchase! If you're not completely satisfied, you can return most items within 30 days of delivery for a full refund or exchange.
+                We want you to love your purchase! If you&apos;re not completely satisfied, you can return most items within 30 days of delivery for a full refund or exchange.
               </p>
             </div>
             
@@ -102,7 +102,7 @@ const ShippingReturnsPage = () => {
               <div className="space-y-3">
                 <div className="flex items-start space-x-3">
                   <span className="bg-accent text-accent-foreground rounded-full w-6 h-6 flex items-center justify-center text-sm font-medium shrink-0 mt-0.5">1</span>
-                  <p className="text-muted-foreground">Log into your account and go to "Order History"</p>
+                  <p className="text-muted-foreground">Log into your account and go to &ldquo;Order History&rdquo;</p>
                 </div>
                 <div className="flex items-start space-x-3">
                   <span className="bg-accent text-accent-foreground rounded-full w-6 h-6 flex items-center justify-center text-sm font-medium shrink-0 mt-0.5">2</span>
@@ -122,7 +122,7 @@ const ShippingReturnsPage = () => {
             <div>
               <h3 className="text-xl font-semibold text-foreground mb-3">Refund Processing</h3>
               <p className="text-muted-foreground">
-                Refunds are typically processed within 5-7 business days after we receive your return. You'll receive an email confirmation once the refund is processed.
+                Refunds are typically processed within 5-7 business days after we receive your return. You&apos;ll receive an email confirmation once the refund is processed.
               </p>
             </div>
           </div>
@@ -135,14 +135,14 @@ const ShippingReturnsPage = () => {
             <div>
               <h3 className="text-xl font-semibold text-foreground mb-3">Size Exchanges</h3>
               <p className="text-muted-foreground">
-                Need a different size? We offer free size exchanges for the same item. Simply follow the return process and note that you'd like an exchange.
+                Need a different size? We offer free size exchanges for the same item. Simply follow the return process and note that you&apos;d like an exchange.
               </p>
             </div>
             
             <div>
               <h3 className="text-xl font-semibold text-foreground mb-3">Exchange Process</h3>
               <p className="text-muted-foreground">
-                Exchanges are processed once we receive your return. If the requested size is available, we'll ship it immediately. If not, we'll process a refund and notify you.
+                Exchanges are processed once we receive your return. If the requested size is available, we&apos;ll ship it immediately. If not, we&apos;ll process a refund and notify you.
               </p>
             </div>
           </div>
@@ -151,7 +151,7 @@ const ShippingReturnsPage = () => {
         <div className="mt-12 pt-8 border-t">
           <h3 className="text-xl font-semibold text-foreground mb-4">Need Help?</h3>
           <p className="text-muted-foreground">
-            If you have questions about shipping or returns, please contact our customer service team. We're here to help!
+            If you have questions about shipping or returns, please contact our customer service team. We&apos;re here to help!
           </p>
           <p className="text-muted-foreground mt-2">
             <strong>Email:</strong> support@cartzi.vercel.app | <strong>Phone:</strong> +1 (555) 123-4567

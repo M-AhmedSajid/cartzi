@@ -1,7 +1,7 @@
 "use client";
 import { motion } from "motion/react";
 import Image from "next/image";
-import { PackageOpen } from "lucide-react";
+import { FiPackage as PackageOpen } from "react-icons/fi";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import emptyOrders from "@/images/empty-orders.svg";

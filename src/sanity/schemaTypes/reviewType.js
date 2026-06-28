@@ -1,11 +1,11 @@
-import { Star } from "lucide-react";
+import { FiStar } from "react-icons/fi";
 import { defineType, defineField } from "sanity";
 
 export const reviewType = defineType({
     name: "review",
     title: "Review",
     type: "document",
-    icon: Star,
+    icon: FiStar,
     fields: [
         defineField({
             name: "title",

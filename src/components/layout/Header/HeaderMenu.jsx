@@ -2,7 +2,7 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ChevronDown, ChevronRight } from "lucide-react";
+import { FiChevronRight as ChevronRight, FiChevronDown } from "react-icons/fi";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -54,7 +54,7 @@ const HeaderMenu = ({ menu }) => {
         >
           {item.label}
           {hasDropdown && (
-            <ChevronDown className="size-4 hoverEffect group-hover:rotate-180" />
+            <FiChevronDown className="size-4 hoverEffect group-hover:rotate-180" />
           )}
           <span
             className={`absolute -bottom-0.5 left-0 h-0.5 bg-foreground group-hover:w-full hoverEffect ${
@@ -123,7 +123,7 @@ const HeaderMenu = ({ menu }) => {
         <DropdownMenu>
           <DropdownMenuTrigger className="flex items-center gap-0.5 text-muted-foreground hover:text-foreground hoverEffect outline-0">
             More
-            <ChevronDown className="size-4" />
+            <FiChevronDown className="size-4" />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start">
             {overflowItems.map(renderOverflowItem)}

@@ -56,7 +56,7 @@ const FeaturedProducts = () => {
     <section>
       <SectionHeading
         title="Hot Right Now"
-        txt="Trending looks, don't miss out."
+        txt="Trending looks, dont miss out."
       />
       <Carousel
         className="w-full px-10 lg:hidden"

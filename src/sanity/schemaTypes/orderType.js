@@ -1,5 +1,5 @@
 import { defineType, defineField } from "sanity";
-import { Receipt } from "lucide-react";
+import { FiFileText as Receipt } from "react-icons/fi";
 
 export const orderType = defineType({
     name: "order",

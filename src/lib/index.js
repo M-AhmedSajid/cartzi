@@ -1,12 +1,13 @@
 import { Badge } from "@/components/ui/badge";
+import { useEffect, useState } from "react";
 import {
-  CircleCheck,
-  Clock,
-  Truck,
-  CircleX,
-  Loader2,
-  PackageOpen,
-} from "lucide-react";
+  FiCheckCircle,
+  FiClock,
+  FiTruck,
+  FiXCircle,
+  FiLoader,
+  FiPackage,
+} from "react-icons/fi";
 
 export const priceFormatter = function (amount) {
   const formattedPrice = new Number(amount).toLocaleString("en-US", {
@@ -67,7 +68,7 @@ export function getStatusBadge(status) {
           variant="outline"
           className="border-amber-400 text-amber-600 group-data-[state=open]:bg-amber-200"
         >
-          <Loader2 className="animate-spin animation-duration-[3s]" />
+          <FiLoader className="animate-spin animation-duration-[3s]" />
           Pending
         </Badge>
       );
@@ -78,7 +79,7 @@ export function getStatusBadge(status) {
           variant="outline"
           className="border-blue-400 text-blue-600 group-data-[state=open]:bg-blue-200"
         >
-          <Clock />
+          <FiClock />
           Processing
         </Badge>
       );
@@ -89,7 +90,7 @@ export function getStatusBadge(status) {
           variant="outline"
           className="border-purple-400 text-purple-600 group-data-[state=open]:bg-purple-200"
         >
-          <Truck />
+          <FiTruck />
           Shipped
         </Badge>
       );
@@ -100,7 +101,7 @@ export function getStatusBadge(status) {
           variant="outline"
           className="border-green-400 text-green-600 group-data-[state=open]:bg-green-200"
         >
-          <CircleCheck />
+          <FiCheckCircle />
           Delivered
         </Badge>
       );
@@ -111,7 +112,7 @@ export function getStatusBadge(status) {
           variant="outline"
           className="border-red-400 text-red-600 group-data-[state=open]:bg-red-200"
         >
-          <CircleX />
+          <FiXCircle />
           Cancelled
         </Badge>
       );
@@ -119,9 +120,33 @@ export function getStatusBadge(status) {
     default:
       return (
         <Badge variant="outline">
-          <PackageOpen />
+          <FiPackage />
           Unknown
         </Badge>
       );
   }
+}
+
+export function useMounted() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  return mounted;
+}
+
+export function useDebounce(value, delay = 300) {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => clearTimeout(timer);
+  }, [value, delay]);
+
+  return debouncedValue;
 }

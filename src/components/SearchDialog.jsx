@@ -1,5 +1,9 @@
 "use client";
-import React, { useCallback, useEffect, useState } from "react";
+import React, {
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import {
   DialogClose,
   DialogContent,
@@ -9,7 +13,7 @@ import {
 } from "./ui/dialog";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
-import { Search, X } from "lucide-react";
+import { FiSearch as Search, FiX } from "react-icons/fi";
 import { client } from "@/sanity/lib/client";
 import Link from "next/link";
 import { urlFor } from "@/sanity/lib/image";
@@ -18,22 +22,35 @@ import PriceDisplay from "./product/PriceDisplay";
 import { Skeleton } from "./ui/skeleton";
 import useCartStore from "../../store";
 import StarRating from "./product/StarRating";
+import { useDebounce } from "@/lib";
 
 const SearchDialog = () => {
   const [search, setSearch] = useState("");
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
+
   const { getItems } = useCartStore();
   const cartItems = getItems();
 
-  const fetchProducts = useCallback(async () => {
-    if (!search) {
+  const requestId = useRef(0);
+  const debouncedSearch = useDebounce(search, 300);
+
+  useEffect(() => {
+    const searchTerm = debouncedSearch.trim();
+
+    if (!searchTerm) {
       setProducts([]);
       setLoading(false);
       return;
     }
-    try {
-      const query = `*[_type == "product" && (
+
+    const currentRequest = ++requestId.current;
+
+    const fetchProducts = async () => {
+      setLoading(true);
+
+      try {
+        const query = `*[_type == "product" && (
         name match $q ||
         description match $q ||
         intro match $q ||
@@ -72,30 +89,27 @@ const SearchDialog = () => {
         },
         tags,
         material->{ name },
-      "rating": round(math::avg(*[_type == "review" && product._ref == ^._id].rating), 1)
-      }[0...8] | order(name asc)
-      `;
-      const params = { q: `${search}*` };
-      const res = await client.fetch(query, params);
-      setProducts(res);
-      console.log(res);
-    } catch (error) {
-      console.error("Error Fetching Products:", error);
-    } finally {
-      setLoading(false);
-    }
-  }, [search]);
+        "rating": round(math::avg(*[_type == "review" && product._ref == ^._id].rating), 1)
+      }[0...8] | order(name asc)`;
 
-  useEffect(() => {
-    setLoading(true);
-    const debounceTimer = setTimeout(() => {
-      fetchProducts();
-    }, 300);
+        const res = await client.fetch(query, {
+          q: `${searchTerm}*`,
+        });
 
-    return () => {
-      clearTimeout(debounceTimer);
+        if (currentRequest !== requestId.current) return;
+
+        setProducts(res);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      } finally {
+        if (currentRequest === requestId.current) {
+          setLoading(false);
+        }
+      }
     };
-  }, [search, fetchProducts]);
+
+    fetchProducts();
+  }, [debouncedSearch]);
 
   return (
     <DialogContent className="md:max-w-2xl min-h-[80vh] max-h-[80vh] flex flex-col overflow-hidden">
@@ -118,7 +132,7 @@ const SearchDialog = () => {
               onClick={() => setSearch("")}
               className="absolute size-5 right-13 rounded-full"
             >
-              <X className="size-3" />
+              <FiX className="size-3" />
             </Button>
           )}
           <Button size="icon" type="submit">
@@ -152,7 +166,7 @@ const SearchDialog = () => {
         ) : products.length ? (
           products?.map((product) => {
             const itemsInCart = cartItems.filter(
-              (it) => it.productId === product._id
+              (it) => it.productId === product._id,
             );
             return (
               <div

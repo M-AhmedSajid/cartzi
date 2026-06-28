@@ -3,15 +3,8 @@ import VariantsSelection from "@/components/product/VariantsSelection";
 import ProductActions from "@/components/product/ProductActions";
 import ShareButton from "@/components/product/ShareButton";
 import { Button } from "@/components/ui/button";
-import {
-  Feather,
-  Grid,
-  Ruler,
-  RulerIcon,
-  Scale,
-  Tag,
-  Truck,
-} from "lucide-react";
+import { FiFeather, FiGrid, FiTag, FiTruck } from "react-icons/fi";
+import { FaRulerCombined, FaScale, FaRuler } from "react-icons/fa";
 import Link from "next/link";
 import {
   Accordion,
@@ -113,13 +106,13 @@ const ProductDetails = ({ product, variant, setVariant, reviews }) => {
       <div className="flex flex-wrap items-center gap-2.5 justify-between border-b py-5 -mt-2">
         <Button variant="link" asChild>
           <Link href="/shipping-returns">
-            <Ruler className="inline-block" />
+            <FaRulerCombined className="inline-block" />
             <span>Size Guide</span>
           </Link>
         </Button>
         <Button variant="link" asChild>
           <Link href="/shipping-returns">
-            <Truck className="inline-block" />
+            <FiTruck className="inline-block" />
             <span>Shipping and Return</span>
           </Link>
         </Button>
@@ -134,7 +127,7 @@ const ProductDetails = ({ product, variant, setVariant, reviews }) => {
             {product.material && (
               <div className="flex justify-between items-center gap-3">
                 <span className="font-semibold flex items-center gap-2">
-                  <Feather className="h-4 w-4" />
+                  <FiFeather className="h-4 w-4" />
                   Material:
                 </span>
                 <span className="font-medium text-right">
@@ -144,7 +137,7 @@ const ProductDetails = ({ product, variant, setVariant, reviews }) => {
             )}
             <div className="flex justify-between items-center gap-3">
               <span className="font-semibold flex items-center gap-2">
-                <Grid className="h-4 w-4" />
+                <FiGrid className="h-4 w-4" />
                 Categories:
               </span>
               <div className="flex flex-wrap gap-1 justify-end">
@@ -166,7 +159,7 @@ const ProductDetails = ({ product, variant, setVariant, reviews }) => {
             </div>
             <div className="flex justify-between gap-3 items-center">
               <span className="font-semibold flex items-center gap-2">
-                <Tag className="h-4 w-4" />
+                <FiTag className="h-4 w-4" />
                 Tags:
               </span>
               <div className="flex flex-wrap gap-1 justify-end">
@@ -180,7 +173,7 @@ const ProductDetails = ({ product, variant, setVariant, reviews }) => {
             {product.weight && (
               <div className="flex justify-between gap-3 items-center">
                 <span className="font-semibold flex items-center gap-2">
-                  <Scale className="h-4 w-4" />
+                  <FaScale className="h-4 w-4" />
                   Weight:
                 </span>
                 <span className="font-medium text-right">
@@ -191,7 +184,7 @@ const ProductDetails = ({ product, variant, setVariant, reviews }) => {
             {product.dimensions && (
               <div className="flex justify-between gap-3 items-center">
                 <span className="font-semibold flex items-center gap-2">
-                  <RulerIcon className="h-4 w-4" />
+                  <FaRuler className="h-4 w-4" />
                   Dimensions:
                 </span>
                 <span className="font-medium text-right text-sm">

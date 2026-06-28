@@ -1,7 +1,7 @@
 import emptyCart from "@/images/empty-cart.svg";
 import Image from "next/image";
 import { motion } from "motion/react";
-import { ShoppingCart } from "lucide-react";
+import { FiShoppingCart as ShoppingCart } from "react-icons/fi";
 import { Button } from "./ui/button";
 import Link from "next/link";
 

@@ -13,7 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { generateInvoice } from "@/lib/generate-invoice";
 import { useOrderActions } from "@/lib/useOrderActions";
-import { Download } from "lucide-react";
+import { FiDownload as Download } from "react-icons/fi";
 import Link from "next/link";
 
 const OrderActions = ({ order }) => {

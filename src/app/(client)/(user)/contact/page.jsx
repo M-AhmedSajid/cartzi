@@ -9,8 +9,8 @@ const ContactPage = () => {
       <div className="max-w-2xl mx-auto">
         <h1 className="text-4xl font-bold text-foreground mb-6">Contact Us</h1>
         <p className="text-lg text-muted-foreground mb-8">
-          Have a question or need assistance? We'd love to hear from you. Send
-          us a message and we'll respond as soon as possible.
+          Have a question or need assistance? We&apos;d love to hear from you. Send
+          us a message and we&apos;ll respond as soon as possible.
         </p>
 
         <form className="space-y-6">

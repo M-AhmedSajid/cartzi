@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { Package, X } from "lucide-react";
+import { FiPackage, FiX} from "react-icons/fi";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -14,14 +14,12 @@ import EmptyOrders from "./EmptyOrder";
 
 const OrdersClient = ({ orders }) => {
   const [search, setSearch] = useState("");
-  const [sort, setSort] = useState("newest");
-  const [filteredOrders, setFilteredOrders] = useState(orders || []);
+  const [sort, setSort] = useState(() => {
+    if (typeof window === "undefined") return "newest";
 
-  // Restore saved sort preference
-  useEffect(() => {
-    const saved = localStorage.getItem("cartzi-order-sort");
-    if (saved) setSort(saved);
-  }, []);
+    return localStorage.getItem("cartzi-order-sort") ?? "newest";
+  });
+  const [filteredOrders, setFilteredOrders] = useState(orders || []);
 
   // Save sort preference
   useEffect(() => {
@@ -44,7 +42,7 @@ const OrdersClient = ({ orders }) => {
           const matchOrderNumber = orderNum?.includes(q);
 
           const matchProduct = order.items?.some((item) =>
-            item.name?.toLowerCase().includes(q)
+            item.name?.toLowerCase().includes(q),
           );
 
           return matchOrderNumber || matchProduct;
@@ -78,13 +76,13 @@ const OrdersClient = ({ orders }) => {
       {/* Header & Filters */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-5 border-b mb-3 md:mb-4">
         <div className="flex items-center gap-2">
-          <Package />
+          <FiPackage />
           <h1 className="text-2xl font-semibold">My Orders</h1>
         </div>
 
         <div className="gap-3 flex flex-col md:flex-row items-center justify-center w-full md:w-auto">
           {/* Search */}
-          <div className="relative w-full md:w-[300px]">
+          <div className="relative w-full md:w-75">
             <Input
               type="text"
               placeholder="Search by product or order number..."
@@ -99,7 +97,7 @@ const OrdersClient = ({ orders }) => {
                 onClick={() => setSearch("")}
                 className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded hover:bg-muted-foreground/10"
               >
-                <X className="w-4 h-4" />
+                <FiX className="w-4 h-4" />
               </button>
             )}
           </div>

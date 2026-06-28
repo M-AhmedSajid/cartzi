@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
-import { Star } from "lucide-react";
+import { FiStar as Star } from "react-icons/fi";
 
 const StarRating = ({
   rating = 0,

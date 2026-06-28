@@ -1,6 +1,6 @@
 "use client";
 import StarRating from "./StarRating";
-import { BadgeCheck, Pencil, ThumbsUp, Trash2 } from "lucide-react";
+import { FiBadgeCheck as BadgeCheck, FiEdit as Pencil, FiThumbsUp as ThumbsUp, FiTrash2 as Trash2 } from "react-icons/fi";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { dateFormatter } from "@/lib";
 import ReviewDialog from "./ReviewDialog";
@@ -48,7 +48,7 @@ const ReviewTab = ({ product, reviews }) => {
     }
     // Don’t allow self-voting
     if (clerkId === user?.id) {
-      return toast.error("You can't mark your own review as helpful.");
+      return toast.error("You cant mark your own review as helpful.");
     }
 
     const previousReviews = [...localReviews];

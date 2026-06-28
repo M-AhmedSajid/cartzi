@@ -4,7 +4,7 @@ import { HeroBG } from "../ui/hero-bg";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { categoriesData } from "@/constants";
-import { Search } from "lucide-react";
+import { FiSearch as Search } from "react-icons/fi";
 import Link from "next/link";
 import { Dialog, DialogTrigger } from "../ui/dialog";
 import SearchDialog from "../SearchDialog";

@@ -13,7 +13,7 @@ const TermsConditionsPage = () => {
               1. Acceptance of Terms
             </h2>
             <p className="text-muted-foreground">
-              By accessing and using Cartzi's website and services, you accept
+              By accessing and using Cartzis website and services, you accept
               and agree to be bound by the terms and provision of this
               agreement.
             </p>
@@ -25,7 +25,7 @@ const TermsConditionsPage = () => {
             </h2>
             <p className="text-muted-foreground mb-3">
               Permission is granted to temporarily download one copy of the
-              materials (information or software) on Cartzi's website for
+              materials (information or software) on Cartzis website for
               personal, non-commercial transitory viewing only.
             </p>
             <p className="text-muted-foreground">

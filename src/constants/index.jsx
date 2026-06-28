@@ -1,16 +1,4 @@
-import {
-  Archive,
-  CircleCheck,
-  CircleX,
-  Clock,
-  Facebook,
-  Github,
-  Instagram,
-  Linkedin,
-  Loader2,
-  PackageOpen,
-  Truck,
-} from "lucide-react";
+import { FiCheckCircle , FiXCircle , FiClock , FiLoader , FiPackage , FiTruck , FiFacebook, FiGithub, FiInstagram, FiLinkedin} from "react-icons/fi";
 
 export const headerData = [
   { title: "Home", href: "/" },
@@ -23,10 +11,10 @@ export const headerData = [
 ];
 
 export const socialLinks = [
-  { title: "Facebook", href: "/", icon: <Facebook className="size-5" /> },
-  { title: "Instagram", href: "/", icon: <Instagram className="size-5" /> },
-  { title: "Linkedin", href: "/", icon: <Linkedin className="size-5" /> },
-  { title: "Github", href: "/", icon: <Github className="size-5" /> },
+  { title: "Facebook", href: "/", icon: <FiFacebook className="size-5" /> },
+  { title: "Instagram", href: "/", icon: <FiInstagram className="size-5" /> },
+  { title: "Linkedin", href: "/", icon: <FiLinkedin className="size-5" /> },
+  { title: "Github", href: "/", icon: <FiGithub className="size-5" /> },
 ];
 
 export const productType = [
@@ -60,7 +48,7 @@ export const faqs = [
   {
     question: "How do I place an order?",
     answer:
-      "Placing an order is easy! Simply browse our collection, select your desired items, add them to your cart, and proceed to checkout. You'll need to create an account or sign in, provide shipping and billing information, and complete your payment.",
+      "Placing an order is easy! Simply browse our collection, select your desired items, add them to your cart, and proceed to checkout. Youll need to create an account or sign in, provide shipping and billing information, and complete your payment.",
   },
   {
     question: "What payment methods do you accept?",
@@ -85,22 +73,22 @@ export const faqs = [
   {
     question: "How do I track my order?",
     answer:
-      "Once your order ships, you'll receive a confirmation email with tracking information. You can also track your order through your account dashboard by logging into your Cartzi account.",
+      "Once your order ships, youll receive a confirmation email with tracking information. You can also track your order through your account dashboard by logging into your Cartzi account.",
   },
   {
     question: "What if my item arrives damaged or defective?",
     answer:
-      "If your item arrives damaged or defective, please contact our customer service team immediately. We'll arrange for a replacement or refund at no additional cost to you.",
+      "If your item arrives damaged or defective, please contact our customer service team immediately. Well arrange for a replacement or refund at no additional cost to you.",
   },
   {
     question: "Do you offer size recommendations?",
     answer:
-      "Yes! Each product page includes a size guide with detailed measurements. We recommend measuring yourself and comparing with our size chart to find the best fit. If you're between sizes, we typically recommend sizing up.",
+      "Yes! Each product page includes a size guide with detailed measurements. We recommend measuring yourself and comparing with our size chart to find the best fit. If youre between sizes, we typically recommend sizing up.",
   },
   {
-    question: "Can I cancel my order after it's placed?",
+    question: "Can I cancel my order after its placed?",
     answer:
-      "Orders can typically be cancelled within 2 hours of placement if they haven't been processed for shipping. After that, the order will need to be returned once received. Please contact our customer service team for assistance.",
+      "Orders can typically be cancelled within 2 hours of placement if they havent been processed for shipping. After that, the order will need to be returned once received. Please contact our customer service team for assistance.",
   },
   {
     question: "Do you offer gift wrapping?",
@@ -118,9 +106,9 @@ export const faqs = [
       "Yes! Our Cartzi Rewards program allows you to earn points on every purchase. Points can be redeemed for discounts on future orders. Sign up is free and automatic when you create an account.",
   },
   {
-    question: "What if I'm not satisfied with my purchase?",
+    question: "What if Im not satisfied with my purchase?",
     answer:
-      "We want you to love your purchase! If you're not completely satisfied, please contact our customer service team. We're committed to resolving any issues and ensuring your satisfaction with our products and service.",
+      "We want you to love your purchase! If youre not completely satisfied, please contact our customer service team. Were committed to resolving any issues and ensuring your satisfaction with our products and service.",
   },
   {
     question: "Do you offer student discounts?",
@@ -141,10 +129,10 @@ export const usps = [
 ];
 
 export const orderFilters = [
-  { title: "All", value: "all", icon: <PackageOpen /> },
-  { title: "Processing", value: "paid", icon: <Clock /> },
-  { title: "Shipped", value: "shipped", icon: <Truck /> },
-  { title: "Delivered", value: "delivered", icon: <CircleCheck /> },
-  { title: "Pending", value: "pending", icon: <Loader2 className="animate-spin animation-duration-[3s]" /> },
-  { title: "Cancelled", value: "cancelled", icon: <CircleX /> },
+  { title: "All", value: "all", icon: <FiPackage /> },
+  { title: "Processing", value: "paid", icon: <FiClock /> },
+  { title: "Shipped", value: "shipped", icon: <FiTruck /> },
+  { title: "Delivered", value: "delivered", icon: <FiCheckCircle /> },
+  { title: "Pending", value: "pending", icon: <FiLoader className="animate-spin animation-duration-[3s]" /> },
+  { title: "Cancelled", value: "cancelled", icon: <FiXCircle /> },
 ];

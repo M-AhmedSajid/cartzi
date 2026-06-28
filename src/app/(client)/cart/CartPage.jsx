@@ -2,7 +2,10 @@
 import React, { useEffect, useState } from "react";
 import useCartStore from "../../../../store";
 import EmptyCart from "@/components/EmptyCart";
-import { ShoppingCart, Trash } from "lucide-react";
+import {
+  FiShoppingCart as ShoppingCart,
+  FiTrash2 as Trash,
+} from "react-icons/fi";
 import Link from "next/link";
 import PriceDisplay from "@/components/product/PriceDisplay";
 import StarRating from "@/components/product/StarRating";
@@ -17,7 +20,7 @@ import {
 } from "@/components/ui/tooltip";
 import { toast } from "sonner";
 import ProductActions from "@/components/product/ProductActions";
-import { priceFormatter } from "@/lib";
+import { priceFormatter, useMounted } from "@/lib";
 import { Separator } from "@/components/ui/separator";
 import { ResetCartButton } from "@/components/ResetCart";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -32,7 +35,7 @@ import { useClerk, useUser } from "@clerk/nextjs";
 import { createCheckoutSession } from "@/actions/createCheckoutSession";
 
 const CartPage = () => {
-  const [isClient, setIsClient] = useState(false);
+  const mounted = useMounted();
   const [value, setValue] = useState("item-1");
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [shippingOptions, setShippingOptions] = useState([]);
@@ -65,7 +68,7 @@ const CartPage = () => {
 
       const discountDoc = await client.fetch(
         `*[_type == "discountCode" && code == $code && active == true][0]`,
-        { code }
+        { code },
       );
 
       if (!discountDoc) {
@@ -85,7 +88,7 @@ const CartPage = () => {
       if (discountDoc.firstTimeCustomer) {
         const hasOrders = await client.fetch(
           `count(*[_type == "order" && customer.email == $email]) > 0`,
-          { email: user?.emailAddresses[0]?.emailAddress }
+          { email: user?.emailAddresses[0]?.emailAddress },
         );
 
         if (hasOrders) {
@@ -117,10 +120,6 @@ const CartPage = () => {
   const cartProducts = getItems();
 
   useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  useEffect(() => {
     const handleScroll = () => {
       setValue("");
     };
@@ -133,14 +132,14 @@ const CartPage = () => {
     async function fetchRules() {
       try {
         const rules = await client.fetch(
-          `*[_type == "shippingRule" && active == true] | order(shippingCost asc)`
+          `*[_type == "shippingRule" && active == true] | order(shippingCost asc)`,
         );
 
         // Example: hardcode region to US for now
         const region = "United States";
 
         setShippingOptions(
-          rules.filter((r) => r.region === region || r.region === "Worldwide")
+          rules.filter((r) => r.region === region || r.region === "Worldwide"),
         );
       } catch (error) {
         console.error("Error fetching shipping rules:", error);
@@ -165,7 +164,7 @@ const CartPage = () => {
         });
       } else {
         const metadata = {
-          orderNumber: `ORD-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
+          orderNumber: `ORD-${crypto.randomUUID().toString(36).substring(2, 8).toUpperCase()}`,
           customerName: user?.fullName ?? "Guest",
           customerEmail: user?.emailAddresses[0]?.emailAddress ?? "guest",
           clerkUserId: user?.id ?? "guest",
@@ -175,7 +174,7 @@ const CartPage = () => {
           cartProducts,
           metadata,
           shippingOptions,
-          appliedDiscount
+          appliedDiscount,
         );
 
         if (checkoutUrl) {
@@ -201,7 +200,7 @@ const CartPage = () => {
             {/* Products */}
             <div className="md:col-span-2">
               <div className="bg-card border rounded-lg shadow">
-                {!isClient
+                {!mounted
                   ? Array.from({ length: 3 }).map((_, i) => (
                       <div
                         className="p-2 flex items-center gap-3 md:gap-5 border-b last:border-b-0"
@@ -294,7 +293,7 @@ const CartPage = () => {
                                       onClick={() =>
                                         handleRemoveItem(
                                           item.product,
-                                          item.variant
+                                          item.variant,
                                         )
                                       }
                                     >
@@ -356,7 +355,7 @@ const CartPage = () => {
             <div className="col-span-1">
               <div className="hidden md:block w-full bg-card border rounded-lg p-6 shadow sticky top-24 space-y-2">
                 <h2 className="text-xl font-semibold">Order Summary</h2>
-                {!isClient ? (
+                {!mounted ? (
                   <>
                     <Skeleton className="h-5 w-full" />
                     <Skeleton className="h-5 w-full" />
@@ -394,8 +393,8 @@ const CartPage = () => {
                             Math.min(
                               ...shippingOptions
                                 .filter((opt) => opt.freeOver)
-                                .map((opt) => opt.freeOver)
-                            )
+                                .map((opt) => opt.freeOver),
+                            ),
                           )}
                         </p>
                       )}
@@ -446,8 +445,8 @@ const CartPage = () => {
                             : `-${priceFormatter(
                                 calculateDiscount(
                                   getSubtotalCents(),
-                                  appliedDiscount
-                                ) / 100
+                                  appliedDiscount,
+                                ) / 100,
                               )}`}
                         </span>
                       </p>
@@ -496,7 +495,7 @@ const CartPage = () => {
 
             {/* Mobile Sticky Checkout */}
             <div className="fixed bottom-0 inset-x-0 z-50 bg-background border-t-2 p-4 pt-0 space-y-2 md:hidden rounded-t-2xl shadow-[0_-4px_6px_-1px_rgba(0_0_0/0.1)]">
-              {!isClient ? (
+              {!mounted ? (
                 <>
                   <p className="text-lg font-semibold pt-2">Order Summary</p>
                   <Separator />
@@ -542,8 +541,8 @@ const CartPage = () => {
                                 Math.min(
                                   ...shippingOptions
                                     .filter((opt) => opt.freeOver)
-                                    .map((opt) => opt.freeOver)
-                                )
+                                    .map((opt) => opt.freeOver),
+                                ),
                               )}
                             </p>
                           )}
@@ -595,8 +594,8 @@ const CartPage = () => {
                           : `-${priceFormatter(
                               calculateDiscount(
                                 getSubtotalCents(),
-                                appliedDiscount
-                              ) / 100
+                                appliedDiscount,
+                              ) / 100,
                             )}`}
                       </span>
                     </p>

@@ -15,7 +15,7 @@ export async function generateMetadata({ params }) {
     return {
       title: "Order Not Found | Cartzi",
       description:
-        "The order you're looking for doesn't exist or has been removed.",
+        "The order youre looking for doesnt exist or has been removed.",
     };
   }
 
