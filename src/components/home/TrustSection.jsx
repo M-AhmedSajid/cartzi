@@ -1,24 +1,25 @@
 import React from "react";
 import SectionHeading from "../SectionHeading";
-import { RefreshCcw, Ruler, Shield, Truck } from "lucide-react";
+import { FaRulerCombined } from "react-icons/fa";
+import { FiRefreshCcw, FiShield, FiTruck } from "react-icons/fi";
 const uspData = [
   {
-    icon: <RefreshCcw size={20} />,
+    icon: <FiRefreshCcw size={20} />,
     title: "Free Returns",
     text: "30-day hassle-free returns",
   },
   {
-    icon: <Truck size={20} />,
+    icon: <FiTruck size={20} />,
     title: "Fast Shipping",
     text: "3-5 day delivery nationwide",
   },
   {
-    icon: <Shield size={20} />,
+    icon: <FiShield size={20} />,
     title: "Secure Checkout",
     text: "Trusted payments & SSL secured",
   },
   {
-    icon: <Ruler size={20} />,
+    icon: <FaRulerCombined size={20} />,
     title: "Size Guide",
     text: "Find your perfect fit easily",
   },

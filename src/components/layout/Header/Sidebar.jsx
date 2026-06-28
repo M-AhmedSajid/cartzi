@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import Logo from "../Logo";
-import { X } from "lucide-react";
+import { FiX } from "react-icons/fi";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -34,7 +34,7 @@ const Sidebar = ({ isOpen, onClose, menu, links }) => {
             Cartzi
           </Logo>
           <Button size="icon" variant="ghost" onClick={onClose}>
-            <X />
+            <FiX />
           </Button>
         </div>
         <nav className="flex flex-col font-semibold tracking-wide">

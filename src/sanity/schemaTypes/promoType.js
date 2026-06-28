@@ -1,11 +1,11 @@
-import { Megaphone } from "lucide-react";
+import { LuMegaphone } from "react-icons/lu";
 import { defineField, defineType } from "sanity";
 
 export const promoType = defineType({
   name: "promo",
   title: "Promo",
   type: "document",
-  icon: Megaphone,
+  icon: LuMegaphone,
   fields: [
     // Internal title (not shown on frontend)
     defineField({

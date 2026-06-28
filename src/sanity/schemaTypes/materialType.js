@@ -1,11 +1,11 @@
-import { Layers } from 'lucide-react'
+import { FiLayers } from "react-icons/fi";
 import { defineField, defineType } from 'sanity'
 
 export const materialType = defineType({
     name: 'material',
     title: 'Material',
     type: 'document',
-    icon: Layers,
+    icon: FiLayers,
     fields: [
         defineField({
             name: 'name',

@@ -1,5 +1,5 @@
 import { defineType, defineField } from "sanity";
-import { Truck } from "lucide-react";
+import { FiTruck as Truck } from "react-icons/fi";
 
 export const shippingRuleType = defineType({
     name: "shippingRule",

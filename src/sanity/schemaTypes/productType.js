@@ -1,4 +1,4 @@
-import { ShoppingBag } from 'lucide-react'
+import { FiShoppingBag } from "react-icons/fi";
 import { defineField, defineType } from 'sanity'
 import DiscountedPriceInput from '../lib/DiscountInput'
 
@@ -6,7 +6,7 @@ export const productType = defineType({
   name: 'product',
   title: 'Product',
   type: 'document',
-  icon: ShoppingBag,
+  icon: FiShoppingBag,
   fields: [
     defineField({
       name: 'name',
@@ -185,7 +185,7 @@ export const productType = defineType({
             defineField({
               name: 'images',
               title: 'Variant Images',
-              description: "Images specific to this variant's color.",
+              description: "Images specific to this variants color.",
               type: 'array',
               of: [{
                 type: 'image', options: { hotspot: true },
@@ -210,7 +210,7 @@ export const productType = defineType({
             defineField({
               name: 'sizes',
               title: 'Sizes',
-              description: "Enter sizes, sku and stock of this specific color's variant",
+              description: "Enter sizes, sku and stock of this specific colors variant",
               type: 'array',
               of: [
                 defineType({

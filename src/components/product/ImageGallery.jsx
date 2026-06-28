@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
 import { urlFor } from "@/sanity/lib/image";
 import Image from "next/image";
 import { Carousel, CarouselContent, CarouselItem } from "../ui/carousel";
@@ -36,27 +36,31 @@ export const ImageGallery = ({ images }) => {
 
   useEffect(() => {
     if (!api) return;
-    const onSelect = () => setCurrentSlide(api.selectedScrollSnap());
+
+    const onSelect = () => {
+      const index = api.selectedScrollSnap();
+      setCurrentSlide(index);
+      updateOverlayToIndex(index);
+    };
+
     api.on("select", onSelect);
     onSelect();
+
     return () => api.off("select", onSelect);
   }, [api]);
 
   // Update overlay whenever currentSlide or images change
-  useEffect(() => {
-    // Reset currentSlide if out of bounds
-    if (currentSlide >= images.length) {
-      setCurrentSlide(0);
-      return;
+  useLayoutEffect(() => {
+    if (!api || images.length === 0) return;
+
+    const selected = Math.min(api.selectedScrollSnap(), images.length - 1);
+
+    if (selected !== api.selectedScrollSnap()) {
+      api.scrollTo(selected, true);
     }
 
-    // Delay until thumbnails exist
-    const timeout = setTimeout(() => {
-      updateOverlayToIndex(currentSlide);
-    }, 0);
-
-    return () => clearTimeout(timeout);
-  }, [currentSlide, images]);
+    updateOverlayToIndex(selected);
+  }, [api, images]);
 
   useEffect(() => {
     const handleResize = () => updateOverlayToIndex(currentSlide);

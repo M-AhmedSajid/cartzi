@@ -1,11 +1,11 @@
-import { Palette } from 'lucide-react'
+import { LuPalette } from "react-icons/lu"
 import { defineType, defineField } from 'sanity'
 
 export const colorType = defineType({
     name: 'color',
     title: 'Color',
     type: 'document',
-    icon: Palette,
+    icon: LuPalette,
     fields: [
         defineField({
             name: 'name',

@@ -1,5 +1,5 @@
 import React from "react";
-import { Package, Search, ShoppingBag } from "lucide-react";
+import { FiSearch, FiShoppingBag, FiPackage as Package } from "react-icons/fi";
 import { Button } from "../ui/button";
 
 const NoProducts = ({ activeTab }) => {
@@ -19,19 +19,19 @@ const NoProducts = ({ activeTab }) => {
         </h3>
 
         <p className="text-muted-foreground text-base">
-          We couldn't find any products in <strong>{activeTab}</strong> category
+          We couldnt find any products in <strong>{activeTab}</strong> category
           at the moment.
         </p>
 
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-3 justify-center items-center pt-3">
           <Button>
-            <Search className="size-4" />
+            <FiSearch className="size-4" />
             Browse All Products
           </Button>
 
           <Button variant="outline">
-            <ShoppingBag className="size-4" />
+            <FiShoppingBag className="size-4" />
             View Categories
           </Button>
         </div>

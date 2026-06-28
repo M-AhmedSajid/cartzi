@@ -1,11 +1,11 @@
-import { Tag } from 'lucide-react'
+import { FiTag } from "react-icons/fi";
 import { defineField, defineType } from 'sanity'
 
 export const categoryType = defineType({
   name: 'category',
   title: 'Category',
   type: 'document',
-  icon: Tag,
+  icon: FiTag,
   fields: [
     defineField({
       name: 'name',

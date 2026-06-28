@@ -1,4 +1,4 @@
-import { Search } from "lucide-react";
+import { FiSearch as Search } from "react-icons/fi";
 import React from "react";
 
 const SearchBar = () => {

@@ -3,7 +3,7 @@ import React from "react";
 import { Button } from "../../ui/button";
 import { useState } from "react";
 import Sidebar from "./Sidebar";
-import { AlignLeft } from "lucide-react";
+import { FiAlignLeft as AlignLeft } from "react-icons/fi";
 
 const MobileMenu = ({ menu, links }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);

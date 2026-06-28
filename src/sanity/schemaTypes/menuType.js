@@ -1,11 +1,11 @@
 import { defineType, defineField } from "sanity";
-import { Menu } from "lucide-react";
+import { FiMenu } from "react-icons/fi";
 
 export const menuType = defineType({
     name: "menu",
     title: "Menu",
     type: "document",
-    icon: Menu,
+    icon: FiMenu,
     fields: [
         defineField({
             name: "title",

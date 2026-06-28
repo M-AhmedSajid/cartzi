@@ -17,8 +17,8 @@ const FAQsPage = () => {
           Frequently Asked Questions
         </h1>
         <p className="text-lg text-muted-foreground mb-8">
-          Find answers to common questions about shopping with Cartzi. Can't
-          find what you're looking for?
+          Find answers to common questions about shopping with Cartzi. Can&apos;t
+          find what you&apos;re looking for?
           <a href="/contact" className="text-accent hover:underline ml-1">
             Contact our customer service team
           </a>
@@ -43,7 +43,7 @@ const FAQsPage = () => {
             Still Have Questions?
           </h2>
           <p className="text-muted-foreground mb-4">
-            If you couldn't find the answer you're looking for, our customer
+            If you couldn&apos;t find the answer you&apos;re looking for, our customer
             service team is here to help!
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

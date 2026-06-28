@@ -1,4 +1,4 @@
-import { TicketPercent } from "lucide-react";
+import { FiTag as TicketPercent } from "react-icons/fi";
 import { defineType, defineField } from "sanity";
 
 export const discountCodeType = defineType({
@@ -24,7 +24,7 @@ export const discountCodeType = defineType({
         defineField({
             name: "description",
             title: "Description",
-            description: "Internal note about this code's purpose (not shown to customers).",
+            description: "Internal note about this codes purpose (not shown to customers).",
             type: "string",
             validation: (Rule) => Rule.max(200),
         }),

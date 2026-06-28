@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "../ui/button";
-import { Heart } from "lucide-react";
+import { FiHeart as Heart } from "react-icons/fi";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 const WishlistButton = ({className, size}) => {

@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "../ui/button";
-import { Minus, Plus } from "lucide-react";
+import { FiMinus as Minus, FiPlus as Plus } from "react-icons/fi";
 import useCartStore from "../../../store";
 import { toast } from "sonner";
 

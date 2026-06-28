@@ -8,13 +8,12 @@ import {
 } from "@/components/ui/accordion";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { Label } from "../ui/label";
 import { Slider } from "../ui/slider";
 import { Input } from "../ui/input";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
-import { Filter } from "lucide-react";
+import { FiFilter as Filter } from "react-icons/fi";
 import {
   Sheet,
   SheetContent,
@@ -26,7 +25,6 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import {
   Breadcrumb,
-  BreadcrumbEllipsis,
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
@@ -86,7 +84,7 @@ export default function FilterSidebar({ filters, searchParams }) {
           </SheetTrigger>
           <SheetContent
             side="right"
-            className="w-[85%] sm:w-[400px] overflow-y-auto gap-0"
+            className="w-[85%] sm:w-100 overflow-y-auto gap-0"
           >
             <SheetHeader>
               <SheetTitle>Filters</SheetTitle>
@@ -117,7 +115,6 @@ function FilterContent({ filters, searchParams, desktop, setFilterOpen }) {
   const router = useRouter();
   const params = useSearchParams();
   const pathname = usePathname();
-  const [pendingUpdate, setPendingUpdate] = useState(null);
 
   // Initialize from URL params
   const [formState, setFormState] = useState(() => {
@@ -134,36 +131,34 @@ function FilterContent({ filters, searchParams, desktop, setFilterOpen }) {
   ]);
 
   const updateSearchParams = (newState, newRange = range) => {
-    setPendingUpdate({ newState, newRange });
-  };
-
-  useEffect(() => {
-    if (!pendingUpdate) return;
-
-    const { newState, newRange } = pendingUpdate;
     const url = new URL(window.location.href);
 
     // Handle checkboxes and lists
     Object.entries(newState).forEach(([key, values]) => {
-      if (!values || values.length === 0) url.searchParams.delete(key);
-      else url.searchParams.set(key, values.join(","));
+      if (!values || values.length === 0) {
+        url.searchParams.delete(key);
+      } else {
+        url.searchParams.set(key, values.join(","));
+      }
     });
 
     // Handle min/max only if changed from defaults
     const [minVal, maxVal] = newRange;
-    const defaultMin = filters.minPrice;
-    const defaultMax = filters.maxPrice;
 
-    if (minVal !== defaultMin) url.searchParams.set("min", minVal);
-    else url.searchParams.delete("min");
+    if (minVal !== filters.minPrice) {
+      url.searchParams.set("min", String(minVal));
+    } else {
+      url.searchParams.delete("min");
+    }
 
-    if (maxVal !== defaultMax) url.searchParams.set("max", maxVal);
-    else url.searchParams.delete("max");
+    if (maxVal !== filters.maxPrice) {
+      url.searchParams.set("max", String(maxVal));
+    } else {
+      url.searchParams.delete("max");
+    }
 
-    router.push(url.pathname + "?" + url.searchParams.toString());
-    setPendingUpdate(null);
-  }, [pendingUpdate, router, filters.minPrice, filters.maxPrice]);
-
+    router.push(`${url.pathname}?${url.searchParams.toString()}`);
+  };
   // Checkbox/option changes
   const handleChange = (name, value, checked) => {
     setFormState((prev) => {
@@ -207,7 +202,7 @@ function FilterContent({ filters, searchParams, desktop, setFilterOpen }) {
       if (a === "Others") return -1;
       if (b === "Others") return 1;
       return a.localeCompare(b);
-    })
+    }),
   );
 
   const handleReset = () => {
@@ -361,7 +356,7 @@ function FilterContent({ filters, searchParams, desktop, setFilterOpen }) {
                       {size}
                     </Label>
                   </div>
-                )
+                ),
             )}
           </AccordionContent>
         </AccordionItem>

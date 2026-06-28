@@ -1,5 +1,5 @@
 "use client";
-import { ShoppingCart } from "lucide-react";
+import { FiShoppingCart as ShoppingCart } from "react-icons/fi";
 import Link from "next/link";
 import React from "react";
 import useCartStore from "../../../store";

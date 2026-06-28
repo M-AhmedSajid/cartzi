@@ -183,7 +183,7 @@ export async function generateInvoice(order) {
     doc.setFontSize(8);
     doc.setTextColor(gray);
     doc.text(
-        "All items are subject to Cartzi's return policy. Visit cartzi.vercel.app/shipping-returns for details.",
+        "All items are subject to Cartzis return policy. Visit cartzi.vercel.app/shipping-returns for details.",
         pageWidth / 2,
         y,
         { align: "center" }

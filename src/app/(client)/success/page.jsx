@@ -4,7 +4,7 @@ import SuccessPage from "./SuccessPage";
 export const metadata = {
   title: "Order Successful | Cartzi",
   description:
-    "Thank you for shopping with Cartzi! Your order has been placed successfully. We'll send you a confirmation email with the details shortly.",
+    "Thank you for shopping with Cartzi! Your order has been placed successfully. Well send you a confirmation email with the details shortly.",
   openGraph: {
     title: "Order Successful | Cartzi",
     description:

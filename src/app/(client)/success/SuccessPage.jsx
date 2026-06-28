@@ -3,7 +3,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import useCartStore from "../../../../store";
 import { motion } from "motion/react";
-import { Check, Home, Package, ShoppingCart } from "lucide-react";
+import { FiCheck as Check, FiHome as Home, FiPackage as Package, FiShoppingCart as ShoppingCart } from "react-icons/fi";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { client } from "@/sanity/lib/client";
@@ -221,9 +221,9 @@ const SuccessPage = () => {
         <p className="text-xs mt-3 text-muted-foreground">
           A detailed receipt has been sent to your email. Didn&apos;t get it?
           Check spam or{" "}
-          <a href="/orders" className="underline">
+          <Link href="/orders" className="underline">
             track your order
-          </a>
+          </Link>
           .
         </p>
       </div>

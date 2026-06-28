@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { Button } from "../ui/button";
-import { Share } from "lucide-react";
+import { FiShare2 as Share } from "react-icons/fi";
 
 export default function ShareButton({ productName, productUrl }) {
   const [copied, setCopied] = useState(false);
