@@ -4,7 +4,7 @@ import ProductActions from "@/components/product/ProductActions";
 import ShareButton from "@/components/product/ShareButton";
 import { Button } from "@/components/ui/button";
 import { FiFeather, FiGrid, FiTag, FiTruck } from "react-icons/fi";
-import { FaRulerCombined, FaScale, FaRuler } from "react-icons/fa";
+import { FaRulerCombined, FaBalanceScale, FaRuler } from "react-icons/fa";
 import Link from "next/link";
 import {
   Accordion,
@@ -173,7 +173,7 @@ const ProductDetails = ({ product, variant, setVariant, reviews }) => {
             {product.weight && (
               <div className="flex justify-between gap-3 items-center">
                 <span className="font-semibold flex items-center gap-2">
-                  <FaScale className="h-4 w-4" />
+                  <FaBalanceScale className="h-4 w-4" />
                   Weight:
                 </span>
                 <span className="font-medium text-right">

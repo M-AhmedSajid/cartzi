@@ -1,6 +1,7 @@
 "use client";
 import StarRating from "./StarRating";
-import { FiBadgeCheck as BadgeCheck, FiEdit as Pencil, FiThumbsUp as ThumbsUp, FiTrash2 as Trash2 } from "react-icons/fi";
+import { FiEdit, FiThumbsUp, FiTrash2 } from "react-icons/fi";
+import { LuBadgeCheck } from "react-icons/lu";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { dateFormatter } from "@/lib";
 import ReviewDialog from "./ReviewDialog";
@@ -122,7 +123,7 @@ const ReviewTab = ({ product, reviews }) => {
                     mode="edit"
                   >
                     <Button size="sm" variant="ghost" className="size-7">
-                      <Pencil className="size-4.5" />
+                      <FiEdit className="size-4.5" />
                     </Button>
                   </ReviewDialog>
                   <AlertDialog>
@@ -132,7 +133,7 @@ const ReviewTab = ({ product, reviews }) => {
                         variant="ghost"
                         className="size-7 text-destructive hover:bg-destructive/75 hover:text-background"
                       >
-                        <Trash2 className="size-4.5" />
+                        <FiTrash2 className="size-4.5" />
                       </Button>
                     </AlertDialogTrigger>
 
@@ -170,7 +171,7 @@ const ReviewTab = ({ product, reviews }) => {
               {review.verifiedBuyer && (
                 <Tooltip>
                   <TooltipTrigger>
-                    <BadgeCheck className="fill-blue-600 text-background size-5" />
+                    <LuBadgeCheck className="fill-blue-600 text-background size-5" />
                   </TooltipTrigger>
                   <TooltipContent>Verified Buyer</TooltipContent>
                 </Tooltip>
@@ -197,7 +198,7 @@ const ReviewTab = ({ product, reviews }) => {
               onClick={() => handleHelpful(review._id, review?.clerkUserId)}
               disabled={loading}
             >
-              <ThumbsUp
+              <FiThumbsUp
                 className={`size-4 inline ${
                   review.hasVotedHelpful ? "fill-primary" : ""
                 }`}

@@ -3,10 +3,6 @@ import stripe from "@/lib/stripe";
 import { headers } from "next/headers";
 import { backendClient } from "@/sanity/lib/backendClient";
 
-export const config = {
-    api: { bodyParser: false },
-};
-
 export async function POST(req) {
     const body = await req.text();
     const headerList = await headers();
