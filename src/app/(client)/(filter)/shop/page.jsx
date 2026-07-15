@@ -1,4 +1,6 @@
-import Filters from "@/components/filters/Filters";
+import FilterClient from "@/components/filters/FilterClient";
+import { parseSearchParams } from "@/lib/products";
+import { getFiltersData, getProducts } from "@/sanity/helpers/filters";
 
 export const metadata = {
   title: "Shop the Latest Clothing & Accessories | Cartzi",
@@ -32,30 +34,22 @@ export const metadata = {
 };
 
 export default async function ShopPage({ searchParams }) {
-  const awaitedSearchParams = await searchParams;
-  const appliedFilters = {
-    color: awaitedSearchParams?.color?.split(",") || [],
-    size: awaitedSearchParams?.size?.split(",") || [],
-    material: awaitedSearchParams?.material?.split(",") || [],
-    stock: awaitedSearchParams?.stock || null,
-    discount: awaitedSearchParams?.discount || null,
-    sort: awaitedSearchParams?.sort || null,
-  };
-  const range = [
-    Number(awaitedSearchParams?.min),
-    Number(awaitedSearchParams?.max),
-  ];
+  const filters = parseSearchParams(await searchParams);
+
+  const data = await getProducts(filters);
+  const filtersData = await getFiltersData();
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-10">
-      <h1 className="text-3xl font-bold capitalize">
-        Shop
-      </h1>
-      <Filters
-        searchParams={searchParams}
-        appliedFilters={appliedFilters}
-        range={range}
-      />
+      <h1 className="text-3xl font-bold capitalize">Shop</h1>
+      <div className="grid grid-cols-1 md:grid-cols-4 mt-6">
+        <FilterClient
+          filters={filters}
+          searchParams={searchParams}
+          data={data}
+          filtersData={filtersData}
+        />
+      </div>
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import Filters from "@/components/filters/Filters";
+import FilterClient from "@/components/filters/FilterClient";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -20,20 +20,29 @@ export async function generateMetadata({ params }) {
 
 export default async function CategoryParentPage({ params, searchParams }) {
   const { parent } = await params;
-
   const awaitedSearchParams = await searchParams;
-  const appliedFilters = {
+  const queryFilters = {
+    category: parent,
     color: awaitedSearchParams?.color?.split(",") || [],
     size: awaitedSearchParams?.size?.split(",") || [],
     material: awaitedSearchParams?.material?.split(",") || [],
     stock: awaitedSearchParams?.stock || null,
     discount: awaitedSearchParams?.discount || null,
     sort: awaitedSearchParams?.sort || null,
+    page: Number(awaitedSearchParams?.page) || 1,
+    limit: Number(awaitedSearchParams?.limit) || 24,
+    minPrice:
+      awaitedSearchParams?.min !== undefined
+        ? Number(awaitedSearchParams?.min)
+        : undefined,
+    maxPrice:
+      awaitedSearchParams?.max !== undefined
+        ? Number(awaitedSearchParams?.max)
+        : undefined,
   };
-  const range = [
-    Number(awaitedSearchParams?.min),
-    Number(awaitedSearchParams?.max),
-  ];
+
+  const data = await getProducts(queryFilters);
+  const filters = await getFiltersData();
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-10">
@@ -53,10 +62,11 @@ export default async function CategoryParentPage({ params, searchParams }) {
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-      <Filters
+      <FilterClient
+        filters={filters}
         searchParams={searchParams}
-        appliedFilters={appliedFilters}
-        range={range}
+        data={data}
+        categories={filters.categories}
       />
     </div>
   );

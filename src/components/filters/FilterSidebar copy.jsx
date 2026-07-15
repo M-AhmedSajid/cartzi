@@ -11,7 +11,8 @@ import { Button } from "@/components/ui/button";
 import { Label } from "../ui/label";
 import { Slider } from "../ui/slider";
 import { Input } from "../ui/input";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import Link from "next/link";
 import { FiFilter as Filter } from "react-icons/fi";
 import {
   Sheet,
@@ -31,7 +32,7 @@ import {
   BreadcrumbSeparator,
 } from "../ui/breadcrumb";
 
-export default function FilterSidebar({ filters, filtersData, searchParams }) {
+export default function FilterSidebar({ filters, categories, searchParams }) {
   const pathname = usePathname();
   const [filterOpen, setFilterOpen] = useState(false);
   return (
@@ -90,7 +91,6 @@ export default function FilterSidebar({ filters, filtersData, searchParams }) {
             </SheetHeader>
             <FilterContent
               filters={filters}
-              filtersData={filtersData}
               searchParams={searchParams}
               setFilterOpen={setFilterOpen}
             />
@@ -102,7 +102,7 @@ export default function FilterSidebar({ filters, filtersData, searchParams }) {
       <div className="hidden md:block border h-fit bg-card rounded-lg rounded-tr-none py-4">
         <FilterContent
           filters={filters}
-          filtersData={filtersData}
+          categories={categories}
           searchParams={searchParams}
           desktop={true}
           setFilterOpen={setFilterOpen}
@@ -112,9 +112,16 @@ export default function FilterSidebar({ filters, filtersData, searchParams }) {
   );
 }
 
-function FilterContent({ filters, filtersData, desktop, setFilterOpen }) {
+function FilterContent({
+  filters,
+  categories,
+  searchParams,
+  desktop,
+  setFilterOpen,
+}) {
   const router = useRouter();
   const params = useSearchParams();
+  const pathname = usePathname();
 
   // Initialize from URL params
   const [formState, setFormState] = useState(() => {
@@ -126,8 +133,8 @@ function FilterContent({ filters, filtersData, desktop, setFilterOpen }) {
   });
 
   const [range, setRange] = useState([
-    Number(params.get("min")) || filtersData.minPrice,
-    Number(params.get("max")) || filtersData.maxPrice,
+    Number(params.get("min")) || filters.minPrice,
+    Number(params.get("max")) || filters.maxPrice,
   ]);
 
   const updateSearchParams = (newState, newRange = range) => {
@@ -142,18 +149,16 @@ function FilterContent({ filters, filtersData, desktop, setFilterOpen }) {
       }
     });
 
-    url.searchParams.set("page", "1");
-
     // Handle min/max only if changed from defaults
     const [minVal, maxVal] = newRange;
 
-    if (minVal !== filtersData.minPrice) {
+    if (minVal !== filters.minPrice) {
       url.searchParams.set("min", String(minVal));
     } else {
       url.searchParams.delete("min");
     }
 
-    if (maxVal !== filtersData.maxPrice) {
+    if (maxVal !== filters.maxPrice) {
       url.searchParams.set("max", String(maxVal));
     } else {
       url.searchParams.delete("max");
@@ -161,20 +166,18 @@ function FilterContent({ filters, filtersData, desktop, setFilterOpen }) {
 
     router.push(`${url.pathname}?${url.searchParams.toString()}`);
   };
-
   // Checkbox/option changes
   const handleChange = (name, value, checked) => {
-    const currentList = new Set(formState[name] || []);
-    if (checked) currentList.add(value);
-    else currentList.delete(value);
+    setFormState((prev) => {
+      const current = new Set(prev[name] || []);
+      if (checked) current.add(value);
+      else current.delete(value);
 
-    const updatedState = { ...formState, [name]: [...currentList] };
+      const updated = { ...prev, [name]: [...current] };
 
-    setFormState(updatedState);
-
-    if (desktop) {
-      updateSearchParams(updatedState);
-    }
+      if (desktop) updateSearchParams(updated);
+      return updated;
+    });
   };
 
   // Price changes
@@ -188,13 +191,11 @@ function FilterContent({ filters, filtersData, desktop, setFilterOpen }) {
     updateSearchParams(formState, range);
   };
 
-  const groupedCategories = filtersData?.categories
+  const groupedCategories = categories
     // Remove "New Arrivals"
     .filter((cat) => !["New Arrivals"].includes(cat.name))
     // Remove parent categories (those that appear as a parent for others)
-    .filter(
-      (cat) => !filtersData.categories.some((c) => c.parent?._id === cat._id),
-    )
+    .filter((cat) => !categories.some((c) => c.parent?._id === cat._id))
     // Remove categories that don't have a parent (prevents "Others")
     .filter((cat) => cat.parent?.name)
     // Group remaining ones by their parent name or "Others"
@@ -216,26 +217,11 @@ function FilterContent({ filters, filtersData, desktop, setFilterOpen }) {
   const handleReset = () => {
     setFormState({});
     setFilterOpen(false);
-    setRange([filtersData.minPrice, filtersData.maxPrice]);
+    setRange([filters.minPrice, filters.maxPrice]);
     const url = new URL(window.location.href);
     url.search = "";
     router.push(url.pathname);
   };
-
-  useEffect(() => {
-    const obj = {};
-
-    for (const [key, val] of params.entries()) {
-      obj[key] = val.split(",");
-    }
-
-    setFormState(obj);
-
-    setRange([
-      Number(params.get("min")) || filtersData.minPrice,
-      Number(params.get("max")) || filtersData.maxPrice,
-    ]);
-  }, [params, filtersData.minPrice, filtersData.maxPrice]);
 
   return (
     <form onSubmit={desktop ? (e) => e.preventDefault() : handleSubmit}>
@@ -245,54 +231,68 @@ function FilterContent({ filters, filtersData, desktop, setFilterOpen }) {
         {/* CATEGORY */}
         <AccordionItem value="category" className="px-4">
           <AccordionTrigger>Category</AccordionTrigger>
-
-          <AccordionContent>
-            <Accordion type="multiple" className="space-y-2">
-              {Object.entries(groupedCategoriesOrdered)
-                .reverse()
-                .map(([parent, categories]) => (
-                  <AccordionItem key={parent} value={parent}>
-                    <AccordionTrigger className="text-sm font-medium py-2">
-                      {parent}
-                    </AccordionTrigger>
-
-                    <AccordionContent className="space-y-2 pl-3">
-                      {categories.map((category) => (
-                        <div
-                          key={category._id}
-                          className="flex items-center gap-2"
+          <AccordionContent className="space-y-2">
+            {Object.entries(groupedCategoriesOrdered)
+              .reverse()
+              .filter(([parentName, subcategories]) => {
+                const parentSlug = subcategories[0]?.parent?.slug.current;
+                const activeParent = pathname.split("/")[2];
+                // if pathname parent exists, only show that parent; else show all
+                return !activeParent || parentSlug === activeParent;
+              })
+              .map(([parentName, subcategories]) => {
+                const parentSlug = subcategories[0]?.parent?.slug.current;
+                return (
+                  <Accordion
+                    key={parentName}
+                    type="single"
+                    defaultValue={
+                      pathname.split("/")[2] === parentSlug ? parentName : null
+                    }
+                    collapsible
+                  >
+                    <AccordionItem value={parentName}>
+                      {/* PARENT CATEGORY LINK */}
+                      <AccordionTrigger className="py-1">
+                        <Link
+                          href={`/category/${parentSlug}`}
+                          className={`text-sm hover:text-primary transition ${
+                            pathname.split("/")[2] &&
+                            pathname.split("/")[2] === parentSlug
+                              ? "underline font-bold"
+                              : "font-medium"
+                          }`}
                         >
-                          <Checkbox
-                            id={`category-${parent + "-" + category.slug}`}
-                            checked={
-                              formState.category?.includes(
-                                parent + "-" + category.slug,
-                              ) || false
-                            }
-                            onCheckedChange={(checked) =>
-                              handleChange(
-                                "category",
-                                parent + "-" + category.slug,
-                                checked,
-                              )
-                            }
-                          />
+                          {parentName}
+                        </Link>
+                      </AccordionTrigger>
 
-                          <Label
-                            htmlFor={`category-${parent + "-" + category.slug}`}
-                            className="cursor-pointer flex-1"
-                          >
-                            {category.name}
-                            <span className="text-muted-foreground">
-                              ({category.count})
-                            </span>
-                          </Label>
-                        </div>
-                      ))}
-                    </AccordionContent>
-                  </AccordionItem>
-                ))}
-            </Accordion>
+                      {/* SUBCATEGORIES AS LINKS */}
+                      <AccordionContent className="space-y-1 pl-6">
+                        {subcategories.map((cat) => {
+                          const parentPath = parentSlug
+                            ? `/category/${parentSlug}/${cat.slug.current}`
+                            : `/category/${cat.slug.current}`;
+                          return (
+                            <Link
+                              key={cat._id}
+                              href={parentPath}
+                              className={`block text-sm hover:text-primary transition ${
+                                pathname.split("/")[3] &&
+                                pathname.split("/")[3] === cat.slug.current
+                                  ? "font-bold"
+                                  : "text-muted-foreground"
+                              }`}
+                            >
+                              {cat.name}
+                            </Link>
+                          );
+                        })}
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
+                );
+              })}
           </AccordionContent>
         </AccordionItem>
 
@@ -308,7 +308,7 @@ function FilterContent({ filters, filtersData, desktop, setFilterOpen }) {
                 <Input
                   id="min"
                   type="number"
-                  min={filtersData.minPrice}
+                  min={filters.minPrice}
                   max={range[1]}
                   value={range[0]}
                   onChange={(e) =>
@@ -324,7 +324,7 @@ function FilterContent({ filters, filtersData, desktop, setFilterOpen }) {
                   id="max"
                   type="number"
                   min={range[0]}
-                  max={filtersData.maxPrice}
+                  max={filters.maxPrice}
                   value={range[1]}
                   onChange={(e) =>
                     handlePriceChange([range[0], Number(e.target.value)])
@@ -333,8 +333,8 @@ function FilterContent({ filters, filtersData, desktop, setFilterOpen }) {
               </div>
             </div>
             <Slider
-              min={filtersData.minPrice}
-              max={filtersData.maxPrice}
+              min={filters.minPrice}
+              max={filters.maxPrice}
               step={10}
               value={range}
               onValueChange={handlePriceChange}
@@ -348,23 +348,20 @@ function FilterContent({ filters, filtersData, desktop, setFilterOpen }) {
         {/* SIZE */}
         <AccordionItem value="size" className="px-4">
           <AccordionTrigger>Size</AccordionTrigger>
-          <AccordionContent className="flex flex-wrap gap-2">
-            {filtersData?.sizes?.map(
+          <AccordionContent className="grid grid-cols-3 gap-2">
+            {filters?.sizes?.map(
               (size) =>
                 size && (
-                  <div key={size.name} className="flex items-center space-x-2">
+                  <div key={size} className="flex items-center space-x-2">
                     <Checkbox
-                      id={size.name}
-                      checked={formState.size?.includes(size.name) || false}
+                      id={size}
+                      checked={formState.size?.includes(size) || false}
                       onCheckedChange={(checked) =>
-                        handleChange("size", size.name, checked)
+                        handleChange("size", size, checked)
                       }
                     />
-                    <Label htmlFor={size.name} className="text-sm">
-                      {size.name}
-                      <span className="text-muted-foreground">
-                        ({size.count})
-                      </span>
+                    <Label htmlFor={size} className="text-sm">
+                      {size}
                     </Label>
                   </div>
                 ),
@@ -376,7 +373,7 @@ function FilterContent({ filters, filtersData, desktop, setFilterOpen }) {
         <AccordionItem value="color">
           <AccordionTrigger className="px-4">Color</AccordionTrigger>
           <AccordionContent className="flex flex-wrap gap-2 pt-3 px-4">
-            {filtersData.colors?.map((color) => (
+            {filters.colors?.map((color) => (
               <Tooltip key={color._id}>
                 <TooltipTrigger asChild>
                   <label
@@ -395,9 +392,7 @@ function FilterContent({ filters, filtersData, desktop, setFilterOpen }) {
                     />
                   </label>
                 </TooltipTrigger>
-                <TooltipContent>
-                  {color.name} ({color.count})
-                </TooltipContent>
+                <TooltipContent>{color.name}</TooltipContent>
               </Tooltip>
             ))}
           </AccordionContent>
@@ -407,7 +402,7 @@ function FilterContent({ filters, filtersData, desktop, setFilterOpen }) {
         <AccordionItem value="material" className="px-4">
           <AccordionTrigger>Material</AccordionTrigger>
           <AccordionContent className="space-y-2 max-h-60 overflow-x-auto">
-            {filtersData.materials?.map((mat) => (
+            {filters.materials?.map((mat) => (
               <div key={mat._id} className="flex items-center space-x-2">
                 <Checkbox
                   id={mat.name}
@@ -417,7 +412,7 @@ function FilterContent({ filters, filtersData, desktop, setFilterOpen }) {
                   }
                 />
                 <Label htmlFor={mat.name} className="text-sm">
-                  {mat.name} ({mat.count})
+                  {mat.name}
                 </Label>
               </div>
             ))}

@@ -2,9 +2,14 @@ import React from "react";
 import HeaderMenu from "./HeaderMenu";
 import Logo from "../Logo";
 import MobileMenu from "./MobileMenu";
-import { Button } from "../../ui/button";
 import { currentUser } from "@clerk/nextjs/server";
-import { ClerkLoaded, SignedIn, SignInButton, UserButton } from "@clerk/nextjs";
+import {
+  ClerkLoaded,
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  UserButton,
+} from "@clerk/nextjs";
 import { FiSearch } from "react-icons/fi";
 import { LuListOrdered } from "react-icons/lu";
 import Link from "next/link";
@@ -16,6 +21,7 @@ import {
   getMenuForMobileSidebar,
 } from "@/sanity/helpers/menu";
 import { getMyOrders, getSocialLinks } from "@/sanity/helpers";
+import { Button } from "@/components/ui/button";
 
 const Header = async () => {
   const user = await currentUser();
@@ -60,11 +66,11 @@ const Header = async () => {
               </Link>
               <UserButton />
             </SignedIn>
-            {!user && (
+            <SignedOut>
               <SignInButton mode="modal">
                 <Button variant="ghost">Login</Button>
               </SignInButton>
-            )}
+            </SignedOut>
           </ClerkLoaded>
         </div>
       </div>

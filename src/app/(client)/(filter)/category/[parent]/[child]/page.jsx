@@ -1,4 +1,4 @@
-import Filters from "@/components/filters/Filters";
+import FilterClient from "@/components/filters/FilterClient";
 import {
   Breadcrumb,
   BreadcrumbEllipsis,
@@ -73,11 +73,7 @@ export default async function CategoryChildPage({ params, searchParams }) {
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-      <Filters
-        searchParams={searchParams}
-        appliedFilters={appliedFilters}
-        range={range}
-      />
+      <FilterClient filters={filters} searchParams={searchParams} data={data} />
     </div>
   );
 }

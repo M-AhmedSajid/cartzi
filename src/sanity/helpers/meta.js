@@ -7,7 +7,15 @@ export async function getAllCategories() {
         const query = defineQuery(`*[_type == "category"] | order(name asc) {
       _id,
       name,
-      slug
+      slug,
+      "parent": parent->{
+            name,
+            slug,
+            "parent": parent->{
+                name,
+                slug
+            }
+        }
     }`);
         const result = await sanityFetch({ query });
         return result?.data || [];

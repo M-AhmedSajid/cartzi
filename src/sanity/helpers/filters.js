@@ -1,5 +1,6 @@
 import { defineQuery } from "next-sanity";
 import { sanityFetch } from "../lib/live";
+import { buildPagination, buildProductFilters, buildSort, PRODUCT_PROJECTION } from "@/lib/products";
 
 export const getFiltersData = async () => {
   const FILTERS_QUERY = defineQuery(`
@@ -7,13 +8,128 @@ export const getFiltersData = async () => {
             "categories": *[_type == "category"]{
                 _id,
                 name,
-                "slug":
-                slug.current,
-                parent->{ _id, name, "slug": slug.current }
+                "slug": slug.current,
+
+                parent->{
+                    _id,
+                    name,
+                    "slug": slug.current
+                },
+
+                "count": count(
+                    *[
+                        _type == "product" &&
+                        references(^._id)
+                    ]
+                )
             },
-            "sizes": array::unique(*[_type == "product"].variants[].sizes[].size),
-            "colors": *[_type == "color"]{ _id, name, hex },
-            "materials": *[_type == "material"]{ _id, name },
+            "sizes": [
+                {
+                    "name": "XS",
+                    "count": count(
+                        *[
+                            _type == "product" &&
+                            count(
+                                variants[].sizes[
+                                    size == "XS"
+                                ]
+                            ) > 0
+                        ]
+                    )
+                },
+                {
+                    "name": "S",
+                    "count": count(
+                        *[
+                            _type == "product" &&
+                            count(
+                                variants[].sizes[
+                                    size == "S"
+                                ]
+                            ) > 0
+                        ]
+                    )
+                },
+                {
+                    "name": "M",
+                    "count": count(
+                        *[
+                            _type == "product" &&
+                            count(
+                                variants[].sizes[
+                                    size == "M"
+                                ]
+                            ) > 0
+                        ]
+                    )
+                },
+                {
+                    "name": "L",
+                    "count": count(
+                        *[
+                            _type == "product" &&
+                            count(
+                                variants[].sizes[
+                                    size == "L"
+                                ]
+                            ) > 0
+                        ]
+                    )
+                },
+                {
+                    "name": "XL",
+                    "count": count(
+                        *[
+                            _type == "product" &&
+                            count(
+                                variants[].sizes[
+                                    size == "XL"
+                                ]
+                            ) > 0
+                        ]
+                    )
+                },
+                {
+                    "name": "XXL",
+                    "count": count(
+                        *[
+                            _type == "product" &&
+                            count(
+                                variants[].sizes[
+                                    size == "XXL"
+                                ]
+                            ) > 0
+                        ]
+                    )
+                }
+            ],
+            "colors": *[_type == "color"]{
+                _id,
+                name,
+                hex,
+
+                "count": count(
+                    *[
+                        _type == "product" &&
+                        count(
+                            variants[
+                                color._ref == ^._id
+                            ]
+                        ) > 0
+                    ]
+                )
+            },
+            "materials": *[_type == "material"]{
+                _id,
+                name,
+
+                "count": count(
+                    *[
+                        _type == "product" &&
+                        material._ref == ^._id
+                    ]
+                )
+            },
             "maxPrice": math::max(*[_type == "product"].price),
             "minPrice": math::min(*[_type == "product"].price)
         }
@@ -28,109 +144,48 @@ export const getFiltersData = async () => {
   }
 };
 
-export const getFilteredProducts = async (filters = {}, range = []) => {
-  const { color, size, material, stock, discount, sort } = filters;
-  const [minPrice, maxPrice] = range;
+export async function getProducts(options = {}) {
+  const page = options.page ?? 1;
+  const limit = options.limit ?? 24;
 
-  let sortQuery = "_createdAt desc"
-  switch (sort) {
-    case "newest":
-      sortQuery = "_createdAt desc";
-      break;
-    case "price-asc":
-      sortQuery = "(price - (price * discount) / 100) asc";
-      break;
-    case "price-desc":
-      sortQuery = "(price - (price * discount) / 100) desc";
-      break;
-    case "rating":
-      sortQuery = "coalesce(rating, 0) desc";
-      break;
-    default:
-      sortQuery = "_createdAt desc";
-      break;
-  }
+  const { filters, params } =
+    buildProductFilters(options);
 
-  const FILTERED_PRODUCTS_QUERY = defineQuery(`
-    *[
-      _type == "product" &&
-        (
-          (!defined($minPrice) || price >= $minPrice) &&
-          (!defined($maxPrice) || price <= $maxPrice)
-        )
-      &&
-      (
-        !defined($color) || !($color)[0] || count(variants[@.color->name in $color]) > 0
-      ) &&
-      (
-        !defined($size) || !($size)[0] || count(variants[].sizes[@.size in $size]) > 0
-      ) &&
-      (
-        !defined($material) || !($material)[0] || material->name in $material
-      ) &&
-      (
-        !defined($stock) || $stock != "in-stock" ||
-        stock > 0 ||
-        count(variants[].sizes[@.stock > 0]) > 0
-      ) &&
-      (
-        !defined($discount) || $discount != "on-sale" ||
-        discount > 0
-      )
-    ]{
-      _id,
-      name,
-      intro,
-      "slug": slug.current,
-      description,
-      price,
-      discount,
-      stock,
-      sku,
-      "images": coalesce(
-      variants[count(sizes[stock > 0]) > 0][0].images,
-      variants[0].images,
-      images
-    ),
-    "stock": coalesce(
-          variants[count(sizes[stock > 0]) > 0][0].sizes[stock > 0][0].stock,
-          stock
-        ),
-      categories[]->{
-        name,
-        "slug": slug.current,
-        parent->{ name, "slug": slug.current }
-      },
-      variants[]{
-        color->{ name, hex },
-        images[],
-        sizes[]{ size, sku, stock, priceOverride }
-      },
-      material->{ name },
-      "rating": round(math::avg(*[_type == "review" && product._ref == ^._id].rating), 1)
-    } | order(${sortQuery})
-  `);
+  const order =
+    buildSort(options.sort || "newest");
 
-  try {
-    const products = await sanityFetch({
-      query: FILTERED_PRODUCTS_QUERY,
-      params: {
-        color: Array.isArray(color) && color.length > 0 ? color : null,
-        size: Array.isArray(size) && size.length > 0 ? size : null,
-        material: Array.isArray(material) && material.length > 0 ? material : null,
-        minPrice: typeof minPrice === "number" ? minPrice : null,
-        maxPrice: typeof maxPrice === "number" ? maxPrice : null,
-        stock: stock || null,
-        discount: discount || null,
-      },
-    });
+  const { start, end } =
+    buildPagination(page, limit);
 
-    return products?.data || [];
-  } catch (error) {
-    console.error("Error fetching filtered products:", error);
-    return [];
-  }
-};
+  const query = defineQuery(`
+    {
+        "products": *[
+            ${filters.join(" && ")}
+        ]{
+            ${PRODUCT_PROJECTION}
+        }
+        | order(${order})
+        [${start}...${end}],
+
+        "total": count(*[
+            ${filters.join(" && ")}
+        ])
+    }
+    `);
+
+  const { data } = await sanityFetch({
+    query,
+    params,
+  });
+
+  return {
+    products: data.products,
+    total: data.total,
+    page,
+    totalPages: Math.ceil(data.total / limit),
+    limit,
+  };
+}
 
 export const getSocialLinks = async () => {
   const LINKS_QUERY = defineQuery(`*[

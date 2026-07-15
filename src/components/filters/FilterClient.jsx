@@ -1,51 +1,29 @@
 "use client";
 import FilterSidebar from "./FilterSidebar";
+import { FilterPagination } from "./FilterPagination";
 import ProductGrid from "./ProductGrid";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
-import { useRouter, useSearchParams } from "next/navigation";
+import { SortSelect } from "./SortSelect";
+import { ActiveFilterChips } from "./Chips";
 
-const FilterClient = ({ filters, searchParams, products }) => {
-  const router = useRouter();
-  const params = useSearchParams();
-  const sort = params.get("sort");
+const FilterClient = ({ filters, searchParams, data, filtersData }) => {
+  const currentPage = data?.page ?? 1;
+  const totalPages = data?.totalPages ?? 1;
+
   return (
     <>
-      <FilterSidebar filters={filters} searchParams={searchParams} />
+      <FilterSidebar
+        filters={filters}
+        searchParams={searchParams}
+        filtersData={filtersData}
+        products={data.products}
+      />
       <div className="col-span-full md:col-span-3">
-        <div className="flex items-center justify-between p-5 text-center w-full border md:border-l-0 bg-card rounded-lg md:rounded-l-none">
-          <p className="text-base font-medium">
-            {products?.length} Product{products?.length !== 1 && "s"}
-          </p>
-          <Select
-            name="sort"
-            value={sort || "newest"}
-            onValueChange={(value) => {
-              const currentParams = Object.fromEntries([...params.entries()]);
-              currentParams.sort = value;
-              const queryString = new URLSearchParams(currentParams).toString();
-              router.push(`?${queryString}`);
-            }}
-          >
-            <SelectTrigger className="w-40 md:w-44">
-              <SelectValue placeholder="Sort by" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="newest">Newest Arrivals</SelectItem>
-              <SelectItem value="rating">Top Rated</SelectItem>
-              <SelectItem value="price-asc">Price: Low to High</SelectItem>
-              <SelectItem value="price-desc">Price: High to Low</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+        <SortSelect products={data} />
+        <ActiveFilterChips />
         <div className="pt-4 md:pl-4">
-          <ProductGrid products={products} />
+          <ProductGrid products={data.products} />
         </div>
+        <FilterPagination currentPage={currentPage} totalPages={totalPages} />
       </div>
     </>
   );

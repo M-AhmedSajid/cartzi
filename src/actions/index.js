@@ -1,4 +1,5 @@
 "use server";
+import { getProducts } from "@/sanity/helpers/filters";
 import { backendClient } from "@/sanity/lib/backendClient";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -71,4 +72,8 @@ export async function applyFilters(formData) {
 
     // Redirect to the filtered page
     redirect(redirectUrl);
+}
+
+export async function getProductsAction(filters) {
+  return getProducts(filters);
 }

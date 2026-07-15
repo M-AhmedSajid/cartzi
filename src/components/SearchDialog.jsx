@@ -1,9 +1,5 @@
 "use client";
-import React, {
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   DialogClose,
   DialogContent,
@@ -14,7 +10,6 @@ import {
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { FiSearch as Search, FiX } from "react-icons/fi";
-import { client } from "@/sanity/lib/client";
 import Link from "next/link";
 import { urlFor } from "@/sanity/lib/image";
 import Image from "next/image";
@@ -23,6 +18,7 @@ import { Skeleton } from "./ui/skeleton";
 import useCartStore from "../../store";
 import StarRating from "./product/StarRating";
 import { useDebounce } from "@/lib";
+import { getProductsAction } from "@/actions";
 
 const SearchDialog = () => {
   const [search, setSearch] = useState("");
@@ -50,55 +46,15 @@ const SearchDialog = () => {
       setLoading(true);
 
       try {
-        const query = `*[_type == "product" && (
-        name match $q ||
-        description match $q ||
-        intro match $q ||
-        count(categories[@->name match $q]) > 0 ||
-        count(categories[@->parent->name match $q]) > 0 ||
-        count(variants[color->name match $q]) > 0 ||
-        count(variants[].sizes[sku match $q]) > 0 ||
-        sku match $q ||
-        count(variants[].sizes[size match $q]) > 0 ||
-        tags[] match $q ||
-        material->name match $q
-      )]{
-        _id,
-        name,
-        intro,
-        "slug": slug.current,
-        price,
-        discount,
-        "image": coalesce(
-          variants[count(sizes[stock > 0]) > 0][0].images[0],
-          variants[0].images[0],
-          images[0]
-        ),
-        "stock": coalesce(
-          variants[count(sizes[stock > 0]) > 0][0].sizes[stock > 0][0].stock,
-          stock
-        ),
-        categories[]->{
-          name,
-          "slug": slug.current,
-          parent->{ name, "slug": slug.current }
-        },
-        variants[]{
-          color->{ name },
-          sizes[]{ size, sku, stock, priceOverride }
-        },
-        tags,
-        material->{ name },
-        "rating": round(math::avg(*[_type == "review" && product._ref == ^._id].rating), 1)
-      }[0...8] | order(name asc)`;
-
-        const res = await client.fetch(query, {
-          q: `${searchTerm}*`,
+        const { products } = await getProductsAction({
+          search: searchTerm,
+          limit: 8,
+          sort: "name",
         });
 
         if (currentRequest !== requestId.current) return;
 
-        setProducts(res);
+        setProducts(products);
       } catch (error) {
         console.error("Error fetching products:", error);
       } finally {
@@ -182,12 +138,12 @@ const SearchDialog = () => {
                         </span>
                       )}
                       <Image
-                        src={urlFor(product?.image)
+                        src={urlFor(product?.images[0])
                           .width(100)
                           .height(130)
                           .auto("format")
                           .url()}
-                        alt={product?.image?.alt}
+                        alt={product?.images[0]?.alt}
                         width={100}
                         height={130}
                         priority
