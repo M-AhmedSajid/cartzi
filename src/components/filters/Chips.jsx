@@ -4,7 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { LuX } from "react-icons/lu";
 
-export function ActiveFilterChips() {
+export function ActiveFilterChips({minPriceData, maxPriceData}) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -31,7 +31,7 @@ export function ActiveFilterChips() {
   if (minPrice || maxPrice) {
     activeFilters.push({
       key: "price",
-      val: `${minPrice ? `$${minPrice}` : "$0"} - ${maxPrice ? `$${maxPrice}` : "Max"}`,
+      val: `${minPrice ? `$${minPrice}` : `$${minPriceData}`} - ${maxPrice ? `$${maxPrice}` : `$${maxPriceData}`}`,
       isPriceRange: true, // Tag to handle removal logic uniquely
     });
   }

@@ -27,7 +27,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <ClerkProvider>
-      <html lang="en" suppressHydrationWarning>
+      <html lang="en" suppressHydrationWarning data-scroll-behavior="smooth">
         <body
           suppressHydrationWarning
           className={`${outfit.variable} ${manrope.variable} ${manrope.className} antialiased`}

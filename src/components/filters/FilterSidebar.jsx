@@ -337,11 +337,33 @@ function FilterContent({ filters, filtersData, desktop, setFilterOpen }) {
               max={filtersData.maxPrice}
               step={10}
               value={range}
-              onValueChange={handlePriceChange}
+              onValueChange={setRange}
+              onValueCommit={(val) => {
+                if (desktop) updateSearchParams(formState, val);
+              }}
             />
             <p className="text-sm text-muted-foreground">
               ${range[0]} — ${range[1]}
             </p>
+          </AccordionContent>
+        </AccordionItem>
+
+        {/* AVAILABILITY */}
+        <AccordionItem value="stock" className="px-4">
+          <AccordionTrigger>Availability</AccordionTrigger>
+          <AccordionContent>
+            <div className="flex items-center gap-2">
+              <Checkbox
+                id="in-stock"
+                checked={formState.stock?.includes("in-stock") || false}
+                onCheckedChange={(checked) =>
+                  handleChange("stock", "in-stock", checked)
+                }
+              />
+              <Label htmlFor="in-stock" className="text-sm">
+                In Stock Only
+              </Label>
+            </div>
           </AccordionContent>
         </AccordionItem>
 
@@ -421,25 +443,6 @@ function FilterContent({ filters, filtersData, desktop, setFilterOpen }) {
                 </Label>
               </div>
             ))}
-          </AccordionContent>
-        </AccordionItem>
-
-        {/* AVAILABILITY */}
-        <AccordionItem value="stock" className="px-4">
-          <AccordionTrigger>Availability</AccordionTrigger>
-          <AccordionContent>
-            <div className="flex items-center gap-2">
-              <Checkbox
-                id="in-stock"
-                checked={formState.stock?.includes("in-stock") || false}
-                onCheckedChange={(checked) =>
-                  handleChange("stock", "in-stock", checked)
-                }
-              />
-              <Label htmlFor="in-stock" className="text-sm">
-                In Stock Only
-              </Label>
-            </div>
           </AccordionContent>
         </AccordionItem>
 

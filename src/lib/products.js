@@ -124,8 +124,7 @@ const SORTS = {
     oldest: "_createdAt asc",
     "price-asc": "price asc",
     "price-desc": "price desc",
-    rating: "rating desc",
-    popular: "sales desc",
+    rating: "defined(rating) desc, rating desc",
     featured: "featured desc",
 };
 
@@ -186,12 +185,7 @@ export const PRODUCT_PROJECTION = `
 
     material->{name},
 
-    "rating": round(
-        math::avg(
-        *[_type=="review" && product._ref == _id].rating
-        ),
-        1
-    )
+    "rating": round(math::avg(*[_type == "review" && product._ref == ^._id].rating), 1)
 `;
 
 export function parseSearchParams(searchParams = {}) {

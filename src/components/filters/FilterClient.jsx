@@ -19,7 +19,7 @@ const FilterClient = ({ filters, searchParams, data, filtersData }) => {
       />
       <div className="col-span-full md:col-span-3">
         <SortSelect products={data} />
-        <ActiveFilterChips />
+        <ActiveFilterChips minPriceData={filtersData.minPrice} maxPriceData={filtersData.maxPrice} />
         <div className="pt-4 md:pl-4">
           <ProductGrid products={data.products} />
         </div>

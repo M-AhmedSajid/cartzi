@@ -27,7 +27,7 @@ export const getMenuForHeader = async () => {
         linkType == "category" => category->{
           "items": *[_type == "category" && parent._ref == ^._id]{
             name,
-            "href": "/category/" + slug.current
+            "href": "/category/" + ^.slug.current + "/" + slug.current
           }
         }
       )
