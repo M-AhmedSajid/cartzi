@@ -3,7 +3,7 @@ import React from "react";
 import Logo from "../Logo";
 import { FiX } from "react-icons/fi";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import SocialMedia from "@/components/SocialMedia";
 import { headerData } from "@/constants";
@@ -13,9 +13,19 @@ import {
   AccordionTrigger,
   AccordionContent,
 } from "@/components/ui/accordion";
+import { buildHrefWithParams } from "@/lib/products";
 
 const Sidebar = ({ isOpen, onClose, menu, links }) => {
   const pathname = usePathname();
+  const searchParams = useSearchParams(); // 3. Grab current search params
+
+  // Deeply checks if a parent node or its nested children are active
+  const checkIsActive = (item) => {
+    if (pathname === item.href) return true;
+    const subItems = item.children?.items ?? [];
+    return subItems.some((subItem) => pathname === subItem.href);
+  };
+
   return (
     <div>
       <div
@@ -41,7 +51,8 @@ const Sidebar = ({ isOpen, onClose, menu, links }) => {
           {menu?.items?.length > 0 ? (
             <Accordion type="single" collapsible className="w-full">
               {menu.items.map((cat) => {
-                const isActive = pathname === cat.href;
+                const isExactActive = pathname === cat.href;
+                const isBranchActive = checkIsActive(cat);
                 const hasDropdown = cat.children?.items?.length > 0;
                 if (hasDropdown) {
                   return (
@@ -49,33 +60,44 @@ const Sidebar = ({ isOpen, onClose, menu, links }) => {
                       <AccordionTrigger className="p-2">
                         <Link
                           onClick={onClose}
-                          href={cat.href}
+                          href={buildHrefWithParams(
+                            cat.href,
+                            pathname,
+                            searchParams,
+                          )}
                           className={`${
-                            isActive
-                              ? "text-foreground"
-                              : "text-muted-foreground"
+                            isBranchActive
+                              ? "text-foreground font-bold"
+                              : "text-muted-foreground hover:text-foreground"
                           }`}
                         >
                           {cat.label}
                         </Link>
                       </AccordionTrigger>
                       <AccordionContent>
-                        <ul className="flex flex-col gap-2 pl-2">
-                          {cat.children.items.map((sub) => (
-                            <li key={sub.href}>
-                              <Link
-                                onClick={onClose}
-                                href={sub.href}
-                                className={`p-2 ${
-                                  pathname === sub.href
-                                    ? "text-foreground"
-                                    : "text-muted-foreground"
-                                }`}
-                              >
-                                {sub.name}
-                              </Link>
-                            </li>
-                          ))}
+                        <ul className="flex flex-col gap-1 pl-2 pt-1">
+                          {cat.children.items.map((sub) => {
+                            const isSubActive = pathname === sub.href;
+                            return (
+                              <li key={sub.href}>
+                                <Link
+                                  onClick={onClose}
+                                  href={buildHrefWithParams(
+                                    sub.href,
+                                    pathname,
+                                    searchParams,
+                                  )}
+                                  className={`block p-2 text-sm rounded-md transition-colors ${
+                                    isSubActive
+                                      ? "bg-primary text-primary-foreground font-medium"
+                                      : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                                  }`}
+                                >
+                                  {sub.name}
+                                </Link>
+                              </li>
+                            );
+                          })}
                         </ul>
                       </AccordionContent>
                     </AccordionItem>
@@ -85,9 +107,15 @@ const Sidebar = ({ isOpen, onClose, menu, links }) => {
                   <AccordionItem key={cat.label}>
                     <Link
                       onClick={onClose}
-                      href={cat.href}
-                        className={`w-full block p-2 ${
-                        isActive ? "text-foreground" : "text-muted-foreground"
+                      href={buildHrefWithParams(
+                        cat.href,
+                        pathname,
+                        searchParams,
+                      )}
+                      className={`w-full block p-2 rounded-md ${
+                        isExactActive
+                          ? "text-foreground font-semibold bg-accent"
+                          : "text-muted-foreground hover:text-foreground"
                       }`}
                     >
                       {cat.label}
@@ -100,13 +128,13 @@ const Sidebar = ({ isOpen, onClose, menu, links }) => {
             headerData.map((item) => (
               <Link
                 onClick={onClose}
-                href={item?.href}
+                href={buildHrefWithParams(item?.href, pathname, searchParams)}
                 key={item?.title}
-                className={`p-2 border-b last:border-b-0
-                  ${pathname === item?.href
-                    ? "text-foreground"
-                    : "text-muted-foreground"}
-                `}
+                className={`p-2 border-b last:border-b-0 transition-colors ${
+                  pathname === item?.href
+                    ? "text-foreground font-semibold"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
               >
                 {item?.title}
               </Link>

@@ -5,17 +5,17 @@ import ProductGrid from "./ProductGrid";
 import { SortSelect } from "./SortSelect";
 import { ActiveFilterChips } from "./Chips";
 
-const FilterClient = ({ filters, searchParams, data, filtersData }) => {
+const FilterClient = ({ searchParams, data, filtersData, disabledFilters }) => {
   const currentPage = data?.page ?? 1;
   const totalPages = data?.totalPages ?? 1;
 
   return (
-    <>
+    <div className="grid grid-cols-1 md:grid-cols-4 mt-6">
       <FilterSidebar
-        filters={filters}
         searchParams={searchParams}
         filtersData={filtersData}
         products={data.products}
+        disabledFilters={disabledFilters}
       />
       <div className="col-span-full md:col-span-3">
         <SortSelect products={data} />
@@ -25,7 +25,7 @@ const FilterClient = ({ filters, searchParams, data, filtersData }) => {
         </div>
         <FilterPagination currentPage={currentPage} totalPages={totalPages} />
       </div>
-    </>
+    </div>
   );
 };
 

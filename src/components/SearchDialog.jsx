@@ -31,14 +31,23 @@ const SearchDialog = () => {
   const requestId = useRef(0);
   const debouncedSearch = useDebounce(search, 300);
 
+  // Track previous debounced search to reset state during render when cleared
+  const [prevDebouncedSearch, setPrevDebouncedSearch] =
+    useState(debouncedSearch);
+
+  if (debouncedSearch !== prevDebouncedSearch) {
+    setPrevDebouncedSearch(debouncedSearch);
+    if (!debouncedSearch.trim()) {
+      setProducts([]);
+      setLoading(false);
+    }
+  }
+
   useEffect(() => {
     const searchTerm = debouncedSearch.trim();
 
-    if (!searchTerm) {
-      setProducts([]);
-      setLoading(false);
-      return;
-    }
+    // If search is empty, render pass already cleared state above
+    if (!searchTerm) return;
 
     const currentRequest = ++requestId.current;
 

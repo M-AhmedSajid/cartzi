@@ -11,15 +11,8 @@ import { Button } from "@/components/ui/button";
 import { Label } from "../ui/label";
 import { Slider } from "../ui/slider";
 import { Input } from "../ui/input";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FiFilter as Filter } from "react-icons/fi";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "../ui/sheet";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import {
@@ -30,11 +23,37 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "../ui/breadcrumb";
+import { useDesktop } from "@/lib";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "../ui/sheet";
 
-export default function FilterSidebar({ filters, filtersData, searchParams }) {
+export default function FilterSidebar({
+  filtersData,
+  searchParams,
+  disabledFilters,
+}) {
   const pathname = usePathname();
   const [filterOpen, setFilterOpen] = useState(false);
-  return (
+  const isDesktop = useDesktop();
+  return isDesktop ? (
+    <>
+      {/* DESKTOP SIDEBAR */}
+      <div className="hidden md:block border h-fit bg-card rounded-lg rounded-tr-none py-4">
+        <FilterContent
+          filtersData={filtersData}
+          searchParams={searchParams}
+          desktop={true}
+          setFilterOpen={setFilterOpen}
+          disabledFilters={disabledFilters}
+        />
+      </div>
+    </>
+  ) : (
     <>
       {/* MOBILE FILTER BUTTON */}
       <div className="flex items-center justify-between md:hidden mb-4 gap-5">
@@ -89,46 +108,58 @@ export default function FilterSidebar({ filters, filtersData, searchParams }) {
               <SheetTitle>Filters</SheetTitle>
             </SheetHeader>
             <FilterContent
-              filters={filters}
               filtersData={filtersData}
               searchParams={searchParams}
               setFilterOpen={setFilterOpen}
+              disabledFilters={disabledFilters}
             />
           </SheetContent>
         </Sheet>
-      </div>
-
-      {/* DESKTOP SIDEBAR */}
-      <div className="hidden md:block border h-fit bg-card rounded-lg rounded-tr-none py-4">
-        <FilterContent
-          filters={filters}
-          filtersData={filtersData}
-          searchParams={searchParams}
-          desktop={true}
-          setFilterOpen={setFilterOpen}
-        />
       </div>
     </>
   );
 }
 
-function FilterContent({ filters, filtersData, desktop, setFilterOpen }) {
+function FilterContent({
+  filtersData,
+  desktop,
+  setFilterOpen,
+  disabledFilters = [],
+}) {
   const router = useRouter();
   const params = useSearchParams();
 
-  // Initialize from URL params
-  const [formState, setFormState] = useState(() => {
+  // Helper to parse state directly from URL search params
+  const parseParams = (params) => {
     const obj = {};
     for (const [key, val] of params.entries()) {
-      obj[key] = val.split(",");
+      if (key !== "min" && key !== "max") {
+        obj[key] = val.split(",");
+      }
     }
     return obj;
-  });
+  };
+
+  // Keep track of the params instance to detect navigation changes during render
+  const [prevParams, setPrevParams] = useState(params);
+
+  // Initialize form state
+  const [formState, setFormState] = useState(() => parseParams(params));
 
   const [range, setRange] = useState([
     Number(params.get("min")) || filtersData.minPrice,
     Number(params.get("max")) || filtersData.maxPrice,
   ]);
+
+  // Adjust state DURING render when URL parameters change (No useEffect needed)
+  if (params !== prevParams) {
+    setPrevParams(params);
+    setFormState(parseParams(params));
+    setRange([
+      Number(params.get("min")) || filtersData.minPrice,
+      Number(params.get("max")) || filtersData.maxPrice,
+    ]);
+  }
 
   const updateSearchParams = (newState, newRange = range) => {
     const url = new URL(window.location.href);
@@ -184,7 +215,7 @@ function FilterContent({ filters, filtersData, desktop, setFilterOpen }) {
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+    e?.preventDefault?.();
     updateSearchParams(formState, range);
   };
 
@@ -222,79 +253,71 @@ function FilterContent({ filters, filtersData, desktop, setFilterOpen }) {
     router.push(url.pathname);
   };
 
-  useEffect(() => {
-    const obj = {};
-
-    for (const [key, val] of params.entries()) {
-      obj[key] = val.split(",");
-    }
-
-    setFormState(obj);
-
-    setRange([
-      Number(params.get("min")) || filtersData.minPrice,
-      Number(params.get("max")) || filtersData.maxPrice,
-    ]);
-  }, [params, filtersData.minPrice, filtersData.maxPrice]);
+  const Container = desktop ? "form" : "div";
 
   return (
-    <form onSubmit={desktop ? (e) => e.preventDefault() : handleSubmit}>
+    <Container
+      onSubmit={desktop ? (e) => e.preventDefault() : undefined}
+      className="w-full"
+    >
       {desktop && <h2 className="text-lg font-semibold px-4">Filters</h2>}
 
       <Accordion type="multiple" defaultValue={["category", "price", "stock"]}>
         {/* CATEGORY */}
-        <AccordionItem value="category" className="px-4">
-          <AccordionTrigger>Category</AccordionTrigger>
+        {!disabledFilters.includes("category") && (
+          <AccordionItem value="category" className="px-4">
+            <AccordionTrigger>Category</AccordionTrigger>
 
-          <AccordionContent>
-            <Accordion type="multiple" className="space-y-2">
-              {Object.entries(groupedCategoriesOrdered)
-                .reverse()
-                .map(([parent, categories]) => (
-                  <AccordionItem key={parent} value={parent}>
-                    <AccordionTrigger className="text-sm font-medium py-2">
-                      {parent}
-                    </AccordionTrigger>
+            <AccordionContent>
+              <Accordion type="multiple" className="space-y-2">
+                {Object.entries(groupedCategoriesOrdered)
+                  .reverse()
+                  .map(([parent, categories]) => (
+                    <AccordionItem key={parent} value={parent}>
+                      <AccordionTrigger className="text-sm font-medium py-2">
+                        {parent}
+                      </AccordionTrigger>
 
-                    <AccordionContent className="space-y-2 pl-3">
-                      {categories.map((category) => (
-                        <div
-                          key={category._id}
-                          className="flex items-center gap-2"
-                        >
-                          <Checkbox
-                            id={`category-${parent + "-" + category.slug}`}
-                            checked={
-                              formState.category?.includes(
-                                parent + "-" + category.slug,
-                              ) || false
-                            }
-                            onCheckedChange={(checked) =>
-                              handleChange(
-                                "category",
-                                parent + "-" + category.slug,
-                                checked,
-                              )
-                            }
-                          />
-
-                          <Label
-                            htmlFor={`category-${parent + "-" + category.slug}`}
-                            className="cursor-pointer flex-1"
+                      <AccordionContent className="space-y-2 pl-3">
+                        {categories.map((category) => (
+                          <div
+                            key={category._id}
+                            className="flex items-center gap-2"
                           >
-                            {category.name}
-                            <span className="text-muted-foreground">
-                              ({category.count})
-                            </span>
-                          </Label>
-                        </div>
-                      ))}
-                    </AccordionContent>
-                  </AccordionItem>
-                ))}
-            </Accordion>
-          </AccordionContent>
-        </AccordionItem>
+                            <Checkbox
+                              id={`category-${parent + "-" + category.slug}`}
+                              checked={
+                                formState.category?.includes(
+                                  parent + "-" + category.slug,
+                                ) || false
+                              }
+                              onCheckedChange={(checked) =>
+                                handleChange(
+                                  "category",
+                                  parent + "-" + category.slug,
+                                  checked,
+                                )
+                              }
+                            />
+
+                            <Label
+                              htmlFor={`category-${parent + "-" + category.slug}`}
+                              className="cursor-pointer flex-1"
+                            >
+                              {category.name}
+                              <span className="text-muted-foreground">
+                                ({category.count})
+                              </span>
+                            </Label>
+                          </div>
+                        ))}
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+              </Accordion>
+            </AccordionContent>
+          </AccordionItem>
+        )}
 
         {/* PRICE RANGE */}
         <AccordionItem value="price">
@@ -469,10 +492,13 @@ function FilterContent({ filters, filtersData, desktop, setFilterOpen }) {
       <div className="px-4 space-y-3 border-t py-4 md:pb-0 sticky md:block md:bottom-auto bottom-0 bg-background md:bg-transparent shadow-[0_-4px_6px_-1px_rgba(0_0_0/0.1)] md:shadow-none rounded-t-2xl md:rounded-none">
         {!desktop && (
           <Button
-            type="submit"
+            type="button"
             variant="default"
             className="w-full"
-            onClick={() => setFilterOpen(false)}
+            onClick={() => {
+              handleSubmit();
+              setFilterOpen(false);
+            }}
           >
             Apply Filters
           </Button>
@@ -486,6 +512,6 @@ function FilterContent({ filters, filtersData, desktop, setFilterOpen }) {
           Reset
         </Button>
       </div>
-    </form>
+    </Container>
   );
 }

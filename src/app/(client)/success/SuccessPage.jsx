@@ -60,7 +60,7 @@ const SuccessPage = () => {
       }
     };
     fetchData();
-  }, []);
+  }, [orderNumber, query]);
 
   const subtotal = useMemo(
     () => summary?.items?.reduce((acc, item) => acc + item.subtotal, 0) || 0,

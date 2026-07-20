@@ -16,17 +16,13 @@ import Link from "next/link";
 import { Dialog, DialogTrigger } from "../../ui/dialog";
 import SearchDialog from "../../SearchDialog";
 import CartIcon from "@/components/product/CartIcon";
-import {
-  getMenuForHeader,
-  getMenuForMobileSidebar,
-} from "@/sanity/helpers/menu";
+import { getMenuForHeader } from "@/sanity/helpers/menu";
 import { getMyOrders, getSocialLinks } from "@/sanity/helpers";
 import { Button } from "@/components/ui/button";
 
 const Header = async () => {
   const user = await currentUser();
-  const menuForHeader = await getMenuForHeader();
-  const menuForMobile = await getMenuForMobileSidebar();
+  const menu = await getMenuForHeader();
   const links = await getSocialLinks();
   let orders = null;
   if (user?.id) {
@@ -38,12 +34,12 @@ const Header = async () => {
       <div className="max-w-7xl mx-auto px-4 grid grid-cols-2 lg:grid-cols-[1fr_auto_1fr] items-center gap-7 text-foreground">
         {/* Left: Menu */}
         <div className="hidden lg:flex justify-start min-w-0">
-          <HeaderMenu menu={menuForHeader} />
+          <HeaderMenu menu={menu} />
         </div>
 
         {/* Center: Logo */}
         <div className="flex justify-start lg:justify-center items-center gap-2.5">
-          <MobileMenu menu={menuForMobile} links={links} />
+          <MobileMenu menu={menu} links={links} />
           <Logo>Cartzi</Logo>
         </div>
 

@@ -50,7 +50,7 @@ export default function PromoSection() {
       }
     };
     fetchData();
-  }, []);
+  }, [query]);
 
   if (!loading && promos.length === 0) return null;
 

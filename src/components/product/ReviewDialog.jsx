@@ -42,14 +42,35 @@ const ReviewDialog = ({
   const { isSignedIn, user } = useUser();
   const { openSignIn } = useClerk();
 
-  // Single state for all form fields
-  const [formData, setFormData] = useState({
-    title: "",
-    rating: 0,
-    comment: "",
-    authorName: "",
-    selectedVariant: "",
+  // Track previous modal state & review to detect opens/changes during render
+  const [prevOpen, setPrevOpen] = useState(open);
+  const [prevReview, setPrevReview] = useState(existingReview);
+
+  // Helper to get initial form data
+  const getFormDataFromReview = (review) => ({
+    title: review?.title || "",
+    rating: review?.rating || 0,
+    comment: review?.comment || "",
+    authorName: review?.authorName || "",
+    selectedVariant: review?.variantDetails
+      ? `${review.variantDetails.color} / ${review.variantDetails.size}`
+      : "",
   });
+
+  // Single state for all form fields
+  const [formData, setFormData] = useState(() =>
+    getFormDataFromReview(existingReview),
+  );
+
+  // Adjust form data synchronously during render when the dialog opens or review changes
+  if (open !== prevOpen || existingReview !== prevReview) {
+    setPrevOpen(open);
+    setPrevReview(existingReview);
+
+    if (open) {
+      setFormData(getFormDataFromReview(existingReview));
+    }
+  }
 
   const query = `*[_type == "order" && customer.clerkUserId == $clerkUserId]{
     items[]{
@@ -72,7 +93,7 @@ const ReviewDialog = ({
           });
 
         const uniqueVariants = Array.from(
-          new Map(variants.map((v) => [v.sku, v])).values()
+          new Map(variants.map((v) => [v.sku, v])).values(),
         );
 
         setIsVerifiedBuyer(uniqueVariants.length > 0);
@@ -80,30 +101,7 @@ const ReviewDialog = ({
       }
     }
     fetchBuyerVariants();
-  }, [open, isSignedIn, productId, user?.id]);
-
-  // Prefill form when editing
-  useEffect(() => {
-    if (existingReview && open) {
-      setFormData({
-        title: existingReview.title || "",
-        rating: existingReview.rating || 0,
-        comment: existingReview.comment || "",
-        authorName: existingReview.authorName || "",
-        selectedVariant: existingReview.variantDetails
-          ? `${existingReview.variantDetails.color} / ${existingReview.variantDetails.size}`
-          : "",
-      });
-    } else if (!existingReview && open) {
-      setFormData({
-        title: "",
-        rating: 0,
-        comment: "",
-        authorName: "",
-        selectedVariant: "",
-      });
-    }
-  }, [existingReview, open]);
+  }, [open, isSignedIn, productId, user?.id, query]);
 
   // Handle submit
   async function handleSubmit(e) {
@@ -189,7 +187,9 @@ const ReviewDialog = ({
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Title */}
           <div>
-            <Label className="mb-1.5" htmlFor="title">Review Title</Label>
+            <Label className="mb-1.5" htmlFor="title">
+              Review Title
+            </Label>
             <Input
               id="title"
               name="title"
@@ -219,7 +219,9 @@ const ReviewDialog = ({
           {/* Variant Selector */}
           {isVerifiedBuyer && variants?.length > 0 && (
             <div>
-              <Label className="mb-1.5" htmlFor="variant">Select Variant</Label>
+              <Label className="mb-1.5" htmlFor="variant">
+                Select Variant
+              </Label>
               <Select
                 onValueChange={(value) =>
                   setFormData((prev) => ({ ...prev, selectedVariant: value }))
@@ -246,7 +248,9 @@ const ReviewDialog = ({
 
           {/* Comment */}
           <div>
-            <Label className="mb-1.5" htmlFor="comment">Your Review</Label>
+            <Label className="mb-1.5" htmlFor="comment">
+              Your Review
+            </Label>
             <Textarea
               id="comment"
               name="comment"
@@ -264,7 +268,9 @@ const ReviewDialog = ({
 
           {/* Author Name */}
           <div>
-            <Label className="mb-1.5" htmlFor="authorName">Your Name (Optional)</Label>
+            <Label className="mb-1.5" htmlFor="authorName">
+              Your Name (Optional)
+            </Label>
             <Input
               id="authorName"
               name="authorName"

@@ -1,6 +1,6 @@
 "use client"
 import { Badge } from "@/components/ui/badge";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import {
   FiCheckCircle,
   FiClock,
@@ -128,14 +128,14 @@ export function getStatusBadge(status) {
   }
 }
 
+const emptySubscribe = () => () => { };
+
 export function useMounted() {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  return mounted;
+  return useSyncExternalStore(
+    emptySubscribe,
+    () => true,  // Client value (returns true on browser)
+    () => false  // Server / Hydration value (returns false during SSR)
+  );
 }
 
 export function useDebounce(value, delay = 300) {
@@ -150,4 +150,26 @@ export function useDebounce(value, delay = 300) {
   }, [value, delay]);
 
   return debouncedValue;
+}
+
+export function useMediaQuery(query) {
+  const [matches, setMatches] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const media = window.matchMedia(query);
+    const update = () => setMatches(media.matches);
+
+    update();
+    media.addEventListener("change", update);
+
+    return () => media.removeEventListener("change", update);
+  }, [query]);
+
+  return matches;
+}
+
+export function useDesktop() {
+  return useMediaQuery("(min-width: 768px)");
 }

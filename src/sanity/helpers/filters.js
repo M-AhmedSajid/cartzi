@@ -3,7 +3,7 @@ import { sanityFetch } from "../lib/live";
 import { buildPagination, buildProductFilters, buildSort, PRODUCT_PROJECTION } from "@/lib/products";
 
 export const getFiltersData = async () => {
-  const FILTERS_QUERY = defineQuery(`
+    const FILTERS_QUERY = defineQuery(`
         {
             "categories": *[_type == "category"]{
                 _id,
@@ -134,30 +134,30 @@ export const getFiltersData = async () => {
             "minPrice": math::min(*[_type == "product"].price)
         }
     `);
-  try {
-    const filters = await sanityFetch({ query: FILTERS_QUERY });
+    try {
+        const filters = await sanityFetch({ query: FILTERS_QUERY });
 
-    return filters?.data || {};
-  } catch (error) {
-    console.error("Error fetching shop data:", error);
-    return { filters: {}, products: [] };
-  }
+        return filters?.data || {};
+    } catch (error) {
+        console.error("Error fetching shop data:", error);
+        return { filters: {}, products: [] };
+    }
 };
 
 export async function getProducts(options = {}) {
-  const page = options.page ?? 1;
-  const limit = options.limit ?? 24;
+    const page = options.page ?? 1;
+    const limit = options.limit ?? 24;
 
-  const { filters, params } =
-    buildProductFilters(options);
+    const { filters, params } =
+        buildProductFilters(options);
 
-  const order =
-    buildSort(options.sort || "newest");
+    const order =
+        buildSort(options.sort || "newest");
 
-  const { start, end } =
-    buildPagination(page, limit);
+    const { start, end } =
+        buildPagination(page, limit);
 
-  const query = defineQuery(`
+    const query = defineQuery(`
     {
         "products": *[
             ${filters.join(" && ")}
@@ -173,22 +173,22 @@ export async function getProducts(options = {}) {
     }
     `);
 
-  const { data } = await sanityFetch({
-    query,
-    params,
-  });
+    const { data } = await sanityFetch({
+        query,
+        params,
+    });
 
-  return {
-    products: data.products,
-    total: data.total,
-    page,
-    totalPages: Math.ceil(data.total / limit),
-    limit,
-  };
+    return {
+        products: data.products,
+        total: data.total,
+        page,
+        totalPages: Math.ceil(data.total / limit),
+        limit,
+    };
 }
 
 export const getSocialLinks = async () => {
-  const LINKS_QUERY = defineQuery(`*[
+    const LINKS_QUERY = defineQuery(`*[
         _type == "socialLink"]
         | order(order asc)[0...6]{
             _id,
@@ -197,12 +197,12 @@ export const getSocialLinks = async () => {
             order
         }
     `);
-  try {
-    const links = await sanityFetch({
-      query: LINKS_QUERY,
-    });
-    return links?.data || [];
-  } catch (error) {
-    console.error("Error fetching social links:", error);
-  }
+    try {
+        const links = await sanityFetch({
+            query: LINKS_QUERY,
+        });
+        return links?.data || [];
+    } catch (error) {
+        console.error("Error fetching social links:", error);
+    }
 };

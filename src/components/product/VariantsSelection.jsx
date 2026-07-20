@@ -12,6 +12,9 @@ const VariantsSelection = ({ variants, onChange }) => {
     return colors.find((c) => c.sizes?.some((s) => s.stock > 0)) || colors[0];
   });
 
+  // Track the previous color to detect color changes during render
+  const [prevColor, setPrevColor] = useState(selectedColor);
+
   // Sizes available for the selected color
   const sizesForColor = useMemo(() => {
     if (!selectedColor) return [];
@@ -25,10 +28,16 @@ const VariantsSelection = ({ variants, onChange }) => {
     );
   }, [selectedColor]);
 
-  const [selectedSize, setSelectedSize] = useState(null);
+  const [selectedSize, setSelectedSize] = useState(() => {
+    if (sizesForColor.length > 0) {
+      return sizesForColor.find((s) => s.inStock) || sizesForColor[0];
+    }
+    return null;
+  });
 
-  // Reset selected size when color changes
-  useEffect(() => {
+  // Adjust state DURING render when selectedColor changes (No useEffect needed)
+  if (prevColor !== selectedColor) {
+    setPrevColor(selectedColor);
     if (sizesForColor.length > 0) {
       const firstAvailable =
         sizesForColor.find((s) => s.inStock) || sizesForColor[0];
@@ -36,7 +45,7 @@ const VariantsSelection = ({ variants, onChange }) => {
     } else {
       setSelectedSize(null);
     }
-  }, [selectedColor, sizesForColor]);
+  }
 
   // Selected variant = color + size combo
   const selectedVariant = useMemo(() => {
@@ -57,7 +66,7 @@ const VariantsSelection = ({ variants, onChange }) => {
   }, [selectedVariant, onChange]);
 
   const colorLength = colors.filter((c) =>
-    c.sizes?.some((s) => s.stock > 0)
+    c.sizes?.some((s) => s.stock > 0),
   ).length;
 
   return (

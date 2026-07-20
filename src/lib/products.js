@@ -96,8 +96,10 @@ export function buildProductFilters(options) {
     // Stock
     if (stock === "in-stock") {
         filters.push(`
-      stock > 0 ||
-      count(variants[].sizes[@.stock > 0]) > 0
+        (
+            stock > 0 ||
+            count(variants[].sizes[@.stock > 0]) > 0
+        )
     `);
     }
 
@@ -138,7 +140,7 @@ export function buildPagination(page, limit) {
         start,
         end: start + limit,
     };
-    
+
 }
 
 export const PRODUCT_PROJECTION = `
@@ -189,52 +191,97 @@ export const PRODUCT_PROJECTION = `
 `;
 
 export function parseSearchParams(searchParams = {}) {
-  const getString = (key) => {
-    const value = searchParams[key];
+    const getString = (key) => {
+        const value = searchParams[key];
 
-    if (Array.isArray(value)) {
-      return value[0] ?? "";
+        if (Array.isArray(value)) {
+            return value[0] ?? "";
+        }
+
+        return value ?? "";
+    };
+
+    const getArray = (key) => {
+        const value = getString(key);
+
+        return value
+            ? value
+                .split(",")
+                .map((v) => v.trim())
+                .filter(Boolean)
+            : [];
+    };
+
+    const getNumber = (key) => {
+        const stringValue = getString(key);
+        if (stringValue === "") return undefined;
+
+        const value = Number(stringValue);
+        return Number.isFinite(value) ? value : undefined;
+    };
+
+    return {
+        search: getString("q"),
+
+        category: getArray("category"),
+        colors: getArray("color"),
+        sizes: getArray("size"),
+        materials: getArray("material"),
+
+        stock: getString("stock") || undefined,
+        discount: getString("discount") || undefined,
+
+        minPrice: getNumber("min"),
+        maxPrice: getNumber("max"),
+
+        sort: getString("sort") || "newest",
+
+        page: Math.max(getNumber("page") ?? 1, 1),
+        limit: Math.max(getNumber("limit") ?? 18, 1),
+    };
+}
+
+// lib/navigation.js
+
+/**
+ * Extracts the primary category/parent slug from a pathname.
+ * e.g., "/category/women/tops" -> "women"
+ * e.g., "/category/men" -> "men"
+ */
+const extractParentCategory = (path = "") => {
+    const segments = path.split("/").filter(Boolean);
+    const categoryIndex = segments.indexOf("category");
+
+    if (categoryIndex !== -1 && segments[categoryIndex + 1]) {
+        return segments[categoryIndex + 1].toLowerCase();
     }
 
-    return value ?? "";
-  };
+    return null;
+};
 
-  const getArray = (key) => {
-    const value = getString(key);
+export const buildHrefWithParams = (targetHref, currentPathname, searchParams) => {
+    // Guard against invalid/external links
+    if (!targetHref || targetHref === "#" || targetHref.startsWith("http")) {
+        return targetHref || "#";
+    }
 
-    return value
-      ? value
-          .split(",")
-          .map((v) => v.trim())
-          .filter(Boolean)
-      : [];
-  };
+    const currentParent = extractParentCategory(currentPathname);
+    const targetParent = extractParentCategory(targetHref);
 
-  const getNumber = (key) => {
-    const stringValue = getString(key);
-    if (stringValue === "") return undefined;
+    // If both paths have a parent category AND they don't match -> Clear filters
+    const isDifferentParent =
+        currentParent &&
+        targetParent &&
+        currentParent !== targetParent;
 
-    const value = Number(stringValue);
-    return Number.isFinite(value) ? value : undefined;
-  };
+    if (isDifferentParent) {
+        return targetHref; // Returns clean destination without query params
+    }
 
-  return {
-    search: getString("q"),
+    // Same parent (or non-category route) -> Preserve search params
+    const currentParams = typeof searchParams === "string"
+        ? searchParams
+        : searchParams?.toString();
 
-    category: getArray("category"),
-    colors: getArray("color"),
-    sizes: getArray("size"),
-    materials: getArray("material"),
-
-    stock: getString("stock") || undefined,
-    discount: getString("discount") || undefined,
-
-    minPrice: getNumber("min"),
-    maxPrice: getNumber("max"),
-
-    sort: getString("sort") || "newest",
-
-    page: Math.max(getNumber("page") ?? 1, 1),
-    limit: Math.max(getNumber("limit") ?? 18, 1),
-  };
-}
+    return currentParams ? `${targetHref}?${currentParams}` : targetHref;
+};
